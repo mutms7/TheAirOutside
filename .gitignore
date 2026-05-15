@@ -4,6 +4,7 @@ obj/
 *.user
 *.suo
 *.userprefs
+*.lscache
 .vs/
 .vscode/
 *.swp

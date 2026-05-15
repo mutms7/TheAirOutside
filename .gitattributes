@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+# Text files always use LF in the repo
+*.cs       text eol=lf
+*.razor    text eol=lf
+*.css      text eol=lf
+*.html     text eol=lf
+*.json     text eol=lf
+*.md       text eol=lf
+*.ink      text eol=lf
+*.csproj   text eol=lf
+*.slnx     text eol=lf
+
+# Binary files
+*.png      binary
+*.jpg      binary
+*.ico      binary
