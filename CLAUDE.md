@@ -20,9 +20,32 @@ These are the source of truth for the creative side. Do not redesign them withou
 
 ## Working conventions
 
-- **Phased work, with explicit phase gates.** Phase 1 (creative planning) is complete as of 2026-05-15. Phase 2 begins with architecture/engine decisions before any code. The user will signal when a phase is complete.
-- **No code is in this repo yet.** Phase 1 deliberately produced only `.md` files. Phase 2 will introduce code; the engine and project layout are open decisions.
-- **No git yet.** The directory is not a git repository. If the user wants version control, `git init` is a first move worth offering.
+- **Phased work, with explicit phase gates.** Phase 1 (creative planning) completed 2026-05-15. Phase 2 (architecture) locked 2026-05-15 — see below. Phase 3 (script writing in Ink) is the next gate.
+- **Code lives under `src/`; Ink scripts live under `ink/`.** The split is load-bearing: writers can live in `ink/` without touching C#, and the renderer is replaceable.
+- **Git initialized.** Branch `master`. First commit (Phase 1 docs) made 2026-05-15.
+
+## Phase 2 architecture (locked 2026-05-15)
+
+| Layer | Choice | Rationale |
+|---|---|---|
+| Script language | **Ink** (Inkle's narrative DSL) | Purpose-built for branching-state narrative. Gates, motif callbacks, and texture cascades map onto Ink's variables/knots ~1:1. Authored as plain `.ink` files. |
+| Ink runtime | **Ink-Runtime (C#)** | Inkle's canonical port; runs cleanly in Blazor WASM. |
+| Renderer | **Blazor WebAssembly + .NET 10** | TS-fluent → C#-fluent reversal in user's preference. Static-shipping web target. |
+| Audio | **Howler.js via JS interop** | Blazor has no native audio. Howler handles ambient crossfades and the pre-climax silence. |
+| Save/load | **Blazored.LocalStorage** | Thin community wrapper around browser `localStorage`. Ink state serializes to JSON cheaply. |
+| Build | `dotnet publish` | Static folder out. Drop on itch.io, Vercel, Cloudflare Pages, personal domain. |
+| Authoring tool (Phase 3) | **Inky** (Inkle's free editor) | Visual playthrough + live state inspector during scene writing. |
+
+**Shippability:** scaffolded as a multi-project solution so a MAUI Blazor Hybrid project can be added later for native desktop binaries (Steam, itch.io desktop) without restructuring. Web ships today; desktop is a `dotnet workload install maui` away.
+
+**The `ink/` vs `src/` split:**
+- `ink/` — narrative scripts. Where writing happens. Compiled to `story.json`.
+- `src/VisualNovel.Shared/` — Razor Class Library: components, services, the compiled `story.json` as a static asset. Consumed by Web *and* future Desktop projects.
+- `src/VisualNovel.Web/` — Blazor WASM entry point. Thin shell over Shared.
+- `src/VisualNovel.InkBuild/` — small console app that compiles `ink/story.ink` → `src/VisualNovel.Shared/wwwroot/story.json` using `Ink.Compiler`.
+
+To rebuild the story after editing `.ink` files: `dotnet run --project src/VisualNovel.InkBuild`.
+To run the game: `dotnet run --project src/VisualNovel.Web`.
 
 ## Soul constraints (do not drift on these)
 
@@ -39,20 +62,20 @@ The user has already answered the soul-defining questions about this story. Thes
 - **Climax pause mechanic**: the "Look up if you'd like" line is the *only* direct address to the player in the entire game. Used once at the climax. Never reuse this voice. No tutorial line, no save prompt, no other scene may break the fourth wall.
 - **AI art is not an acceptable final asset.** A story about masks cannot wear one. AI for ideation/reference only, disclosed if used at all.
 
-## Open decisions deferred to Phase 2
+## Open decisions still deferred
 
-- **Engine / architecture**. User's initial brief named C# + ASP.NET Core + Blazor for web target, with permission to recommend an alternative with justification. Worth seriously comparing: Blazor-native, Ink (Inkle's narrative scripting) compiled to JSON with a thin Blazor renderer, Twine (probably only as prototype), or a bespoke component model. The story is dialogue-heavy with branching state — script language matters more than rendering.
 - **Working title** *The Air Outside* is a placeholder.
 - **Protagonist name** *Wren Hata* is a working draft.
 - **Character names generally** are working drafts.
 - **The exact 1984-cadence passage Mr. Ozaki reads in scene 8** is unwritten — needs to be drafted or adapted in Phase 3 (script writing).
+- **MAUI Blazor Hybrid project** is intentionally not scaffolded yet; add it when desktop shipping becomes a near-term goal.
 
 ## Phase plan (rough)
 
 - **Phase 1** ✅ Creative planning (the 5 `.md` files above)
-- **Phase 2** Architecture: engine choice, project skeleton, data model for scenes/choices/state, the climax pause-mechanic prototype
-- **Phase 3** Script writing: write every scene's dialogue against the outline; lock branching state model
-- **Phase 4** Implementation: build the full game with placeholder art (see art-plan.md)
+- **Phase 2** ✅ Architecture: Ink + Blazor WASM locked; project skeleton with Scene 1 playable in placeholder form
+- **Phase 3** Script writing: write every scene's dialogue against the outline in Ink; lock branching state model
+- **Phase 4** Implementation: build the remaining scenes and the climax pause mechanic against placeholders (see art-plan.md)
 - **Phase 5** Playtest in placeholder form with trusted readers; revise writing
 - **Phase 6** Art + audio decisions (hand-drawn, commission, or ship in placeholder style — all legitimate). **Sound matters more than art in a quiet game.**
 - **Phase 7** Polish + release

@@ -1,0 +1,20 @@
+<div class="dialogue">
+    @if (!string.IsNullOrEmpty(Speaker))
+    {
+        <div class="dialogue__speaker dialogue__speaker--@Speaker.ToLowerInvariant()">@DisplayName</div>
+    }
+    @if (!string.IsNullOrEmpty(Text))
+    {
+        <div class="dialogue__text @(string.IsNullOrEmpty(Speaker) ? "dialogue__text--narration" : "dialogue__text--spoken")">
+            @Text
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Speaker { get; set; } = "";
+    [Parameter] public string Text { get; set; } = "";
+
+    private string DisplayName =>
+        string.IsNullOrEmpty(Speaker) ? "" : char.ToUpperInvariant(Speaker[0]) + Speaker[1..];
+}

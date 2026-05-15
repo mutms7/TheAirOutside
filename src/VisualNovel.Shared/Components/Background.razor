@@ -1,0 +1,26 @@
+@if (!string.IsNullOrEmpty(Id))
+{
+    <div class="background" style="background-color: @ColorForId(Id);">
+        <div class="background__label">[SCENE @Scene — @LabelForId(Id)]</div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+    [Parameter] public int Scene { get; set; }
+
+    private static string ColorForId(string id) => id switch
+    {
+        "bedroom-morning" => "#FBE9D7",
+        "bedroom-night"   => "#1F1F26",
+        "street-morning"  => "#E8DCC9",
+        "classroom"       => "#EAE3D2",
+        "pe-hall"         => "#D8E4DE",
+        "cafeteria"       => "#F0E6D2",
+        "hallway-day"     => "#DDE0E6",
+        "hallway-night"   => "#252830",
+        _                 => "#C8C2B6",
+    };
+
+    private static string LabelForId(string id) => id.Replace("-", ", ").ToUpperInvariant();
+}

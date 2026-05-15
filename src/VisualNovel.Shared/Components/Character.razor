@@ -1,0 +1,30 @@
+@if (!string.IsNullOrEmpty(Id))
+{
+    <div class="character">
+        <div class="character__silhouette" style="background-color: @Color;"></div>
+        <div class="character__nameplate">
+            <span class="character__name">@DisplayName</span>
+            <span class="character__expression">[@Expression]</span>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+
+    private string Name => Id.Split(' ', 2)[0];
+    private string Expression => Id.Contains(' ') ? Id.Split(' ', 2)[1] : "neutral";
+    private string DisplayName =>
+        string.IsNullOrEmpty(Name) ? "" : char.ToUpperInvariant(Name[0]) + Name[1..];
+
+    private string Color => Name.ToLowerInvariant() switch
+    {
+        "wren"    => "#F5B68C",
+        "tae"     => "#FF6B9D",
+        "iris"    => "#B8B0A8",
+        "ozaki"   => "#6B6855",
+        "cael"    => "#FFD24A",
+        "janitor" => "#888888",
+        _         => "#CCCCCC",
+    };
+}

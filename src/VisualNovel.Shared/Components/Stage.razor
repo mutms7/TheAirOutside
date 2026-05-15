@@ -1,0 +1,84 @@
+@using System.Timers
+@inject StoryService Story
+@implements IDisposable
+
+<div class="stage voice-@Story.Voice pacing-@Story.Pacing" @onclick="OnStageClick">
+    <Background Id="@Story.Background" Scene="@Story.Scene" />
+    <Character Id="@Story.CharacterOnStage" />
+    <Motif Id="@Story.Motif" />
+
+    @if (!Story.IsAtChoice && !Story.IsEnded)
+    {
+        <Dialogue Speaker="@Story.Speaker" Text="@Story.CurrentText" />
+    }
+
+    @if (Story.IsAtChoice)
+    {
+        <div class="stage__choices" @onclick:stopPropagation="true">
+            @for (var i = 0; i < Story.CurrentChoices.Count; i++)
+            {
+                var idx = i;
+                <button class="stage__choice" @onclick="() => OnChoice(idx)">
+                    @Story.CurrentChoices[idx].text
+                </button>
+            }
+        </div>
+    }
+
+    @if (Story.IsEnded)
+    {
+        <div class="stage__ending">— end of prototype —</div>
+    }
+</div>
+
+@code {
+    private Timer? _autoTimer;
+
+    protected override void OnInitialized()
+    {
+        Story.StateChanged += OnStateChanged;
+        ResetTimer();
+    }
+
+    private void OnStateChanged()
+    {
+        InvokeAsync(() =>
+        {
+            ResetTimer();
+            StateHasChanged();
+        });
+    }
+
+    private void ResetTimer()
+    {
+        _autoTimer?.Stop();
+        _autoTimer?.Dispose();
+        _autoTimer = null;
+
+        if (!Story.CanAdvance) return;
+
+        var ms = Story.Pacing == "slow" ? 6000 : 3500;
+        _autoTimer = new Timer(ms) { AutoReset = false };
+        _autoTimer.Elapsed += (_, _) =>
+        {
+            InvokeAsync(() =>
+            {
+                if (Story.CanAdvance) Story.Advance();
+            });
+        };
+        _autoTimer.Start();
+    }
+
+    private void OnStageClick()
+    {
+        if (Story.CanAdvance) Story.Advance();
+    }
+
+    private void OnChoice(int index) => Story.Choose(index);
+
+    public void Dispose()
+    {
+        _autoTimer?.Dispose();
+        Story.StateChanged -= OnStateChanged;
+    }
+}
