@@ -1,0 +1,43 @@
+@inject StoryService Story
+@implements IDisposable
+
+<div class="panel__header">
+    <h2 class="panel__title">History</h2>
+    <p class="panel__subtitle">Every line you've read in this session, scroll back as far as you like.</p>
+</div>
+
+<div class="panel__body backlog">
+    @if (Story.History.Count == 0)
+    {
+        <p class="backlog__empty">No history yet. Lines appear here as you read.</p>
+    }
+    else
+    {
+        @foreach (var entry in Story.History)
+        {
+            <div class="backlog__entry">
+                @if (!string.IsNullOrEmpty(entry.Speaker) && entry.Speaker != "hud")
+                {
+                    <div class="backlog__speaker backlog__speaker--@entry.Speaker.ToLowerInvariant()">
+                        @(char.ToUpperInvariant(entry.Speaker[0]) + entry.Speaker[1..])
+                    </div>
+                }
+                else if (entry.Speaker == "hud")
+                {
+                    <div class="backlog__speaker backlog__speaker--hud">▮ SUIT</div>
+                }
+                <div class="backlog__text">@entry.Text</div>
+                @if (entry.Scene > 0)
+                {
+                    <div class="backlog__scene">scene @entry.Scene</div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+    protected override void OnInitialized() => Story.StateChanged += OnChanged;
+    private void OnChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Story.StateChanged -= OnChanged;
+}

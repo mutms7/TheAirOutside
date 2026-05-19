@@ -1,0 +1,52 @@
+@inject StoryService Story
+
+<div class="topbar @(Story.IsClimaxPause ? "topbar--hidden" : "")">
+    <button class="topbar__btn" title="Settings" aria-label="Settings"
+            @onclick="() => OnOpen.InvokeAsync(Panel.Settings)" @onclick:stopPropagation="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9 1.65 1.65 0 0 0 4.27 7.18l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  fill="none" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+    </button>
+    <button class="topbar__btn" title="Scenes" aria-label="Scenes"
+            @onclick="() => OnOpen.InvokeAsync(Panel.Scenes)" @onclick:stopPropagation="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <rect x="4" y="4" width="16" height="16" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="8" y1="9"  x2="16" y2="9"  stroke="currentColor" stroke-width="1.5"/>
+            <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="8" y1="15" x2="13" y2="15" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+    </button>
+    <button class="topbar__btn" title="Timeline" aria-label="Timeline map"
+            @onclick="() => OnOpen.InvokeAsync(Panel.Map)" @onclick:stopPropagation="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="6"  cy="6"  r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="18" cy="6"  r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="12" cy="14" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="6"  cy="20" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="18" cy="20" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="7" y1="7"  x2="11" y2="13" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="17" y1="7" x2="13" y2="13" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="11" y1="15" x2="7"  y2="19" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="13" y1="15" x2="17" y2="19" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+    </button>
+    <button class="topbar__btn" title="History" aria-label="Backlog"
+            @onclick="() => OnOpen.InvokeAsync(Panel.Backlog)" @onclick:stopPropagation="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M3 12 a9 9 0 1 0 3-6.7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <polyline points="3,3 3,8 8,8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+    </button>
+</div>
+
+@code {
+    public enum Panel { None, Settings, Scenes, Map, Backlog }
+
+    [Parameter] public EventCallback<Panel> OnOpen { get; set; }
+
+    protected override void OnInitialized() => Story.StateChanged += OnStateChanged;
+    private void OnStateChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Story.StateChanged -= OnStateChanged;
+}

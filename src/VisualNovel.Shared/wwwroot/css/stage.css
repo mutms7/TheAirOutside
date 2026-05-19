@@ -1,9 +1,14 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Tokens (light defaults — dark overrides at the bottom of this section)
+   ────────────────────────────────────────────────────────────────────────── */
 :root {
     --color-ink: #2A2A2E;
     --color-paper: #FAF7F1;
     --color-paper-dim: #ECE6D8;
-    --color-muted: #888;
+    --color-paper-deep: #F4EFE5;
+    --color-muted: rgba(0, 0, 0, 0.5);
     --color-rule: rgba(0, 0, 0, 0.08);
+    --color-shadow: rgba(0, 0, 0, 0.15);
 
     --color-wren: #F5B68C;
     --color-tae: #FF6B9D;
@@ -19,6 +24,19 @@
     --size-line: 1.7rem;
     --pad-stage: 2rem;
     --pad-dialogue: 1.5rem 2rem 2rem;
+
+    --text-size-mult: 1.0;
+    --fade-ms: 150ms;
+}
+
+.theme-dark {
+    --color-ink: #E8E4DA;
+    --color-paper: #15151A;
+    --color-paper-dim: #1F1F26;
+    --color-paper-deep: #1A1A20;
+    --color-muted: rgba(255, 255, 255, 0.45);
+    --color-rule: rgba(255, 255, 255, 0.08);
+    --color-shadow: rgba(0, 0, 0, 0.4);
 }
 
 * { box-sizing: border-box; }
@@ -40,6 +58,9 @@ html, body {
     min-height: 100vh;
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Stage layout
+   ────────────────────────────────────────────────────────────────────────── */
 .stage {
     flex: 1;
     position: relative;
@@ -49,9 +70,20 @@ html, body {
     grid-template-rows: 1fr auto;
     min-height: 100vh;
     overflow: hidden;
-    transition: background-color 1s ease;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    transition: background-color 1s ease, color 0.4s ease;
+    font-size: calc(18px * var(--text-size-mult));
 }
 
+.stage.reduce-motion * {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Background
+   ────────────────────────────────────────────────────────────────────────── */
 .background {
     position: absolute;
     inset: 0;
@@ -66,9 +98,13 @@ html, body {
     font-family: var(--type-mono);
     font-size: 0.7rem;
     letter-spacing: 0.1em;
-    color: rgba(0, 0, 0, 0.35);
+    color: var(--color-muted);
+    opacity: 0.7;
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Character
+   ────────────────────────────────────────────────────────────────────────── */
 .character {
     grid-row: 1;
     align-self: end;
@@ -84,7 +120,7 @@ html, body {
     width: 160px;
     height: 320px;
     border-radius: 80px 80px 24px 24px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 12px var(--color-shadow);
 }
 
 .character__nameplate {
@@ -92,7 +128,7 @@ html, body {
     text-align: center;
     font-family: var(--type-mono);
     font-size: 0.7rem;
-    color: rgba(0, 0, 0, 0.5);
+    color: var(--color-muted);
 }
 
 .character__name {
@@ -105,6 +141,9 @@ html, body {
     opacity: 0.65;
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Motif
+   ────────────────────────────────────────────────────────────────────────── */
 .motif {
     position: absolute;
     top: 32%;
@@ -121,18 +160,37 @@ html, body {
     height: 56px;
 }
 
+.theme-dark .motif__icon ellipse,
+.theme-dark .motif__icon line,
+.theme-dark .motif__icon path:not([fill="#5C7894"]) {
+    stroke: var(--color-ink);
+    fill: var(--color-ink);
+}
+
 .motif__label {
     margin-top: 0.4rem;
     font-family: var(--type-mono);
     font-size: 0.65rem;
-    color: rgba(0, 0, 0, 0.5);
+    color: var(--color-muted);
     letter-spacing: 0.06em;
 }
 
-.dialogue {
+/* ──────────────────────────────────────────────────────────────────────────
+   Dialogue — wrapped so we can fade out / fade in on text change
+   ────────────────────────────────────────────────────────────────────────── */
+.dialogue-wrap {
     grid-row: 2;
     z-index: 2;
-    background: rgba(250, 247, 241, 0.94);
+    opacity: 1;
+    transition: opacity var(--fade-ms) ease;
+}
+
+.dialogue-wrap--out {
+    opacity: 0;
+}
+
+.dialogue {
+    background: color-mix(in srgb, var(--color-paper) 94%, transparent);
     border-top: 1px solid var(--color-rule);
     padding: var(--pad-dialogue);
     min-height: 7rem;
@@ -157,13 +215,12 @@ html, body {
 
 .dialogue__text {
     line-height: var(--size-line);
-    animation: fade-in 0.6s ease;
     max-width: 44rem;
 }
 
 .dialogue__text--narration {
     font-style: italic;
-    color: #4A4A50;
+    color: color-mix(in srgb, var(--color-ink) 75%, transparent);
     text-align: center;
     margin: 0 auto;
 }
@@ -190,7 +247,7 @@ html, body {
     font-family: var(--type-mono);
     font-size: 0.62rem;
     letter-spacing: 0.22em;
-    color: rgba(0, 0, 0, 0.35);
+    color: var(--color-muted);
     margin-bottom: 0.45rem;
     text-transform: uppercase;
 }
@@ -198,21 +255,24 @@ html, body {
 .dialogue__text--hud {
     font-family: var(--type-mono);
     font-size: 0.92rem;
-    color: rgba(0, 0, 0, 0.6);
+    color: color-mix(in srgb, var(--color-ink) 65%, transparent);
     letter-spacing: 0.04em;
     line-height: 1.55;
-    border-left: 2px solid rgba(0, 0, 0, 0.18);
+    border-left: 2px solid color-mix(in srgb, var(--color-ink) 35%, transparent);
     padding-left: 0.85rem;
     max-width: 40rem;
     margin: 0;
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Choices
+   ────────────────────────────────────────────────────────────────────────── */
 .stage__choices {
     grid-row: 2;
     align-self: end;
     z-index: 3;
     padding: 1rem var(--pad-stage) 1.5rem;
-    background: rgba(250, 247, 241, 0.98);
+    background: color-mix(in srgb, var(--color-paper) 98%, transparent);
     border-top: 1px solid var(--color-rule);
     display: flex;
     flex-direction: column;
@@ -233,9 +293,12 @@ html, body {
 
 .stage__choice:hover {
     background: var(--color-paper-dim);
-    border-color: rgba(0, 0, 0, 0.2);
+    border-color: color-mix(in srgb, var(--color-ink) 20%, transparent);
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Ending + Climax pause
+   ────────────────────────────────────────────────────────────────────────── */
 .stage__ending {
     position: absolute;
     inset: 0;
@@ -243,18 +306,16 @@ html, body {
     align-items: center;
     justify-content: center;
     z-index: 4;
-    background: rgba(250, 247, 241, 0.97);
+    background: color-mix(in srgb, var(--color-paper) 97%, transparent);
     font-family: var(--type-mono);
     font-size: 0.85rem;
-    color: rgba(0, 0, 0, 0.5);
+    color: var(--color-muted);
     letter-spacing: 0.12em;
     animation: fade-in 1s ease;
 }
 
-/* Climax pause: UI dissolves. Single line of text fades in slowly, off-axis.
-   The whole screen is the advance affordance. No timer, no minimum dwell. */
 .stage.climax-pause {
-    background: #F4EFE5;
+    background: var(--color-paper-deep);
     transition: background-color 2s ease;
 }
 
@@ -273,7 +334,7 @@ html, body {
     font-style: italic;
     font-size: 1.05rem;
     line-height: 1.8;
-    color: rgba(0, 0, 0, 0.55);
+    color: color-mix(in srgb, var(--color-ink) 60%, transparent);
     max-width: 32rem;
     text-align: left;
     transform: translateY(-2vh);
@@ -284,10 +345,427 @@ html, body {
 @keyframes climax-fade-in {
     0%   { opacity: 0; }
     40%  { opacity: 0; }
-    100% { opacity: 0.6; }
+    100% { opacity: 0.7; }
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Top bar (settings / scenes / map / history icons in top-right corner)
+   ────────────────────────────────────────────────────────────────────────── */
+.topbar {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.9rem;
+    z-index: 9;
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0.55;
+    transition: opacity 0.25s ease;
+}
+
+.topbar:hover { opacity: 1; }
+.topbar--hidden { opacity: 0; pointer-events: none; }
+
+.topbar__btn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 0.35rem;
+    cursor: pointer;
+    color: var(--color-ink);
+    line-height: 0;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.topbar__btn:hover {
+    background: var(--color-paper-dim);
+    border-color: var(--color-rule);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Panel (drawer that opens from the right)
+   ────────────────────────────────────────────────────────────────────────── */
+.panel-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--color-paper) 35%, transparent);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: flex-end;
+    animation: fade-in 0.2s ease;
+    cursor: default;
+}
+
+.panel {
+    width: min(560px, 92vw);
+    height: 100%;
+    background: var(--color-paper);
+    border-left: 1px solid var(--color-rule);
+    box-shadow: -2px 0 20px var(--color-shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    animation: slide-in-right 0.25s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.panel__close {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.85rem;
+    z-index: 1;
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--color-muted);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+}
+
+.panel__close:hover { color: var(--color-ink); }
+
+.panel__header {
+    padding: 1.5rem 2rem 1rem;
+    border-bottom: 1px solid var(--color-rule);
+}
+
+.panel__title {
+    font-family: var(--type-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    margin: 0 0 0.4rem 0;
+}
+
+.panel__subtitle {
+    font-family: var(--type-body);
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.panel__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 2rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Settings panel content
+   ────────────────────────────────────────────────────────────────────────── */
+.settings__group {
+    margin-bottom: 2.2rem;
+}
+
+.settings__group-title {
+    font-family: var(--type-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin: 0 0 1rem 0;
+}
+
+.settings__row {
+    margin-bottom: 1rem;
+}
+
+.settings__row--inline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.settings__label {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+    margin-bottom: 0.3rem;
+    cursor: pointer;
+}
+
+.settings__label input[type="checkbox"] {
+    margin-right: 0.5rem;
+    transform: translateY(2px);
+}
+
+.settings__hint {
+    font-size: 0.78rem;
+    color: var(--color-muted);
+    margin: 0.2rem 0 0 0;
+    line-height: 1.4;
+}
+
+.settings input[type="range"] {
+    width: 100%;
+    accent-color: var(--color-wren);
+}
+
+.settings__seg {
+    display: inline-flex;
+    border: 1px solid var(--color-rule);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.settings__seg-btn {
+    background: transparent;
+    border: none;
+    padding: 0.45rem 0.9rem;
+    font-family: var(--type-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.settings__seg-btn:hover { color: var(--color-ink); }
+
+.settings__seg-btn--active {
+    background: var(--color-ink);
+    color: var(--color-paper);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Scene picker
+   ────────────────────────────────────────────────────────────────────────── */
+.scenes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.scene-row {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.scene-row:not(:disabled):hover {
+    background: var(--color-paper-dim);
+    border-color: color-mix(in srgb, var(--color-ink) 20%, transparent);
+}
+
+.scene-row--locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.scene-row--current {
+    border-color: var(--color-wren);
+    background: color-mix(in srgb, var(--color-wren) 12%, transparent);
+}
+
+.scene-row__num {
+    font-family: var(--type-mono);
+    font-size: 0.82rem;
+    color: var(--color-muted);
+}
+
+.scene-row__title {
+    font-size: 0.95rem;
+    color: var(--color-ink);
+}
+
+.scene-row__meta {
+    font-family: var(--type-mono);
+    font-size: 0.7rem;
+    color: var(--color-muted);
+    margin-top: 0.15rem;
+    letter-spacing: 0.04em;
+}
+
+.scene-row__status {
+    font-family: var(--type-mono);
+    font-size: 0.95rem;
+    color: var(--color-muted);
+}
+
+.scene-row__dot   { color: var(--color-wren); }
+.scene-row__check { color: color-mix(in srgb, var(--color-ink) 60%, transparent); }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Timeline map
+   ────────────────────────────────────────────────────────────────────────── */
+.map__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.map__node {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 0.4rem 0;
+}
+
+.map__dot {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-rule);
+    background: var(--color-paper);
+    color: var(--color-muted);
+    font-family: var(--type-mono);
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.map__node--locked .map__dot { opacity: 0.4; cursor: not-allowed; }
+
+.map__node--visited .map__dot {
+    border-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
+    color: var(--color-ink);
+}
+
+.map__node--current .map__dot {
+    background: var(--color-wren);
+    border-color: var(--color-wren);
+    color: var(--color-paper);
+}
+
+.map__node:not(.map__node--locked) .map__dot:hover {
+    background: var(--color-paper-dim);
+}
+
+.map__label {
+    padding-top: 0.35rem;
+}
+
+.map__title {
+    font-size: 0.92rem;
+    color: var(--color-ink);
+}
+
+.map__node--locked .map__title { color: var(--color-muted); }
+
+.map__line {
+    height: 1.4rem;
+    margin-left: 1rem;
+    border-left: 2px solid var(--color-rule);
+    list-style: none;
+}
+
+.map__line--visited {
+    border-left-color: color-mix(in srgb, var(--color-wren) 50%, transparent);
+}
+
+.map__gate {
+    margin-top: 0.35rem;
+    font-family: var(--type-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: var(--color-muted);
+}
+
+.map__gate-name {
+    margin-right: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.map__gate-opt {
+    display: inline-block;
+    margin-right: 0.5rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 3px;
+    background: var(--color-paper-dim);
+}
+
+.map__gate-opt--picked {
+    background: color-mix(in srgb, var(--color-wren) 28%, transparent);
+    color: var(--color-ink);
+}
+
+.map__callback {
+    margin-top: 0.35rem;
+    font-family: var(--type-mono);
+    font-size: 0.7rem;
+    color: var(--color-muted);
+    letter-spacing: 0.04em;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Backlog
+   ────────────────────────────────────────────────────────────────────────── */
+.backlog__empty {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+.backlog__entry {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--color-rule);
+}
+
+.backlog__entry:last-child { border-bottom: none; }
+
+.backlog__speaker {
+    font-family: var(--type-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+.backlog__speaker--wren    { color: var(--color-wren); }
+.backlog__speaker--tae     { color: var(--color-tae); }
+.backlog__speaker--iris    { color: var(--color-iris); }
+.backlog__speaker--ozaki   { color: var(--color-ozaki); }
+.backlog__speaker--cael    { color: var(--color-cael); }
+.backlog__speaker--janitor { color: var(--color-janitor); }
+.backlog__speaker--hud {
+    color: var(--color-muted);
+    font-family: var(--type-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+}
+
+.backlog__text {
+    color: var(--color-ink);
+    line-height: 1.55;
+    font-size: 0.92rem;
+}
+
+.backlog__scene {
+    font-family: var(--type-mono);
+    font-size: 0.65rem;
+    color: var(--color-muted);
+    letter-spacing: 0.04em;
+    margin-top: 0.2rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Animations
+   ────────────────────────────────────────────────────────────────────────── */
 @keyframes fade-in {
     from { opacity: 0; transform: translateY(2px); }
     to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
 }

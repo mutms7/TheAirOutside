@@ -1,8 +1,12 @@
 @using System.Timers
 @inject StoryService Story
+@inject SettingsService SettingsSvc
 @implements IDisposable
 
-<div class="stage voice-@Story.Voice pacing-@Story.Pacing @(Story.IsClimaxPause ? "climax-pause" : "")" @onclick="OnStageClick">
+<div class="stage voice-@Story.Voice pacing-@Story.Pacing theme-@SettingsSvc.Current.Theme @(SettingsSvc.Current.ReduceMotion ? "reduce-motion" : "") @(Story.IsClimaxPause ? "climax-pause" : "")"
+     style="--text-size-mult: @(SettingsSvc.Current.TextSize.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));"
+     @onclick="OnStageClick">
+
     @if (!Story.IsClimaxPause)
     {
         <Background Id="@Story.Background" Scene="@Story.Scene" />
@@ -18,7 +22,10 @@
     }
     else if (!Story.IsAtChoice && !Story.IsEnded)
     {
-        <Dialogue Speaker="@Story.Speaker" Text="@Story.CurrentText" />
+        <div class="dialogue-wrap @(_transitioning ? "dialogue-wrap--out" : "")"
+             style="--fade-ms: @SettingsSvc.Current.TextFadeMs.ToString("0", System.Globalization.CultureInfo.InvariantCulture)ms;">
+            <Dialogue Speaker="@Story.Speaker" Text="@Story.CurrentText" />
+        </div>
     }
 
     @if (Story.IsAtChoice)
@@ -38,14 +45,43 @@
     {
         <div class="stage__ending">— end of the prototype —</div>
     }
+
+    <TopBar OnOpen="OpenPanel" />
+
+    @if (_openPanel != TopBar.Panel.None)
+    {
+        <div class="panel-overlay" @onclick="ClosePanel" @onclick:stopPropagation="true">
+            <aside class="panel" @onclick:stopPropagation="true">
+                <button class="panel__close" @onclick="ClosePanel" aria-label="Close">×</button>
+                @switch (_openPanel)
+                {
+                    case TopBar.Panel.Settings:
+                        <Settings />
+                        break;
+                    case TopBar.Panel.Scenes:
+                        <ScenePicker OnJump="JumpAndClose" />
+                        break;
+                    case TopBar.Panel.Map:
+                        <TimelineMap OnJump="JumpAndClose" />
+                        break;
+                    case TopBar.Panel.Backlog:
+                        <Backlog />
+                        break;
+                }
+            </aside>
+        </div>
+    }
 </div>
 
 @code {
     private Timer? _autoTimer;
+    private bool _transitioning;
+    private TopBar.Panel _openPanel = TopBar.Panel.None;
 
     protected override void OnInitialized()
     {
         Story.StateChanged += OnStateChanged;
+        SettingsSvc.Changed += OnSettingsChanged;
         ResetTimer();
     }
 
@@ -58,6 +94,12 @@
         });
     }
 
+    private void OnSettingsChanged() => InvokeAsync(() =>
+    {
+        ResetTimer();
+        StateHasChanged();
+    });
+
     private void ResetTimer()
     {
         _autoTimer?.Stop();
@@ -65,32 +107,76 @@
         _autoTimer = null;
 
         if (!Story.CanAdvance) return;
-
-        // Climax pause disables auto-advance. The player must click anywhere to continue.
         if (Story.IsClimaxPause) return;
+        if (!SettingsSvc.Current.AutoAdvance) return;
+        if (_openPanel != TopBar.Panel.None) return;
 
-        var ms = Story.Pacing == "slow" ? 6000 : 3500;
+        var baseMs = SettingsSvc.Current.AutoAdvanceDelay * 1000;
+        var ms = Story.Pacing == "slow" ? baseMs * 1.7 : baseMs;
         _autoTimer = new Timer(ms) { AutoReset = false };
-        _autoTimer.Elapsed += (_, _) =>
+        _autoTimer.Elapsed += async (_, _) =>
         {
-            InvokeAsync(() =>
+            await InvokeAsync(async () =>
             {
-                if (Story.CanAdvance) Story.Advance();
+                if (Story.CanAdvance && !Story.IsClimaxPause && _openPanel == TopBar.Panel.None)
+                    await TransitionAdvance();
             });
         };
         _autoTimer.Start();
     }
 
-    private void OnStageClick()
+    private async Task OnStageClick()
     {
-        if (Story.CanAdvance) Story.Advance();
+        if (_openPanel != TopBar.Panel.None) return;
+        if (!Story.CanAdvance) return;
+        if (_transitioning) return;
+        await TransitionAdvance();
+    }
+
+    private async Task TransitionAdvance()
+    {
+        if (SettingsSvc.Current.ReduceMotion || SettingsSvc.Current.TextFadeMs <= 0)
+        {
+            Story.Advance();
+            return;
+        }
+
+        _transitioning = true;
+        StateHasChanged();
+        await Task.Delay((int)SettingsSvc.Current.TextFadeMs);
+        Story.Advance();
+        _transitioning = false;
+        StateHasChanged();
     }
 
     private void OnChoice(int index) => Story.Choose(index);
+
+    private void OpenPanel(TopBar.Panel p)
+    {
+        _openPanel = p;
+        ResetTimer();
+        StateHasChanged();
+    }
+
+    private void ClosePanel()
+    {
+        _openPanel = TopBar.Panel.None;
+        ResetTimer();
+        StateHasChanged();
+    }
+
+    private void JumpAndClose(string knot)
+    {
+        if (Story.JumpToKnot(knot))
+        {
+            _openPanel = TopBar.Panel.None;
+        }
+    }
 
     public void Dispose()
     {
         _autoTimer?.Dispose();
         Story.StateChanged -= OnStateChanged;
+        SettingsSvc.Changed -= OnSettingsChanged;
     }
 }

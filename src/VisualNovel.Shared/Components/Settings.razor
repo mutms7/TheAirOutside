@@ -1,0 +1,102 @@
+@inject SettingsService SettingsSvc
+@implements IDisposable
+
+<div class="panel__header">
+    <h2 class="panel__title">Settings</h2>
+</div>
+
+<div class="panel__body settings">
+    <section class="settings__group">
+        <h3 class="settings__group-title">Reading</h3>
+
+        <div class="settings__row">
+            <label class="settings__label">
+                <input type="checkbox" checked="@s.AutoAdvance"
+                       @onchange="@(async e => await Update(set => set.AutoAdvance = (bool)e.Value!))" />
+                Auto-advance text
+            </label>
+            <p class="settings__hint">Off by default. Click anywhere to read at your own pace.</p>
+        </div>
+
+        @if (s.AutoAdvance)
+        {
+            <div class="settings__row">
+                <label class="settings__label">Auto-advance delay: @s.AutoAdvanceDelay.ToString("0.0")s</label>
+                <input type="range" min="1.0" max="10.0" step="0.5" value="@s.AutoAdvanceDelay"
+                       @onchange="@(async e => await Update(set => set.AutoAdvanceDelay = double.Parse(e.Value!.ToString()!)))" />
+            </div>
+        }
+
+        <div class="settings__row">
+            <label class="settings__label">Text fade: @s.TextFadeMs.ToString("0")ms</label>
+            <input type="range" min="0" max="500" step="25" value="@s.TextFadeMs"
+                   @onchange="@(async e => await Update(set => set.TextFadeMs = double.Parse(e.Value!.ToString()!)))" />
+        </div>
+
+        <div class="settings__row">
+            <label class="settings__label">Text size: @((int)(s.TextSize * 100))%</label>
+            <input type="range" min="0.85" max="1.4" step="0.05" value="@s.TextSize"
+                   @onchange="@(async e => await Update(set => set.TextSize = double.Parse(e.Value!.ToString()!)))" />
+        </div>
+    </section>
+
+    <section class="settings__group">
+        <h3 class="settings__group-title">Display</h3>
+
+        <div class="settings__row settings__row--inline">
+            <label class="settings__label">Theme</label>
+            <div class="settings__seg">
+                <button class="settings__seg-btn @(s.Theme == "light" ? "settings__seg-btn--active" : "")"
+                        @onclick="@(async () => await Update(set => set.Theme = "light"))">light</button>
+                <button class="settings__seg-btn @(s.Theme == "dark" ? "settings__seg-btn--active" : "")"
+                        @onclick="@(async () => await Update(set => set.Theme = "dark"))">dark</button>
+            </div>
+        </div>
+
+        <div class="settings__row">
+            <label class="settings__label">
+                <input type="checkbox" checked="@s.ReduceMotion"
+                       @onchange="@(async e => await Update(set => set.ReduceMotion = (bool)e.Value!))" />
+                Reduce motion
+            </label>
+            <p class="settings__hint">Disables fade animations. Recommended for vestibular sensitivity.</p>
+        </div>
+    </section>
+
+    <section class="settings__group">
+        <h3 class="settings__group-title">Audio</h3>
+        <p class="settings__hint">Audio is not wired in the prototype. Sliders save for the future.</p>
+
+        <div class="settings__row">
+            <label class="settings__label">Master: @((int)(s.MasterVolume * 100))%</label>
+            <input type="range" min="0" max="1" step="0.05" value="@s.MasterVolume"
+                   @onchange="@(async e => await Update(set => set.MasterVolume = double.Parse(e.Value!.ToString()!)))" />
+        </div>
+
+        <div class="settings__row">
+            <label class="settings__label">Music: @((int)(s.MusicVolume * 100))%</label>
+            <input type="range" min="0" max="1" step="0.05" value="@s.MusicVolume"
+                   @onchange="@(async e => await Update(set => set.MusicVolume = double.Parse(e.Value!.ToString()!)))" />
+        </div>
+
+        <div class="settings__row">
+            <label class="settings__label">Sound effects: @((int)(s.SfxVolume * 100))%</label>
+            <input type="range" min="0" max="1" step="0.05" value="@s.SfxVolume"
+                   @onchange="@(async e => await Update(set => set.SfxVolume = double.Parse(e.Value!.ToString()!)))" />
+        </div>
+    </section>
+</div>
+
+@code {
+    private GameSettings s => SettingsSvc.Current;
+
+    protected override void OnInitialized() => SettingsSvc.Changed += OnChanged;
+    private void OnChanged() => InvokeAsync(StateHasChanged);
+
+    private async Task Update(Action<GameSettings> mutate)
+    {
+        await SettingsSvc.UpdateAsync(mutate);
+    }
+
+    public void Dispose() => SettingsSvc.Changed -= OnChanged;
+}

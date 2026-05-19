@@ -21,6 +21,9 @@ public sealed class StoryService
 
     public IReadOnlyList<Choice> CurrentChoices { get; private set; } = Array.Empty<Choice>();
 
+    public HashSet<int> VisitedScenes { get; } = new();
+    public List<HistoryEntry> History { get; } = new();
+
     public bool IsLoaded => _story is not null;
     public bool CanAdvance => _story is not null && _story.canContinue;
     public bool IsAtChoice => CurrentChoices.Count > 0;
@@ -47,6 +50,10 @@ public sealed class StoryService
         {
             CurrentText = _story.Continue().TrimEnd('\n').Trim();
             ApplyTags(_story.currentTags ?? new List<string>(), sfx);
+            if (!string.IsNullOrEmpty(CurrentText))
+            {
+                History.Add(new HistoryEntry(Scene, Speaker, CurrentText));
+            }
         }
         else
         {
@@ -65,6 +72,34 @@ public sealed class StoryService
         Advance();
     }
 
+    public bool JumpToKnot(string knot)
+    {
+        if (_story is null || string.IsNullOrEmpty(knot)) return false;
+        try
+        {
+            _story.ChoosePathString(knot);
+            Advance();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public string GetVar(string name)
+    {
+        if (_story is null) return "";
+        try
+        {
+            return _story.variablesState[name]?.ToString() ?? "";
+        }
+        catch
+        {
+            return "";
+        }
+    }
+
     private void ApplyTags(IList<string> tags, List<string> sfx)
     {
         foreach (var raw in tags)
@@ -73,7 +108,11 @@ public sealed class StoryService
             switch (key)
             {
                 case "scene":
-                    if (int.TryParse(value, out var s)) Scene = s;
+                    if (int.TryParse(value, out var s))
+                    {
+                        Scene = s;
+                        VisitedScenes.Add(s);
+                    }
                     break;
                 case "pacing":  Pacing = value; break;
                 case "voice":   Voice = value; break;

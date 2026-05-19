@@ -1,0 +1,64 @@
+@inject StoryService Story
+@implements IDisposable
+
+<div class="panel__header">
+    <h2 class="panel__title">Timeline</h2>
+    <p class="panel__subtitle">The 15 scenes and the 4 gates. Your path is highlighted; visited scenes are clickable.</p>
+</div>
+
+<div class="panel__body map">
+    <ol class="map__list">
+        @for (int i = 0; i < SceneRegistry.Scenes.Count; i++)
+        {
+            var scene = SceneRegistry.Scenes[i];
+            var visited = Story.VisitedScenes.Contains(scene.Id);
+            var isCurrent = Story.Scene == scene.Id;
+            var clickable = visited;
+            var isLast = i == SceneRegistry.Scenes.Count - 1;
+
+            <li class="map__node @(isCurrent ? "map__node--current" : "") @(visited ? "map__node--visited" : "map__node--locked")">
+                <button class="map__dot" disabled="@(!clickable)"
+                        @onclick="@(() => OnJump.InvokeAsync(scene.Knot))"
+                        title="@scene.Title">
+                    @scene.Id
+                </button>
+                <div class="map__label">
+                    <div class="map__title">@scene.Title</div>
+
+                    @if (scene.Gate is not null)
+                    {
+                        var current = Story.GetVar(scene.Gate);
+                        var choices = GateOptions.ByGate.GetValueOrDefault(scene.Gate);
+                        if (choices is not null)
+                        {
+                            <div class="map__gate">
+                                <span class="map__gate-name">@scene.Gate</span>
+                                @foreach (var c in choices)
+                                {
+                                    var picked = c.Value == current;
+                                    <span class="map__gate-opt @(picked ? "map__gate-opt--picked" : "")">@c.Label</span>
+                                }
+                            </div>
+                        }
+                    }
+                    else if (scene.CallbackFrom is not null)
+                    {
+                        <div class="map__callback">↺ callback from scene @scene.CallbackFrom</div>
+                    }
+                </div>
+            </li>
+            @if (!isLast)
+            {
+                <li class="map__line @(visited ? "map__line--visited" : "")"></li>
+            }
+        }
+    </ol>
+</div>
+
+@code {
+    [Parameter] public EventCallback<string> OnJump { get; set; }
+
+    protected override void OnInitialized() => Story.StateChanged += OnChanged;
+    private void OnChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Story.StateChanged -= OnChanged;
+}
