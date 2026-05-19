@@ -2,12 +2,21 @@
 @inject StoryService Story
 @implements IDisposable
 
-<div class="stage voice-@Story.Voice pacing-@Story.Pacing" @onclick="OnStageClick">
-    <Background Id="@Story.Background" Scene="@Story.Scene" />
-    <Character Id="@Story.CharacterOnStage" />
-    <Motif Id="@Story.Motif" />
+<div class="stage voice-@Story.Voice pacing-@Story.Pacing @(Story.IsClimaxPause ? "climax-pause" : "")" @onclick="OnStageClick">
+    @if (!Story.IsClimaxPause)
+    {
+        <Background Id="@Story.Background" Scene="@Story.Scene" />
+        <Character Id="@Story.CharacterOnStage" />
+        <Motif Id="@Story.Motif" />
+    }
 
-    @if (!Story.IsAtChoice && !Story.IsEnded)
+    @if (Story.IsClimaxPause)
+    {
+        <div class="climax">
+            <div class="climax__line">@Story.CurrentText</div>
+        </div>
+    }
+    else if (!Story.IsAtChoice && !Story.IsEnded)
     {
         <Dialogue Speaker="@Story.Speaker" Text="@Story.CurrentText" />
     }
@@ -27,7 +36,7 @@
 
     @if (Story.IsEnded)
     {
-        <div class="stage__ending">— end of prototype —</div>
+        <div class="stage__ending">— end of the prototype —</div>
     }
 </div>
 
@@ -56,6 +65,9 @@
         _autoTimer = null;
 
         if (!Story.CanAdvance) return;
+
+        // Climax pause disables auto-advance. The player must click anywhere to continue.
+        if (Story.IsClimaxPause) return;
 
         var ms = Story.Pacing == "slow" ? 6000 : 3500;
         _autoTimer = new Timer(ms) { AutoReset = false };

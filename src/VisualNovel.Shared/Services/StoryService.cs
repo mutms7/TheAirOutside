@@ -17,6 +17,7 @@ public sealed class StoryService
     public string Pacing { get; private set; } = "normal";
     public string Audio { get; private set; } = "";
     public int Scene { get; private set; }
+    public bool IsClimaxPause { get; private set; }
 
     public IReadOnlyList<Choice> CurrentChoices { get; private set; } = Array.Empty<Choice>();
 
@@ -39,6 +40,7 @@ public sealed class StoryService
 
         Speaker = "";
         Motif = "";
+        IsClimaxPause = false;
         var sfx = new List<string>();
 
         if (_story.canContinue)
@@ -81,6 +83,9 @@ public sealed class StoryService
                 case "motif":   Motif = value; break;
                 case "audio":   Audio = value; break;
                 case "sfx":     sfx.Add(value); break;
+                case "pause":
+                    if (value == "climax-window") IsClimaxPause = true;
+                    break;
             }
         }
     }

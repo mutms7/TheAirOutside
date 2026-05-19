@@ -168,17 +168,43 @@ html, body {
     margin: 0 auto;
 }
 
-.dialogue__text--spoken {
+.dialogue__text--wren,
+.dialogue__text--tae,
+.dialogue__text--iris,
+.dialogue__text--ozaki,
+.dialogue__text--cael,
+.dialogue__text--janitor {
     margin: 0;
 }
 
-.voice-modulated .dialogue__text--spoken {
+.voice-modulated .dialogue__text--wren {
     letter-spacing: 0.012em;
 }
 
-.voice-bare .dialogue__text--spoken {
+.voice-bare .dialogue__text--wren {
     letter-spacing: 0;
     font-weight: 500;
+}
+
+.dialogue__hud-label {
+    font-family: var(--type-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    color: rgba(0, 0, 0, 0.35);
+    margin-bottom: 0.45rem;
+    text-transform: uppercase;
+}
+
+.dialogue__text--hud {
+    font-family: var(--type-mono);
+    font-size: 0.92rem;
+    color: rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.04em;
+    line-height: 1.55;
+    border-left: 2px solid rgba(0, 0, 0, 0.18);
+    padding-left: 0.85rem;
+    max-width: 40rem;
+    margin: 0;
 }
 
 .stage__choices {
@@ -223,6 +249,42 @@ html, body {
     color: rgba(0, 0, 0, 0.5);
     letter-spacing: 0.12em;
     animation: fade-in 1s ease;
+}
+
+/* Climax pause: UI dissolves. Single line of text fades in slowly, off-axis.
+   The whole screen is the advance affordance. No timer, no minimum dwell. */
+.stage.climax-pause {
+    background: #F4EFE5;
+    transition: background-color 2s ease;
+}
+
+.climax {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8vw;
+    z-index: 5;
+}
+
+.climax__line {
+    font-family: var(--type-body);
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: rgba(0, 0, 0, 0.55);
+    max-width: 32rem;
+    text-align: left;
+    transform: translateY(-2vh);
+    animation: climax-fade-in 8s ease forwards;
+    opacity: 0;
+}
+
+@keyframes climax-fade-in {
+    0%   { opacity: 0; }
+    40%  { opacity: 0; }
+    100% { opacity: 0.6; }
 }
 
 @keyframes fade-in {
