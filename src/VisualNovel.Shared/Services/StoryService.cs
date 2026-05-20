@@ -19,6 +19,7 @@ public sealed class StoryService
     public string Audio { get; private set; } = "";
     public int Scene { get; private set; }
     public bool IsClimaxPause { get; private set; }
+    public string EndingTitle { get; private set; } = "";
 
     public IReadOnlyList<Choice> CurrentChoices { get; private set; } = Array.Empty<Choice>();
 
@@ -172,6 +173,9 @@ public sealed class StoryService
                 case "sfx":     sfx.Add(value); break;
                 case "pause":
                     if (value == "climax-window") IsClimaxPause = true;
+                    break;
+                case "ending":
+                    EndingTitle = value;
                     break;
             }
         }

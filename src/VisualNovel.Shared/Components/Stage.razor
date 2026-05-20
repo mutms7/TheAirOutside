@@ -1,7 +1,9 @@
 @using System.Timers
+@using Microsoft.JSInterop
 @inject StoryService Story
 @inject SettingsService SettingsSvc
 @inject SaveService SaveSvc
+@inject IJSRuntime JS
 @implements IDisposable
 
 @if (!Story.IsPrologueDone && Story.Scene == 0)
@@ -50,12 +52,29 @@
 
     @if (Story.IsEnded)
     {
-        <div class="stage__ending">— end of the prototype —</div>
+        <div class="stage__ending">
+            @if (!string.IsNullOrEmpty(Story.EndingTitle))
+            {
+                <div class="stage__ending-eyebrow">An Ending</div>
+                <div class="stage__ending-title">@Story.EndingTitle</div>
+                <button class="stage__ending-btn" @onclick="OnPlayAgain" @onclick:stopPropagation="true">
+                    Play Again
+                </button>
+            }
+            else
+            {
+                <div>— end of the prototype —</div>
+            }
+        </div>
     }
 
     <TopBar OnOpen="OpenPanel" />
 
-    @if (_openPanel != TopBar.Panel.None)
+    @if (_openPanel == TopBar.Panel.Map)
+    {
+        <StoryMap OnJump="HandleJump" OnCloseCallback="ClosePanel" />
+    }
+    else if (_openPanel != TopBar.Panel.None)
     {
         <div class="panel-overlay" @onclick="ClosePanel" @onclick:stopPropagation="true">
             <aside class="panel" @onclick:stopPropagation="true">
@@ -67,9 +86,6 @@
                         break;
                     case TopBar.Panel.Scenes:
                         <ScenePicker OnJump="HandleJump" />
-                        break;
-                    case TopBar.Panel.Map:
-                        <TimelineMap OnJump="HandleJump" />
                         break;
                     case TopBar.Panel.Backlog:
                         <Backlog />
@@ -221,6 +237,12 @@
         _openPanel = TopBar.Panel.None;
         ResetTimer();
         StateHasChanged();
+    }
+
+    private async Task OnPlayAgain()
+    {
+        await SaveSvc.ClearAsync();
+        await JS.InvokeVoidAsync("location.reload");
     }
 
     private void HandleJump(SceneInfo scene)

@@ -410,6 +410,11 @@ html, body {
     border-radius: 4px;
 }
 
+.spotart__svg--epilogue {
+    max-width: 720px;
+    max-height: 480px;
+}
+
 .spotart__placeholder {
     font-family: var(--type-mono);
     font-size: 0.7rem;
@@ -552,8 +557,10 @@ html, body {
     position: absolute;
     inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 1rem;
     z-index: 4;
     background: color-mix(in srgb, var(--color-paper) 97%, transparent);
     font-family: var(--type-mono);
@@ -561,6 +568,63 @@ html, body {
     color: var(--color-muted);
     letter-spacing: 0.12em;
     animation: fade-in 1s ease;
+    padding: 4rem 2rem 8rem;
+}
+
+.stage__ending-eyebrow {
+    font-family: var(--type-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: 0.5rem;
+}
+
+.stage__ending-title {
+    font-family: var(--type-body);
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-style: italic;
+    color: var(--color-ink);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    text-align: center;
+    margin: 0 0 1.5rem 0;
+    animation: prologue-text-in 1.6s ease;
+}
+
+.stage__ending-btn {
+    margin-top: 2rem;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--color-rule);
+    color: var(--color-ink);
+    font-family: var(--type-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-transform: lowercase;
+    padding: 0.75rem 2.2rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.stage__ending-btn:hover {
+    background: var(--color-paper-dim);
+    border-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
+}
+
+.stage.bg-dark .stage__ending-eyebrow,
+.stage.bg-dark .stage__ending-title {
+    color: #E8E4DA;
+}
+
+.stage.bg-dark .stage__ending-btn {
+    background: rgba(255, 255, 255, 0.06);
+    color: #E8E4DA;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.stage.bg-dark .stage__ending-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
 }
 
 .stage.climax-pause {
@@ -1029,6 +1093,242 @@ html, body {
     color: var(--color-muted);
     letter-spacing: 0.04em;
     margin-top: 0.2rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Story Map — full-screen 2D node graph
+   ────────────────────────────────────────────────────────────────────────── */
+.storymap-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: var(--color-paper);
+    overflow: auto;
+    animation: fade-in 0.3s ease;
+    cursor: default;
+}
+
+.theme-dark .storymap-overlay { background: var(--color-paper); }
+
+.storymap {
+    min-height: 100vh;
+    padding: 3rem 2rem 5rem;
+    position: relative;
+}
+
+.storymap__close {
+    position: fixed;
+    top: 1.2rem;
+    right: 1.4rem;
+    z-index: 5;
+    background: var(--color-paper);
+    border: 1px solid var(--color-rule);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    color: var(--color-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    box-shadow: 0 2px 10px var(--color-shadow);
+}
+
+.storymap__close:hover {
+    background: var(--color-paper-dim);
+    border-color: color-mix(in srgb, var(--color-ink) 28%, transparent);
+}
+
+.storymap__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.storymap__title {
+    font-family: var(--type-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    margin: 0 0 0.6rem 0;
+}
+
+.storymap__subtitle {
+    font-family: var(--type-body);
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    margin: 0;
+    max-width: 32rem;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.45;
+}
+
+.storymap__graph-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.storymap__graph {
+    position: relative;
+    width: 1200px;
+    max-width: 100%;
+    height: 3260px;
+}
+
+.storymap__lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.storymap__edge {
+    fill: none;
+    stroke: var(--color-rule);
+    stroke-width: 1.8;
+}
+
+.storymap__edge--visited {
+    stroke: color-mix(in srgb, var(--color-ink) 30%, transparent);
+    stroke-width: 2;
+}
+
+.storymap__edge--picked {
+    stroke: var(--color-wren);
+    stroke-width: 3;
+}
+
+.storymap__node {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--color-paper);
+    border: 2px solid var(--color-rule);
+    color: var(--color-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+    transition: all 0.18s cubic-bezier(0.3, 0.7, 0.3, 1);
+    font-family: var(--type-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0;
+    box-shadow: 0 2px 6px var(--color-shadow);
+}
+
+.storymap__node:hover {
+    border-color: color-mix(in srgb, var(--color-ink) 40%, transparent);
+    color: var(--color-ink);
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 4px 14px var(--color-shadow);
+    z-index: 2;
+}
+
+.storymap__node--visited {
+    border-color: color-mix(in srgb, var(--color-ink) 35%, transparent);
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--color-wren) 10%, var(--color-paper));
+}
+
+.storymap__node--picked {
+    border-color: var(--color-wren);
+    background: color-mix(in srgb, var(--color-wren) 28%, var(--color-paper));
+    color: var(--color-ink);
+}
+
+.storymap__node--current {
+    border-color: var(--color-wren);
+    background: var(--color-wren);
+    color: var(--color-paper);
+    transform: translate(-50%, -50%) scale(1.15);
+    z-index: 3;
+    animation: storymap-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes storymap-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-wren) 35%, transparent); }
+    50%      { box-shadow: 0 0 0 12px color-mix(in srgb, var(--color-wren) 0%, transparent); }
+}
+
+.storymap__node--gate {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    font-size: 0.85rem;
+}
+
+.storymap__node--gate .storymap__node-icon {
+    transform: rotate(-45deg);
+    font-size: 0.95rem;
+    color: var(--color-muted);
+}
+
+.storymap__node--gate:hover {
+    transform: translate(-50%, -50%) rotate(45deg) scale(1.12);
+}
+
+.storymap__node--gate.storymap__node--picked .storymap__node-icon {
+    color: var(--color-ink);
+}
+
+.storymap__node--ending {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-paper-dim);
+    font-size: 0.95rem;
+}
+
+.storymap__node--ending .storymap__node-icon {
+    color: color-mix(in srgb, var(--color-ink) 30%, transparent);
+}
+
+.storymap__node--ending.storymap__node--picked {
+    background: color-mix(in srgb, #FFD24A 35%, var(--color-paper));
+    border-color: #FFD24A;
+}
+
+.storymap__node--ending.storymap__node--picked .storymap__node-icon {
+    color: #9B5B0E;
+}
+
+.storymap__node-label {
+    position: absolute;
+    transform: translate(-50%, 0);
+    text-align: center;
+    font-family: var(--type-display);
+    font-size: 0.78rem;
+    color: var(--color-ink);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    pointer-events: none;
+    line-height: 1.2;
+}
+
+.storymap__node--gate ~ .storymap__node-label,
+.storymap__node-label {
+    margin-top: 0.2rem;
+}
+
+@media (max-width: 1200px) {
+    .storymap__graph {
+        transform: scale(calc(100vw / 1280));
+        transform-origin: top center;
+    }
+}
+
+@media (max-width: 600px) {
+    .storymap { padding: 2rem 0.5rem 4rem; }
+    .storymap__title { font-size: 1.05rem; }
+    .storymap__subtitle { font-size: 0.82rem; padding: 0 1rem; }
 }
 
 /* ──────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,278 @@
+@inject StoryService Story
+@implements IDisposable
+
+<div class="storymap-overlay" @onclick="OnClose">
+    <div class="storymap" @onclick:stopPropagation="true">
+        <button class="storymap__close" @onclick="OnClose" data-tooltip="Close map" aria-label="Close">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
+
+        <header class="storymap__header">
+            <h2 class="storymap__title">Your Story</h2>
+            <p class="storymap__subtitle">A map of where you have been and where the story can go. Click any visited node to return. Jumping forward prompts first.</p>
+        </header>
+
+        <div class="storymap__graph-wrap">
+            <div class="storymap__graph">
+                <svg class="storymap__lines" viewBox="0 0 1200 3260" preserveAspectRatio="xMidYMin meet" aria-hidden="true">
+                    @foreach (var edge in Edges())
+                    {
+                        var cls = edge.Visited ? "storymap__edge storymap__edge--visited" : "storymap__edge";
+                        if (edge.Picked) cls += " storymap__edge--picked";
+                        <path d="@edge.Path" class="@cls" />
+                    }
+                </svg>
+
+                @foreach (var node in Nodes())
+                {
+                    var cls = "storymap__node";
+                    if (node.Kind == "gate") cls += " storymap__node--gate";
+                    if (node.Kind == "ending") cls += " storymap__node--ending";
+                    if (node.Visited) cls += " storymap__node--visited";
+                    if (node.Current) cls += " storymap__node--current";
+                    if (node.Picked) cls += " storymap__node--picked";
+
+                    <button class="@cls"
+                            style="left: @(node.X)px; top: @(node.Y)px;"
+                            data-tooltip="@node.Tooltip"
+                            @onclick="@(() => HandleClick(node))">
+                        @if (node.Kind == "scene")
+                        {
+                            <span class="storymap__node-num">@node.Number</span>
+                        }
+                        else if (node.Kind == "gate")
+                        {
+                            <span class="storymap__node-icon">◆</span>
+                        }
+                        else if (node.Kind == "ending")
+                        {
+                            <span class="storymap__node-icon">★</span>
+                        }
+                    </button>
+                    <div class="storymap__node-label" style="left: @(node.X)px; top: @(node.Y + 60)px;">
+                        @node.Label
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback<SceneInfo> OnJump { get; set; }
+    [Parameter] public EventCallback OnCloseCallback { get; set; }
+
+    private void OnClose() => OnCloseCallback.InvokeAsync();
+
+    protected override void OnInitialized() => Story.StateChanged += OnChanged;
+    private void OnChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Story.StateChanged -= OnChanged;
+
+    public sealed record MapNode(
+        string Id,
+        int X,
+        int Y,
+        string Label,
+        string Tooltip,
+        string Kind,         // "scene" | "gate" | "ending"
+        int? Number = null,
+        SceneInfo? Scene = null,
+        string? GateName = null,
+        string? GateValue = null
+    )
+    {
+        public bool Current { get; init; }
+        public bool Visited { get; init; }
+        public bool Picked { get; init; }
+    }
+
+    public sealed record MapEdge(string Path, bool Visited = false, bool Picked = false);
+
+    private IEnumerable<MapNode> Nodes()
+    {
+        var picked1 = Story.GetVar("gate1");
+        var picked2 = Story.GetVar("gate2");
+        var picked3 = Story.GetVar("gate3");
+        var picked4 = Story.GetVar("gate4");
+
+        bool V(int n) => Story.VisitedScenes.Contains(n);
+        bool C(int n) => Story.Scene == n;
+
+        SceneInfo Sc(int n) => SceneRegistry.ByNumber(n)!;
+
+        // Prologue (always visited if story has started)
+        yield return new MapNode("prologue", 600, 80, "Before", "Prologue", "ending", Number: 0)
+        { Visited = Story.IsPrologueDone };
+
+        // Main spine: scenes 1-4
+        yield return new MapNode("s1", 600, 220, "Ants", "1 · Ants · the cold open", "scene", 1, Sc(1)) { Visited = V(1), Current = C(1) };
+        yield return new MapNode("s2", 600, 340, "Stickers", "2 · Stickers · homeroom", "scene", 2, Sc(2)) { Visited = V(2), Current = C(2) };
+        yield return new MapNode("s3", 600, 460, "Smooth", "3 · Smooth · dexterity drill", "scene", 3, Sc(3)) { Visited = V(3), Current = C(3) };
+        yield return new MapNode("s4", 600, 580, "The Lesser Suits", "4 · The Lesser Suits · the cafeteria", "scene", 4, Sc(4)) { Visited = V(4), Current = C(4) };
+
+        // Gate 1 branches
+        yield return new MapNode("g1a", 360, 720, "stay silent", "Gate 1 · stay silent", "gate", GateName: "gate1", GateValue: "silent")
+        { Visited = picked1 != "", Picked = picked1 == "silent" };
+        yield return new MapNode("g1b", 600, 720, "speak quietly", "Gate 1 · say something quietly", "gate", GateName: "gate1", GateValue: "speak")
+        { Visited = picked1 != "", Picked = picked1 == "speak" };
+        yield return new MapNode("g1c", 840, 720, "change subject", "Gate 1 · change the subject", "gate", GateName: "gate1", GateValue: "deflect")
+        { Visited = picked1 != "", Picked = picked1 == "deflect" };
+
+        yield return new MapNode("s5", 600, 860, "The Window", "5 · The Window · Iris in the rain", "scene", 5, Sc(5)) { Visited = V(5), Current = C(5) };
+
+        // Gate 2 branches
+        yield return new MapNode("g2a", 440, 1000, "approach", "Gate 2 · approach Iris", "gate", GateName: "gate2", GateValue: "approach")
+        { Visited = picked2 != "", Picked = picked2 == "approach" };
+        yield return new MapNode("g2b", 760, 1000, "do not approach", "Gate 2 · do not approach", "gate", GateName: "gate2", GateValue: "avoid")
+        { Visited = picked2 != "", Picked = picked2 == "avoid" };
+
+        yield return new MapNode("s6", 600, 1140, "Charging", "6 · Charging · evening at home", "scene", 6, Sc(6)) { Visited = V(6), Current = C(6) };
+        yield return new MapNode("s7", 600, 1260, "Crushed", "7 · Crushed · the ant hill returns", "scene", 7, Sc(7)) { Visited = V(7), Current = C(7) };
+        yield return new MapNode("s8", 600, 1380, "Be More Honest", "8 · Be More Honest · Ozaki reads", "scene", 8, Sc(8)) { Visited = V(8), Current = C(8) };
+        yield return new MapNode("s9", 600, 1500, "Air", "9 · Air · two seconds of contact", "scene", 9, Sc(9)) { Visited = V(9), Current = C(9) };
+        yield return new MapNode("s10", 600, 1620, "The Drawer", "10 · The Drawer · Tae's room", "scene", 10, Sc(10)) { Visited = V(10), Current = C(10) };
+        yield return new MapNode("s11", 600, 1740, "Humming", "11 · Humming · the night hallway", "scene", 11, Sc(11)) { Visited = V(11), Current = C(11) };
+        yield return new MapNode("s12", 600, 1860, "The Door", "12 · The Door · the choice", "scene", 12, Sc(12)) { Visited = V(12), Current = C(12) };
+
+        // Gate 3 branches
+        yield return new MapNode("g3a", 320, 2000, "seek Iris", "Gate 3 · go to Iris", "gate", GateName: "gate3", GateValue: "iris")
+        { Visited = picked3 != "", Picked = picked3 == "iris" };
+        yield return new MapNode("g3b", 600, 2000, "stay alone", "Gate 3 · stay in the room", "gate", GateName: "gate3", GateValue: "stay")
+        { Visited = picked3 != "", Picked = picked3 == "stay" };
+        yield return new MapNode("g3c", 880, 2000, "message Tae", "Gate 3 · ask Tae over", "gate", GateName: "gate3", GateValue: "tae")
+        { Visited = picked3 != "", Picked = picked3 == "tae" };
+
+        yield return new MapNode("s13", 600, 2140, "Outside", "13 · Outside · the climax", "scene", 13, Sc(13)) { Visited = V(13), Current = C(13) };
+        yield return new MapNode("s14", 600, 2260, "Bare", "14 · Bare · the next morning", "scene", 14, Sc(14)) { Visited = V(14), Current = C(14) };
+
+        // Gate 4 branches
+        yield return new MapNode("g4a", 320, 2400, "stay out", "Gate 4 · stay out of the suit", "gate", GateName: "gate4", GateValue: "stay_out")
+        { Visited = picked4 != "", Picked = picked4 == "stay_out" };
+        yield return new MapNode("g4b", 600, 2400, "suit, no decoration", "Gate 4 · suit, no decoration", "gate", GateName: "gate4", GateValue: "suit_no_deco")
+        { Visited = picked4 != "", Picked = picked4 == "suit_no_deco" };
+        yield return new MapNode("g4c", 880, 2400, "re-enter", "Gate 4 · re-enter, but looking", "gate", GateName: "gate4", GateValue: "re_enter")
+        { Visited = picked4 != "", Picked = picked4 == "re_enter" };
+
+        yield return new MapNode("s15", 600, 2540, "Watching", "15 · Watching · the coda", "scene", 15, Sc(15)) { Visited = V(15), Current = C(15) };
+
+        // Endings: 3x3 grid (gate3 × gate4)
+        var endings = new (string id, int col, int row, string label, string g3, string g4)[]
+        {
+            ("e_io", 0, 0, "Together, Outside",     "iris", "stay_out"),
+            ("e_in", 1, 0, "Together, Half-Bare",    "iris", "suit_no_deco"),
+            ("e_ir", 2, 0, "Together, Looking",      "iris", "re_enter"),
+            ("e_so", 0, 1, "Alone, Outside",         "stay", "stay_out"),
+            ("e_sn", 1, 1, "A Quiet Step",           "stay", "suit_no_deco"),
+            ("e_sr", 2, 1, "Looking Again",          "stay", "re_enter"),
+            ("e_to", 0, 2, "Out, With a Friend",     "tae",  "stay_out"),
+            ("e_tn", 1, 2, "Half-Step Out",          "tae",  "suit_no_deco"),
+            ("e_tr", 2, 2, "Returning, Changed",     "tae",  "re_enter"),
+        };
+
+        foreach (var e in endings)
+        {
+            var x = 280 + e.col * 320;
+            var y = 2780 + e.row * 130;
+            var isPicked = picked3 == e.g3 && picked4 == e.g4;
+            var tt = $"Ending · {e.label} · gate3:{e.g3} + gate4:{e.g4}";
+            yield return new MapNode(e.id, x, y, e.label, tt, "ending")
+            {
+                Picked = isPicked,
+                Visited = isPicked,
+            };
+        }
+    }
+
+    private IEnumerable<MapEdge> Edges()
+    {
+        var picked1 = Story.GetVar("gate1");
+        var picked2 = Story.GetVar("gate2");
+        var picked3 = Story.GetVar("gate3");
+        var picked4 = Story.GetVar("gate4");
+
+        bool V(int n) => Story.VisitedScenes.Contains(n);
+        bool Any() => Story.IsPrologueDone;
+
+        // straight vertical edges through the main spine
+        string Line(int x1, int y1, int x2, int y2) => $"M {x1} {y1} L {x2} {y2}";
+        string Curve(int x1, int y1, int x2, int y2)
+        {
+            var midY = (y1 + y2) / 2;
+            return $"M {x1} {y1} C {x1} {midY} {x2} {midY} {x2} {y2}";
+        }
+
+        yield return new MapEdge(Line(600, 100, 600, 200), Any());
+        yield return new MapEdge(Line(600, 240, 600, 320), V(1));
+        yield return new MapEdge(Line(600, 360, 600, 440), V(2));
+        yield return new MapEdge(Line(600, 480, 600, 560), V(3));
+
+        // Scene 4 to gate1 (3-fan)
+        yield return new MapEdge(Curve(600, 600, 360, 700), V(4), picked1 == "silent");
+        yield return new MapEdge(Line(600, 600, 600, 700), V(4), picked1 == "speak");
+        yield return new MapEdge(Curve(600, 600, 840, 700), V(4), picked1 == "deflect");
+
+        // gate1 to scene 5 (3-merge)
+        yield return new MapEdge(Curve(360, 740, 600, 840), picked1 == "silent", picked1 == "silent");
+        yield return new MapEdge(Line(600, 740, 600, 840), picked1 == "speak", picked1 == "speak");
+        yield return new MapEdge(Curve(840, 740, 600, 840), picked1 == "deflect", picked1 == "deflect");
+
+        // Scene 5 to gate2 (2-fan)
+        yield return new MapEdge(Curve(600, 880, 440, 980), V(5), picked2 == "approach");
+        yield return new MapEdge(Curve(600, 880, 760, 980), V(5), picked2 == "avoid");
+
+        // gate2 to scene 6 (2-merge)
+        yield return new MapEdge(Curve(440, 1020, 600, 1120), picked2 == "approach", picked2 == "approach");
+        yield return new MapEdge(Curve(760, 1020, 600, 1120), picked2 == "avoid", picked2 == "avoid");
+
+        // Scenes 6-12 spine
+        yield return new MapEdge(Line(600, 1160, 600, 1240), V(6));
+        yield return new MapEdge(Line(600, 1280, 600, 1360), V(7));
+        yield return new MapEdge(Line(600, 1400, 600, 1480), V(8));
+        yield return new MapEdge(Line(600, 1520, 600, 1600), V(9));
+        yield return new MapEdge(Line(600, 1640, 600, 1720), V(10));
+        yield return new MapEdge(Line(600, 1760, 600, 1840), V(11));
+
+        // Scene 12 to gate3 (3-fan)
+        yield return new MapEdge(Curve(600, 1880, 320, 1980), V(12), picked3 == "iris");
+        yield return new MapEdge(Line(600, 1880, 600, 1980), V(12), picked3 == "stay");
+        yield return new MapEdge(Curve(600, 1880, 880, 1980), V(12), picked3 == "tae");
+
+        // gate3 to scene 13 (3-merge)
+        yield return new MapEdge(Curve(320, 2020, 600, 2120), picked3 == "iris", picked3 == "iris");
+        yield return new MapEdge(Line(600, 2020, 600, 2120), picked3 == "stay", picked3 == "stay");
+        yield return new MapEdge(Curve(880, 2020, 600, 2120), picked3 == "tae", picked3 == "tae");
+
+        yield return new MapEdge(Line(600, 2160, 600, 2240), V(13));
+
+        // Scene 14 to gate4 (3-fan)
+        yield return new MapEdge(Curve(600, 2280, 320, 2380), V(14), picked4 == "stay_out");
+        yield return new MapEdge(Line(600, 2280, 600, 2380), V(14), picked4 == "suit_no_deco");
+        yield return new MapEdge(Curve(600, 2280, 880, 2380), V(14), picked4 == "re_enter");
+
+        // gate4 to scene 15
+        yield return new MapEdge(Curve(320, 2420, 600, 2520), picked4 == "stay_out", picked4 == "stay_out");
+        yield return new MapEdge(Line(600, 2420, 600, 2520), picked4 == "suit_no_deco", picked4 == "suit_no_deco");
+        yield return new MapEdge(Curve(880, 2420, 600, 2520), picked4 == "re_enter", picked4 == "re_enter");
+
+        // Scene 15 to one ending (if both gates picked)
+        if (!string.IsNullOrEmpty(picked3) && !string.IsNullOrEmpty(picked4))
+        {
+            var col = picked4 switch { "stay_out" => 0, "suit_no_deco" => 1, _ => 2 };
+            var row = picked3 switch { "iris" => 0, "stay" => 1, _ => 2 };
+            var ex = 280 + col * 320;
+            var ey = 2780 + row * 130;
+            yield return new MapEdge(Curve(600, 2560, ex, ey - 32), true, true);
+        }
+    }
+
+    private async Task HandleClick(MapNode node)
+    {
+        if (node.Scene is not null)
+        {
+            await OnJump.InvokeAsync(node.Scene);
+        }
+    }
+}

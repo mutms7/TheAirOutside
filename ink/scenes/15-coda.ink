@@ -159,7 +159,7 @@ But it is being watched.
 
 That is the end.
 
--> END
+-> epilogue_dispatch
 
 
 = coda_no_deco
@@ -238,7 +238,7 @@ But it is being watched.
 
 That is the end.
 
--> END
+-> epilogue_dispatch
 
 
 = coda_re_enter
@@ -329,4 +329,4 @@ But it is being watched.
 
 That is the end.
 
--> END
+-> epilogue_dispatch

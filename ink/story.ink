@@ -21,5 +21,6 @@ INCLUDE scenes/12-the-door.ink
 INCLUDE scenes/13-step-outside.ink
 INCLUDE scenes/14-next-day.ink
 INCLUDE scenes/15-coda.ink
+INCLUDE scenes/16-epilogue.ink
 
 -> cold_open
