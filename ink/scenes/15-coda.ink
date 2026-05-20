@@ -89,6 +89,7 @@ Tae walks on.
 
 = stay_out_janitor
 # char: janitor neutral
+# art: service-class-woman
 
 A minute later, the janitor passes the curb on the way home from work. Her cleaning cart has been left at the school for tomorrow. She is carrying a small bag. Her suit is service-class gray, and against the long afternoon light it is the only saturated thing in the wide shot — not because her color is loud, but because everyone else has gone neutral inside their decorations.
 
@@ -125,6 +126,7 @@ In Wren's pocket: the peach sticker from the cafeteria yesterday. The one Tae pu
 
 # motif: sticker-window
 
+# art: corner-brick-window
 At the next-to-last block before home, there is a corner window in a brick wall — a corner window with no glass left, just the open frame, the kind of corner-of-a-building window that nobody uses.
 
 Wren stops.

@@ -32,6 +32,7 @@ Three positions today. First. Second. Third. Without breaking the line of your a
 # speaker: ozaki
 Watch. Try. Repeat.
 
+# art: dexterity-positions
 Ozaki demonstrates with the suit on — the three positions, slowly, the suit's measured precision smoothing each motion.
 
 # speaker: ozaki
@@ -166,6 +167,7 @@ Ozaki walks to the front of the hall. He stops on the demonstration square.
 It's faster to show you.
 
 # sfx: suit-unseal
+# art: ozaki-stepping-out
 The chest plate of Ozaki's suit opens.
 
 The class is suddenly silent.

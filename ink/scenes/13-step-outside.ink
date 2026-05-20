@@ -43,6 +43,7 @@ The suit's gait coordination smooths the pace. The HUD goes quiet — no pings t
 
 The clearing is in moonlight. Iris is already there.
 
+# art: fallen-tree-trunk
 She is sitting on the trunk of a fallen tree — the only seat. She has not lit anything. She does not stand when Wren arrives. She does not turn.
 
 She makes a small motion of one bare hand toward the trunk beside her.
@@ -205,6 +206,7 @@ The window is the same window.
 Wren walks to the window. Opens it.
 
 # audio: bare-night-bedroom
+# art: wren-window-open
 
 The air outside the window comes in. Cool. The smell of wet pavement, faintly, where the rain has been earlier.
 

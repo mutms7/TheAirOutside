@@ -137,6 +137,7 @@ Wren slows for two breaths. Then keeps walking. The hill will be itself again by
 
 = arrival
 # bg: hallway-day
+# art: school-exterior
 
 The morning corridor. Suits filing in through the main doors in twos and threes, the way they do every morning.
 

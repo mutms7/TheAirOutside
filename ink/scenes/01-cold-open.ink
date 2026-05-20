@@ -41,6 +41,7 @@ The chest plate closes with a soft thunk. The hip seal warms.
 
 # sfx: suit-boot
 # audio: corporate-ambient
+# art: boot-up-hud
 The boot tune begins. Eight notes. Brand-neutral and friendly — the small chime they play at every approved waking transition.
 
 # audio: hummed-bar-subliminal
@@ -77,6 +78,7 @@ The morning street is quiet, the way it is most mornings — quiet inside the su
 
 A woman in a service-class suit, gray and unadorned, pushes a wheeled cart toward the next intersection. She does not look up.
 
+# art: dinosaur-kid
 A kid in a yellow suit covered in dinosaur stickers runs past, satchel banging against the hip seal. The kid's HUD chimes once, low — late-warning ping. The kid keeps running.
 
 Wren falls in with the foot traffic toward the school. The suit's gait coordination smooths their step — half a pace longer than Wren's body would manage on its own.
@@ -133,6 +135,7 @@ A beat longer than that.
 
 # sfx: ping
 # audio: ping-tae
+# art: tae-ping
 # speaker: hud
 INCOMING — TAE VANCE.
 

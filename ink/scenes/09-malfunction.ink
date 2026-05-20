@@ -57,6 +57,7 @@ SEAL WARN — CHEST 1.
 
 = the_breach
 # audio: ambient-hallway-direct
+# art: chest-seal-crack
 
 # speaker: hud
 SEAL FAILURE — CHEST 1. RESEALING.

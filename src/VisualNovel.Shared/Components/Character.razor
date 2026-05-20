@@ -1,7 +1,301 @@
-@if (!string.IsNullOrEmpty(Id))
+﻿@if (!string.IsNullOrEmpty(Id))
 {
-    <div class="character">
-        <div class="character__silhouette" style="background-color: @Color;"></div>
+    <div class="character character--@Name character--@(Name)-@Expression">
+        @switch (Name)
+        {
+            case "wren":
+                @switch (Expression)
+                {
+                    case "bare":
+                    case "bare-cry":
+                        <svg class="character__art" viewBox="0 0 200 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+                            <ellipse cx="100" cy="62" rx="36" ry="44" fill="#E5BC97"/>
+                            <path d="M 64 56 Q 100 18 136 56 Q 138 30 100 26 Q 62 30 64 56" fill="#3A2818"/>
+                            <circle cx="88" cy="@(Expression == "bare-cry" ? "66" : "62")" r="2" fill="#2A2A30"/>
+                            <circle cx="112" cy="@(Expression == "bare-cry" ? "66" : "62")" r="2" fill="#2A2A30"/>
+                            @if (Expression == "bare-cry")
+                            {
+                                <path d="M 92 78 Q 100 76 108 78" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
+                                <line x1="88" y1="70" x2="86" y2="86" stroke="#9CC0E0" stroke-width="2"/>
+                            }
+                            else
+                            {
+                                <path d="M 92 78 Q 100 80 108 78" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
+                            }
+                            <rect x="92" y="103" width="16" height="18" fill="#E5BC97"/>
+                            <rect x="54" y="121" width="92" height="140" rx="8" fill="#D4C4B0"/>
+                            <rect x="29" y="126" width="28" height="148" rx="14" fill="#D4C4B0"/>
+                            <rect x="143" y="126" width="28" height="148" rx="14" fill="#D4C4B0"/>
+                            <circle cx="43" cy="278" r="11" fill="#E5BC97"/>
+                            <circle cx="157" cy="278" r="11" fill="#E5BC97"/>
+                            <rect x="59" y="259" width="36" height="138" rx="5" fill="#5C5447"/>
+                            <rect x="105" y="259" width="36" height="138" rx="5" fill="#5C5447"/>
+                        </svg>
+                        break;
+                    default:
+                        <svg class="character__art" viewBox="0 0 200 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+                            @{
+                                var tilt = Expression == "troubled" ? 4 : 0;
+                                var headY = 60 + (Expression == "troubled" ? 8 : 0);
+                            }
+                            <g transform="translate(@tilt 0)">
+                                <ellipse cx="100" cy="@headY" rx="55" ry="60" fill="#F5B68C"/>
+                                <rect x="50" y="@(headY - 10)" width="100" height="22" fill="#1F2026" opacity="0.92"/>
+                                <rect x="56" y="@(headY - 4)" width="8" height="6" fill="#A8E6CF" opacity="0.75"/>
+                                <rect x="80" y="@(headY + 55)" width="40" height="20" fill="#D89B70"/>
+                            </g>
+                            <rect x="50" y="135" width="100" height="120" rx="8" fill="#F5B68C"/>
+                            <line x1="100" y1="135" x2="100" y2="255" stroke="#D89B70" stroke-width="2"/>
+                            <circle cx="65" cy="155" r="11" fill="#F5B68C" stroke="#D89B70" stroke-width="1.5"/>
+                            <path d="M 56 152 Q 65 147 74 152" stroke="#A8E6CF" stroke-width="2.5" fill="none"/>
+                            <rect x="18" y="140" width="35" height="170" rx="14" fill="#F5B68C"/>
+                            <rect x="147" y="140" width="35" height="170" rx="14" fill="#F5B68C"/>
+                            <rect x="18" y="297" width="35" height="20" rx="10" fill="#D89B70"/>
+                            <rect x="147" y="297" width="35" height="20" rx="10" fill="#D89B70"/>
+                            <rect x="60" y="255" width="80" height="30" fill="#D89B70"/>
+                            <rect x="60" y="285" width="35" height="115" rx="6" fill="#F5B68C"/>
+                            <rect x="105" y="285" width="35" height="115" rx="6" fill="#F5B68C"/>
+                        </svg>
+                        break;
+                }
+                break;
+
+            case "tae":
+                <svg class="character__art" viewBox="0 0 200 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+                    <ellipse cx="100" cy="60" rx="55" ry="60" fill="#FF6B9D"/>
+                    <rect x="50" y="50" width="100" height="22" fill="#1F2026" opacity="0.92"/>
+                    @if (Expression == "warm" || Expression == "private")
+                    {
+                        <rect x="50" y="50" width="100" height="6" fill="#FFA0C0"/>
+                    }
+                    <rect x="56" y="56" width="8" height="6" fill="#A8E6CF" opacity="0.75"/>
+                    <rect x="80" y="115" width="40" height="20" fill="#E04A7A"/>
+                    @if (Expression != "private")
+                    {
+                        <g>
+                            <circle cx="70" cy="128" r="3" fill="#FFD700"/>
+                            <circle cx="100" cy="130" r="3" fill="#FFD700"/>
+                            <circle cx="130" cy="128" r="3" fill="#FFD700"/>
+                        </g>
+                    }
+                    <rect x="50" y="135" width="100" height="120" rx="8" fill="#FF6B9D"/>
+                    <line x1="100" y1="135" x2="100" y2="255" stroke="#E04A7A" stroke-width="2"/>
+                    <g transform="translate(60, 155)">
+                        <circle r="14" fill="#FFA0C0"/>
+                        <circle r="9" fill="#FF6B9D"/>
+                        <circle r="4" fill="#FFD700"/>
+                    </g>
+                    @if (Expression == "warm" || Expression == "assembly")
+                    {
+                        <circle cx="140" cy="165" r="5" fill="#FFE0E8" stroke="#FF6B9D" stroke-width="1"/>
+                        <circle cx="125" cy="180" r="4" fill="#FFE0E8" stroke="#FF6B9D" stroke-width="1"/>
+                    }
+                    @if (Expression == "assembly")
+                    {
+                        <polygon points="100,210 105,218 113,218 107,224 109,232 100,228 91,232 93,224 87,218 95,218" fill="#FFD700"/>
+                    }
+                    <rect x="18" y="140" width="35" height="170" rx="14" fill="#FF6B9D"/>
+                    <rect x="147" y="140" width="35" height="170" rx="14" fill="#FF6B9D"/>
+                    <rect x="18" y="297" width="35" height="20" rx="10" fill="#E04A7A"/>
+                    @if (Expression == "private")
+                    {
+                        <ellipse cx="165" cy="307" rx="10" ry="11" fill="#E5BC97"/>
+                    }
+                    else
+                    {
+                        <rect x="147" y="297" width="35" height="20" rx="10" fill="#E04A7A"/>
+                    }
+                    <rect x="60" y="255" width="80" height="30" fill="#E04A7A"/>
+                    <rect x="60" y="285" width="35" height="115" rx="6" fill="#FF6B9D"/>
+                    <rect x="105" y="285" width="35" height="115" rx="6" fill="#FF6B9D"/>
+                </svg>
+                break;
+
+            case "iris":
+                @switch (Expression)
+                {
+                    case "bare":
+                    case "looking-window":
+                    case "looking-at-wren":
+                    case "sitting-bench":
+                    case "in-clearing":
+                        <svg class="character__art" viewBox="0 0 200 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+                            <ellipse cx="100" cy="58" rx="34" ry="42" fill="#D9B89C"/>
+                            <path d="M 66 50 Q 100 16 134 50 L 138 110 Q 132 95 130 80 Q 100 95 70 80 Q 68 95 62 110 Z" fill="#2A2018"/>
+                            <circle cx="88" cy="60" r="2" fill="#2A2A30"/>
+                            <circle cx="112" cy="60" r="2" fill="#2A2A30"/>
+                            @if (Expression == "looking-at-wren")
+                            {
+                                <path d="M 92 76 L 108 76" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
+                            }
+                            else
+                            {
+                                <path d="M 92 76 Q 100 77 108 76" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
+                            }
+                            <rect x="92" y="100" width="16" height="20" fill="#D9B89C"/>
+                            <rect x="42" y="120" width="116" height="160" rx="8" fill="#7A7A6A"/>
+                            <rect x="42" y="120" width="116" height="30" rx="8" fill="#8B8B7A"/>
+                            <rect x="22" y="125" width="30" height="160" rx="14" fill="#7A7A6A"/>
+                            <rect x="148" y="125" width="30" height="160" rx="14" fill="#7A7A6A"/>
+                            <circle cx="37" cy="288" r="10" fill="#D9B89C"/>
+                            <line x1="32" y1="284" x2="36" y2="288" stroke="#9B7050" stroke-width="1"/>
+                            <line x1="38" y1="282" x2="40" y2="286" stroke="#9B7050" stroke-width="1"/>
+                            <circle cx="163" cy="288" r="10" fill="#D9B89C"/>
+                            <rect x="60" y="278" width="35" height="120" rx="4" fill="#3F3F38"/>
+                            <rect x="105" y="278" width="35" height="120" rx="4" fill="#3F3F38"/>
+                        </svg>
+                        break;
+                    default:
+                        <svg class="character__art" viewBox="0 0 200 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+                            <ellipse cx="100" cy="60" rx="55" ry="60" fill="#B8B0A8"/>
+                            <rect x="50" y="50" width="100" height="22" fill="#1F2026" opacity="0.92"/>
+                            <rect x="80" y="115" width="40" height="20" fill="#9C948B"/>
+                            <rect x="50" y="135" width="100" height="120" rx="8" fill="#B8B0A8"/>
+                            <line x1="100" y1="135" x2="100" y2="255" stroke="#9C948B" stroke-width="2"/>
+                            <rect x="18" y="140" width="35" height="170" rx="14" fill="#B8B0A8"/>
+                            <rect x="147" y="140" width="35" height="170" rx="14" fill="#B8B0A8"/>
+                            <rect x="60" y="255" width="80" height="30" fill="#9C948B"/>
+                            <rect x="60" y="285" width="35" height="115" rx="6" fill="#B8B0A8"/>
+                            <rect x="105" y="285" width="35" height="115" rx="6" fill="#B8B0A8"/>
+                        </svg>
+                        break;
+                }
+                break;
+
+            case "ozaki":
+                @switch (Expression)
+                {
+                    case "bare":
+                    case "dancing":
+                        <svg class="character__art" viewBox="0 0 200 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+                            <ellipse cx="100" cy="60" rx="34" ry="40" fill="#C9A685"/>
+                            <path d="M 66 52 Q 100 28 134 52 Q 136 42 100 38 Q 64 42 66 52" fill="#1F1A14"/>
+                            <circle cx="88" cy="60" r="2" fill="#2A2A30"/>
+                            <circle cx="112" cy="60" r="2" fill="#2A2A30"/>
+                            <path d="M 92 76 L 108 76" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
+                            <rect x="92" y="100" width="16" height="22" fill="#C9A685"/>
+                            <rect x="40" y="122" width="120" height="50" fill="#E8E0D2"/>
+                            <line x1="80" y1="120" x2="120" y2="120" stroke="#8B7762" stroke-width="2"/>
+                            <line x1="80" y1="120" x2="80" y2="170" stroke="#8B7762" stroke-width="1" opacity="0.5"/>
+                            <line x1="120" y1="120" x2="120" y2="170" stroke="#8B7762" stroke-width="1" opacity="0.5"/>
+                            <rect x="40" y="170" width="120" height="100" fill="#E8E0D2"/>
+                            @if (Expression == "dancing")
+                            {
+                                <rect x="22" y="135" width="20" height="120" rx="8" fill="#C9A685" transform="rotate(-20 32 195)"/>
+                                <rect x="158" y="135" width="20" height="130" rx="8" fill="#C9A685" transform="rotate(15 168 200)"/>
+                                <circle cx="14" cy="120" r="10" fill="#C9A685" transform="rotate(-20 32 195)"/>
+                                <circle cx="186" cy="265" r="10" fill="#C9A685" transform="rotate(15 168 200)"/>
+                            }
+                            else
+                            {
+                                <rect x="22" y="130" width="20" height="140" rx="8" fill="#C9A685"/>
+                                <rect x="158" y="130" width="20" height="140" rx="8" fill="#C9A685"/>
+                                <circle cx="32" cy="278" r="10" fill="#C9A685"/>
+                                <circle cx="168" cy="278" r="10" fill="#C9A685"/>
+                            }
+                            <rect x="60" y="270" width="35" height="130" rx="4" fill="#3A2E20"/>
+                            <rect x="105" y="270" width="35" height="130" rx="4" fill="#3A2E20"/>
+                        </svg>
+                        break;
+                    default:
+                        <svg class="character__art" viewBox="0 0 200 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+                            <ellipse cx="100" cy="60" rx="55" ry="60" fill="#6B6855"/>
+                            <rect x="50" y="50" width="100" height="22" fill="#1F2026" opacity="0.92"/>
+                            <rect x="56" y="56" width="8" height="6" fill="#A8E6CF" opacity="0.6"/>
+                            <rect x="80" y="115" width="40" height="20" fill="#525040"/>
+                            <rect x="50" y="135" width="100" height="120" rx="8" fill="#6B6855"/>
+                            <line x1="100" y1="135" x2="100" y2="255" stroke="#525040" stroke-width="2"/>
+                            <rect x="18" y="140" width="35" height="170" rx="14" fill="#6B6855"/>
+                            <rect x="147" y="140" width="35" height="170" rx="14" fill="#6B6855"/>
+                            @if (Expression == "reading")
+                            {
+                                <rect x="40" y="220" width="80" height="50" fill="#FAF7F1" transform="rotate(-5 80 245)"/>
+                                <line x1="80" y1="220" x2="80" y2="270" stroke="#8B7762" stroke-width="1"/>
+                            }
+                            <rect x="18" y="297" width="35" height="20" rx="10" fill="#525040"/>
+                            <rect x="147" y="297" width="35" height="20" rx="10" fill="#525040"/>
+                            <rect x="60" y="255" width="80" height="30" fill="#525040"/>
+                            <rect x="60" y="285" width="35" height="115" rx="6" fill="#6B6855"/>
+                            <rect x="105" y="285" width="35" height="115" rx="6" fill="#6B6855"/>
+                        </svg>
+                        break;
+                }
+                break;
+
+            case "cael":
+                <svg class="character__art" viewBox="0 0 200 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+                    <ellipse cx="100" cy="60" rx="58" ry="62" fill="#FFD24A"/>
+                    <rect x="48" y="48" width="104" height="24" fill="#1F2026" opacity="0.92"/>
+                    <rect x="48" y="48" width="104" height="6" fill="#FFE89C"/>
+                    <rect x="56" y="56" width="8" height="6" fill="#A8E6CF" opacity="0.75"/>
+                    <rect x="80" y="116" width="40" height="20" fill="#C99820"/>
+                    <g>
+                        <circle cx="60"  cy="128" r="3" fill="#FF6B9D"/>
+                        <circle cx="80"  cy="124" r="3" fill="#FFA0C0"/>
+                        <circle cx="100" cy="126" r="3" fill="#FF6B9D"/>
+                        <circle cx="120" cy="124" r="3" fill="#FFA0C0"/>
+                        <circle cx="140" cy="128" r="3" fill="#FF6B9D"/>
+                    </g>
+                    <rect x="48" y="135" width="104" height="124" rx="8" fill="#FFD24A"/>
+                    <line x1="100" y1="135" x2="100" y2="259" stroke="#C99820" stroke-width="2"/>
+                    <g transform="translate(65, 165)">
+                        <polygon points="0,0 14,4 14,18 0,22 -14,18 -14,4" fill="#FF8C5C"/>
+                        <polygon points="0,4 10,7 10,16 0,18 -10,16 -10,7" fill="#FFD24A"/>
+                    </g>
+                    <g transform="translate(135, 175)">
+                        <circle r="10" fill="#FF6B9D"/>
+                        <circle r="6" fill="#FFD24A"/>
+                        <circle r="2" fill="#FFFFFF"/>
+                    </g>
+                    <rect x="16" y="140" width="36" height="172" rx="14" fill="#FFD24A"/>
+                    <rect x="148" y="140" width="36" height="172" rx="14" fill="#FFD24A"/>
+                    <rect x="16" y="298" width="36" height="22" rx="10" fill="#C99820"/>
+                    <rect x="148" y="298" width="36" height="22" rx="10" fill="#C99820"/>
+                    <rect x="60" y="259" width="80" height="32" fill="#C99820"/>
+                    <rect x="60" y="291" width="36" height="109" rx="6" fill="#FFD24A"/>
+                    <rect x="104" y="291" width="36" height="109" rx="6" fill="#FFD24A"/>
+                    @if (Expression == "mocking")
+                    {
+                        <line x1="50" y1="190" x2="-10" y2="220" stroke="#FFD24A" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="-12" cy="220" r="8" fill="#C99820"/>
+                    }
+                </svg>
+                break;
+
+            case "janitor":
+                <svg class="character__art" viewBox="0 0 200 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+                    <ellipse cx="100" cy="60" rx="52" ry="58" fill="#8E8E8A"/>
+                    <rect x="52" y="50" width="96" height="22" fill="#1F2026" opacity="0.92"/>
+                    <rect x="80" y="115" width="40" height="20" fill="#6E6E6A"/>
+                    <rect x="50" y="135" width="100" height="120" rx="8" fill="#8E8E8A"/>
+                    <line x1="100" y1="135" x2="100" y2="255" stroke="#6E6E6A" stroke-width="2"/>
+                    <rect x="48" y="160" width="14" height="6" fill="#FAF7F1" opacity="0.5"/>
+                    <rect x="18" y="140" width="35" height="170" rx="14" fill="#8E8E8A"/>
+                    <rect x="147" y="140" width="35" height="170" rx="14" fill="#8E8E8A"/>
+                    <rect x="18" y="297" width="35" height="20" rx="10" fill="#6E6E6A"/>
+                    <rect x="147" y="297" width="35" height="20" rx="10" fill="#6E6E6A"/>
+                    <rect x="60" y="255" width="80" height="30" fill="#6E6E6A"/>
+                    <rect x="60" y="285" width="35" height="115" rx="6" fill="#8E8E8A"/>
+                    <rect x="105" y="285" width="35" height="115" rx="6" fill="#8E8E8A"/>
+                    @if (Expression == "with-cart")
+                    {
+                        <rect x="155" y="280" width="40" height="60" fill="#A89580"/>
+                        <circle cx="160" cy="345" r="5" fill="#2A2A30"/>
+                        <circle cx="190" cy="345" r="5" fill="#2A2A30"/>
+                        <line x1="155" y1="280" x2="135" y2="220" stroke="#A89580" stroke-width="4"/>
+                    }
+                    @if (Expression == "humming")
+                    {
+                        <svg:text x="40" y="40" font-family="serif" font-size="20" fill="#8E8E8A" opacity="0.7">â™ª</svg:text>
+                        <svg:text x="160" y="60" font-family="serif" font-size="16" fill="#8E8E8A" opacity="0.5">â™«</svg:text>
+                    }
+                </svg>
+                break;
+
+            default:
+                <div class="character__silhouette" style="background-color: @Color;"></div>
+                break;
+        }
         <div class="character__nameplate">
             <span class="character__name">@DisplayName</span>
             <span class="character__expression">[@Expression]</span>
@@ -12,12 +306,12 @@
 @code {
     [Parameter] public string Id { get; set; } = "";
 
-    private string Name => Id.Split(' ', 2)[0];
+    private string Name => Id.Split(' ', 2)[0].ToLowerInvariant();
     private string Expression => Id.Contains(' ') ? Id.Split(' ', 2)[1] : "neutral";
     private string DisplayName =>
         string.IsNullOrEmpty(Name) ? "" : char.ToUpperInvariant(Name[0]) + Name[1..];
 
-    private string Color => Name.ToLowerInvariant() switch
+    private string Color => Name switch
     {
         "wren"    => "#F5B68C",
         "tae"     => "#FF6B9D",

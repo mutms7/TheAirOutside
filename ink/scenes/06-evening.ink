@@ -121,6 +121,7 @@ For a half-second, Wren remembers a kitchen. Their grandmother humming while she
 
 = decoration
 
+# art: wren-bedside-drawer
 Wren turns to face the suit.
 
 The peach sticker from this morning catches the lamplight on the shoulder plate. The mint crescent at its rim is exactly where Tae put it.

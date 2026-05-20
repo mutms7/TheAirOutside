@@ -78,6 +78,7 @@ No, no — listen. Listen. *Look* at it.
 
 Cael is pointing at someone. Not at his own table. At the next table over.
 
+# art: one-sticker-girl
 The kid he is pointing at is a freshman girl in a faded-blue suit. One small star sticker on her left shoulder. Eating quickly, head down. Visor up like everyone else's.
 
 She is not looking at Cael. The visor only covers her eyes, but she is using the jaw line of her helmet like a small wall.

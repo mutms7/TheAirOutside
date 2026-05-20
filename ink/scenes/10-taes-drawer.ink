@@ -78,6 +78,7 @@ Wren slides the drawer not-quite-shut, the way it was before.
 Tae comes back in with two glasses of water. Sparkling, for both of them, with a sliced strawberry in each. Of course.
 
 # speaker: tae
+# art: tae-strawberry-water
 Strawberry water. You're welcome.
 
 Tae hands Wren the glass and flops onto her bed.

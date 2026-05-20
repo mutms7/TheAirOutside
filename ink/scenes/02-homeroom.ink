@@ -57,6 +57,7 @@ Tae's voice is warm. She is not interrogating. She is loving Wren in the only la
 
 = cael_background
 # audio: cael-court
+# art: mocking-circle
 
 Across the room, Cael is holding court at the back desks. Four or five of the front-row kids are angled to face him.
 
@@ -83,6 +84,7 @@ Tae glances at Cael without turning her head. The smallest amount of her mouth t
 Okay. Ready? Peach today. Mint accent. I've been looking forward to this all morning, you have no idea.
 
 # motif: sticker-applied-preview
+# art: tae-coral-decoration
 ~ sticker_state = "applied"
 
 Tae produces it from a small case. A small enamel-finish circle, peach-bodied, a thin mint crescent at the rim. Subtle by Tae's standards. Loud by anyone else's.

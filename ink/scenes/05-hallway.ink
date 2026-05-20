@@ -33,6 +33,7 @@ Wren turns the corner toward Room 207.
 # motif: rain-window
 ~ rain_state = 2
 
+# art: corridor-windows
 The corner opens into the long hallway with the high windows along the west side of the building. Rain is steady on the glass, the light gray-green through it.
 
 At the third window — the one nobody usually stops at — there is a girl.
@@ -54,6 +55,7 @@ Wren slows.
 
 
 = the_hands
+# art: iris-bare-hand
 
 The girl's hands.
 

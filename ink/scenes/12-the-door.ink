@@ -126,6 +126,7 @@ TAE: omw.
 
 = the_visit
 # char: tae warm
+# art: tae-from-doorway
 
 Tae is at the door in less than ten minutes.
 
@@ -171,6 +172,7 @@ Tae waits, in case more is coming.
 
 More is not coming. Wren can feel it almost coming, and Wren can feel themselves stop it. Wren cannot tell if Wren is stopping it for Tae's sake or for Wren's own.
 
+# art: bare-hands-clasp
 After another minute Tae reaches across the bed with her bare right hand and finds Wren's gauntleted left. She presses the bare hand against the armor where Wren's knuckles are. Then she waits.
 
 Wren slips the left gauntlet off. Slowly. The seal at the wrist breaks with a small hiss. Wren's bare hand comes out into the room air.

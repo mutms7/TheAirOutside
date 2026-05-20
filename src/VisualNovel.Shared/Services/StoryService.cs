@@ -9,6 +9,7 @@ public sealed class StoryService
     public string CurrentText { get; private set; } = "";
     public string Speaker { get; private set; } = "";
     public string Motif { get; private set; } = "";
+    public string Art { get; private set; } = "";
     public IReadOnlyList<string> CurrentSfx { get; private set; } = Array.Empty<string>();
 
     public string Background { get; private set; } = "";
@@ -49,6 +50,7 @@ public sealed class StoryService
 
         Speaker = "";
         Motif = "";
+        Art = "";
         IsClimaxPause = false;
         var sfx = new List<string>();
 
@@ -126,6 +128,7 @@ public sealed class StoryService
                 case "char":    CharacterOnStage = value; break;
                 case "speaker": Speaker = value; break;
                 case "motif":   Motif = value; break;
+                case "art":     Art = value; break;
                 case "audio":   Audio = value; break;
                 case "sfx":     sfx.Add(value); break;
                 case "pause":

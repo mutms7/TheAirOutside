@@ -41,6 +41,7 @@ A small ripple of glance-exchange among the students. Wren cannot see Tae from t
 # speaker: ozaki
 This passage is from a book older than any of you, by an author older than that. The setting does not matter. The setting is not what we are reading for.
 
+# art: literature-book
 Ozaki opens the paperback. The spine has been read enough that it falls open at the right page.
 
 -> the_passage
@@ -50,6 +51,7 @@ Ozaki opens the paperback. The spine has been read enough that it falls open at 
 # pacing: slow
 
 # speaker: ozaki
+# art: basin-passage
 At the basin in the courtyard, a woman was washing.
 
 # speaker: ozaki
@@ -213,6 +215,7 @@ As Wren passes the front of the room toward the door, the lectern is on the righ
 
 The top one is a poem. Half-on, half-off the stack.
 
+# art: be-more-honest-worksheet
 Wren does not stop walking. Wren reads it sideways anyway.
 
 # speaker: hud
