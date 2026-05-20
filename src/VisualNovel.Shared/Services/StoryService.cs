@@ -24,6 +24,12 @@ public sealed class StoryService
     public HashSet<int> VisitedScenes { get; } = new();
     public List<HistoryEntry> History { get; } = new();
 
+    public void MergeVisited(IEnumerable<int> scenes)
+    {
+        foreach (var s in scenes) VisitedScenes.Add(s);
+        StateChanged?.Invoke();
+    }
+
     public bool IsLoaded => _story is not null;
     public bool CanAdvance => _story is not null && _story.canContinue;
     public bool IsAtChoice => CurrentChoices.Count > 0;

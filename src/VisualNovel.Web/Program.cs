@@ -10,6 +10,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddSingleton<StoryService>();
 builder.Services.AddSingleton<SettingsService>();
+builder.Services.AddSingleton<SaveService>();
 
 var host = builder.Build();
 
@@ -22,6 +23,13 @@ using (var scope = host.Services.CreateScope())
 
     var settings = host.Services.GetRequiredService<SettingsService>();
     await settings.LoadAsync();
+
+    var save = host.Services.GetRequiredService<SaveService>();
+    await save.LoadAsync();
+    if (save.HasSave)
+    {
+        story.MergeVisited(save.Current.VisitedScenes);
+    }
 }
 
 await host.RunAsync();

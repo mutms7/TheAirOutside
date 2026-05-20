@@ -3,7 +3,7 @@
 
 <div class="panel__header">
     <h2 class="panel__title">Timeline</h2>
-    <p class="panel__subtitle">The 15 scenes and the 4 gates. Your path is highlighted; visited scenes are clickable.</p>
+    <p class="panel__subtitle">The 15 scenes and the 4 gates. Any node is clickable. Jumping forward into unread scenes will prompt.</p>
 </div>
 
 <div class="panel__body map">
@@ -13,12 +13,11 @@
             var scene = SceneRegistry.Scenes[i];
             var visited = Story.VisitedScenes.Contains(scene.Id);
             var isCurrent = Story.Scene == scene.Id;
-            var clickable = visited;
             var isLast = i == SceneRegistry.Scenes.Count - 1;
 
-            <li class="map__node @(isCurrent ? "map__node--current" : "") @(visited ? "map__node--visited" : "map__node--locked")">
-                <button class="map__dot" disabled="@(!clickable)"
-                        @onclick="@(() => OnJump.InvokeAsync(scene.Knot))"
+            <li class="map__node @(isCurrent ? "map__node--current" : "") @(visited ? "map__node--visited" : "map__node--unvisited")">
+                <button class="map__dot"
+                        @onclick="@(() => OnJump.InvokeAsync(scene))"
                         title="@scene.Title">
                     @scene.Id
                 </button>
@@ -56,7 +55,7 @@
 </div>
 
 @code {
-    [Parameter] public EventCallback<string> OnJump { get; set; }
+    [Parameter] public EventCallback<SceneInfo> OnJump { get; set; }
 
     protected override void OnInitialized() => Story.StateChanged += OnChanged;
     private void OnChanged() => InvokeAsync(StateHasChanged);

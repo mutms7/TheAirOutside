@@ -1,6 +1,7 @@
 @using System.Timers
 @inject StoryService Story
 @inject SettingsService SettingsSvc
+@inject SaveService SaveSvc
 @implements IDisposable
 
 <div class="stage voice-@Story.Voice pacing-@Story.Pacing theme-@SettingsSvc.Current.Theme @(SettingsSvc.Current.ReduceMotion ? "reduce-motion" : "") @(Story.IsClimaxPause ? "climax-pause" : "")"
@@ -59,10 +60,10 @@
                         <Settings />
                         break;
                     case TopBar.Panel.Scenes:
-                        <ScenePicker OnJump="JumpAndClose" />
+                        <ScenePicker OnJump="HandleJump" />
                         break;
                     case TopBar.Panel.Map:
-                        <TimelineMap OnJump="JumpAndClose" />
+                        <TimelineMap OnJump="HandleJump" />
                         break;
                     case TopBar.Panel.Backlog:
                         <Backlog />
@@ -71,18 +72,50 @@
             </aside>
         </div>
     }
+
+    @if (_pendingJump is not null)
+    {
+        <div class="modal-overlay" @onclick:stopPropagation="true">
+            <div class="modal">
+                <h3 class="modal__title">Skip ahead?</h3>
+                <p class="modal__body">
+                    The recommended way to enjoy <em>The Air Outside</em> is from beginning to end.
+                </p>
+                <p class="modal__body">
+                    You're about to jump forward to <strong>Scene @_pendingJump.Id — @_pendingJump.Title</strong>. Earlier scenes set context and gate choices that won't be in place; the variant logic will fall back to defaults.
+                </p>
+                <p class="modal__hint">
+                    Jumping to a scene you've already read or back to where you left off is safe — that's only flagged here because you're moving forward in the story.
+                </p>
+                <div class="modal__actions">
+                    <button class="modal__btn modal__btn--ghost" @onclick="CancelJump">Stay here</button>
+                    <button class="modal__btn modal__btn--primary" @onclick="ConfirmJump">Jump anyway</button>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 @code {
     private Timer? _autoTimer;
     private bool _transitioning;
     private TopBar.Panel _openPanel = TopBar.Panel.None;
+    private SceneInfo? _pendingJump;
 
     protected override void OnInitialized()
     {
         Story.StateChanged += OnStateChanged;
+        Story.StateChanged += OnProgressChanged;
         SettingsSvc.Changed += OnSettingsChanged;
         ResetTimer();
+    }
+
+    private async void OnProgressChanged()
+    {
+        if (Story.Scene > 0)
+        {
+            await SaveSvc.SaveAsync(Story.VisitedScenes, Story.Scene);
+        }
     }
 
     private void OnStateChanged()
@@ -165,18 +198,46 @@
         StateHasChanged();
     }
 
-    private void JumpAndClose(string knot)
+    private void HandleJump(SceneInfo scene)
     {
-        if (Story.JumpToKnot(knot))
+        if (scene.Id > Story.Scene)
+        {
+            // Forward jump — prompt before leaving the bread-crumb trail
+            _pendingJump = scene;
+            StateHasChanged();
+        }
+        else
+        {
+            // Back or same scene — replay/return is safe
+            PerformJump(scene);
+        }
+    }
+
+    private void PerformJump(SceneInfo scene)
+    {
+        if (Story.JumpToKnot(scene.Knot))
         {
             _openPanel = TopBar.Panel.None;
+            _pendingJump = null;
         }
+    }
+
+    private void ConfirmJump()
+    {
+        if (_pendingJump is not null) PerformJump(_pendingJump);
+    }
+
+    private void CancelJump()
+    {
+        _pendingJump = null;
+        StateHasChanged();
     }
 
     public void Dispose()
     {
         _autoTimer?.Dispose();
         Story.StateChanged -= OnStateChanged;
+        Story.StateChanged -= OnProgressChanged;
         SettingsSvc.Changed -= OnSettingsChanged;
     }
 }
