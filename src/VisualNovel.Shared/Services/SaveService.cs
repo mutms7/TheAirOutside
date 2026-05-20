@@ -8,6 +8,8 @@ public sealed class SaveProgress
     public int[] VisitedScenes { get; set; } = Array.Empty<int>();
     public int LastScene { get; set; }
     public DateTime LastUpdated { get; set; }
+    public bool PrologueDone { get; set; }
+    public string ProtagonistName { get; set; } = "Wren";
 }
 
 public sealed class SaveService
@@ -39,17 +41,19 @@ public sealed class SaveService
         Changed?.Invoke();
     }
 
-    public async Task SaveAsync(IEnumerable<int> visited, int lastScene)
+    public async Task SaveAsync(IEnumerable<int> visited, int lastScene, bool prologueDone = false, string protagonistName = "Wren")
     {
         Current.VisitedScenes = visited.ToArray();
         Current.LastScene = lastScene;
         Current.LastUpdated = DateTime.UtcNow;
+        Current.PrologueDone = prologueDone;
+        Current.ProtagonistName = protagonistName;
         var json = JsonSerializer.Serialize(Current);
         try
         {
             await _js.InvokeVoidAsync("localStorage.setItem", StorageKey, json);
         }
-        catch { /* localStorage full or unavailable — skip silently */ }
+        catch { /* localStorage full or unavailable, skip silently */ }
         Changed?.Invoke();
     }
 

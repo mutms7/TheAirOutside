@@ -34,9 +34,17 @@
         </div>
 
         <div class="settings__row">
-            <label class="settings__label">Text size: @((int)(s.TextSize * 100))%</label>
-            <input type="range" min="0.85" max="1.4" step="0.05" value="@s.TextSize"
-                   @onchange="@(async e => await Update(set => set.TextSize = double.Parse(e.Value!.ToString()!)))" />
+            <label class="settings__label">Text size</label>
+            <div class="settings__seg settings__seg--wrap">
+                @foreach (var size in TextSizes)
+                {
+                    var v = size;
+                    <button class="settings__seg-btn @(Math.Abs(s.TextSize - v) < 0.005 ? "settings__seg-btn--active" : "")"
+                            @onclick="@(async () => await Update(set => set.TextSize = v))">
+                        @v.ToString("0.##")×
+                    </button>
+                }
+            </div>
         </div>
     </section>
 
@@ -89,6 +97,8 @@
 
 @code {
     private GameSettings s => SettingsSvc.Current;
+
+    private static readonly double[] TextSizes = { 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0 };
 
     protected override void OnInitialized() => SettingsSvc.Changed += OnChanged;
     private void OnChanged() => InvokeAsync(StateHasChanged);

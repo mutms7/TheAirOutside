@@ -26,7 +26,7 @@
 
 Seven-twelve in the morning. The sky is still gray. The street is wet but the rain has stopped.
 
-Wren walks the same route as yesterday. The suit's coordination smooths the step. The boot tune is past. The HUD reads cool.
+I walk the same route as yesterday. The suit's coordination smooths the step. The boot tune is past. The HUD reads cool.
 
 {
     - evening_decoration_choice == "left":
@@ -49,14 +49,14 @@ Pace: nominal. Step count: 207.
 
 The curb comes up.
 
-The same curb. The same place Wren stopped yesterday.
+The same curb. The same place I stopped yesterday.
 
 # motif: ant-hill-crushed
 ~ ant_state = 2
 
 The ant hill is not the same.
 
-A tread mark crosses it diagonally — a half-circle of pressed-flat sand, a fresh print from a suit boot. Maybe an hour old.
+A tread mark crosses it diagonally. A half-circle of pressed-flat sand, a fresh print from a suit boot. Maybe an hour old.
 
 Most of the cone is gone. The shape is wrong now.
 
@@ -74,7 +74,7 @@ The suit-cam picks them up. The reticle narrows.
 
 = path_stop
 
-Wren stops.
+I stop.
 
 # speaker: hud
 Pace: stopped.
@@ -83,50 +83,50 @@ An ant brings a grain up from below the damage line, climbs the sloped side, pla
 
 Goes back down.
 
-Wren watches it happen four times.
+I watch it happen four times.
 
 # speaker: hud
 HOMEROOM in 14 minutes.
 
-The HUD nudge does not move Wren immediately.
+The HUD nudge does not move me immediately.
 
-Wren watches a fifth time. Then a sixth.
+I watch a fifth time. Then a sixth.
 
-Then Wren starts walking. The suit-cam releases the zoom.
+Then I start walking. The suit-cam releases the zoom.
 
 -> after_curb
 
 
 = path_hurry
 
-Wren keeps walking.
+I keep walking.
 
-The suit-cam holds the reticle on the hill for half a second, then releases when Wren's pace does not change.
+The suit-cam holds the reticle on the hill for half a second, then releases when my pace does not change.
 
 # speaker: hud
 Pace: nominal.
 
-Wren registers, distantly, that the hill is different. The thought does not surface fully. The school is six minutes away and Tae has already pinged twice this morning.
+I register, distantly, that the hill is different. The thought does not surface fully. The school is six minutes away and Tae has already pinged twice this morning.
 
-The ant hill recedes behind Wren.
+The ant hill recedes behind me.
 
 -> after_curb
 
 
 = path_linger
 
-Wren slows.
+I slow.
 
 Not stopping. Just slower for the length of three breaths.
 
-An ant places a grain. Wren sees it.
+An ant places a grain. I see it.
 
-Wren does not stop.
+I do not stop.
 
 # speaker: hud
 Pace: 80%.
 
-Wren resumes the morning's pace.
+I resume the morning's pace.
 
 The suit-cam releases the zoom. The reticle fades.
 

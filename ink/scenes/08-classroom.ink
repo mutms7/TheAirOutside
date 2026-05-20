@@ -29,14 +29,14 @@ VAR class_engagement = ""
 # bg: classroom
 # char: ozaki neutral
 
-The history classroom is a different room than homeroom. The chairs are arranged in a half-circle facing the front. The literature teacher's name is still on the board from yesterday, in her handwriting — small and tidy.
+The history classroom is a different room than homeroom. The chairs are arranged in a half-circle facing the front. The literature teacher's name is still on the board from yesterday, in her handwriting. Small and tidy.
 
 Ozaki is standing where she usually stands. He has brought no slides. He has brought a single thin paperback book.
 
 # speaker: ozaki
 Ms. Carraghan is sick today. I am subbing. We are reading one short passage. Then we are discussing it. That is the lesson.
 
-A small ripple of glance-exchange among the students. Wren cannot see Tae from this seating — Tae's history is the period after.
+A small ripple of glance-exchange among the students. I cannot see Tae from this seating. Tae's history is the period after.
 
 # speaker: ozaki
 This passage is from a book older than any of you, by an author older than that. The setting does not matter. The setting is not what we are reading for.
@@ -55,7 +55,7 @@ Ozaki opens the paperback. The spine has been read enough that it falls open at 
 At the basin in the courtyard, a woman was washing.
 
 # speaker: ozaki
-Small methodical motions of the wrist — the kind the body has learned over a long time.
+Small methodical motions of the wrist. The kind the body has learned over a long time.
 
 # speaker: ozaki
 The sleeves were pushed up. The afternoon light fell on the back of her hands.
@@ -91,13 +91,13 @@ The classroom is quiet for longer than usual.
 # speaker: ozaki
 Anyone.
 
-A student in the back row raises their hand.
+A student in the back row raises my hand.
 
 # speaker: ozaki
 Yes.
 
 # speaker: hud
-STUDENT, BACK ROW: it's about the watcher, right? Not about the woman. Like, the lesson is about him — that he sees her and that changes something in him.
+STUDENT, BACK ROW: it's about the watcher, right? Not about the woman. Like, the lesson is about him. That he sees her and that changes something in him.
 
 # speaker: ozaki
 Possibly.
@@ -105,7 +105,7 @@ Possibly.
 # speaker: ozaki
 Anyone else.
 
-A pause. Another hand goes up — front row this time.
+A pause. Another hand goes up. Front row this time.
 
 # speaker: hud
 STUDENT, FRONT ROW: it's about her dignity. He sees her work as having worth even though she doesn't know he's there. He grants it to her by noticing.
@@ -129,7 +129,7 @@ Right. So.
 # speaker: ozaki
 So what is the passage doing.
 
-Wren's HUD is logging the discussion. Wren's name is not in the participants list.
+My HUD is logging the discussion. My name is not in the participants list.
 
 + [Raise your hand.]
     -> path_contribute
@@ -142,20 +142,19 @@ Wren's HUD is logging the discussion. Wren's name is not in the participants lis
 = path_contribute
 ~ class_engagement = "contribute"
 
-Wren raises a hand. The wrist signal flag lights up.
+I raise a hand. The wrist signal flag lights up.
 
 # speaker: ozaki
-Yes, Wren.
+Yes, {protagonist_name}.
 
 # speaker: wren
-Maybe it's about him learning to—
-
+Maybe it's about him learning to...
 # speaker: wren
-to look without needing anything back.
+To look without needing anything back.
 
-Wren says it more quietly than they meant to.
+I say it more quietly than they meant to.
 
-Ozaki considers Wren for a longer moment than the others.
+Ozaki considers me for a longer moment than the others.
 
 # speaker: ozaki
 Yes.
@@ -165,7 +164,7 @@ That. Is one of the things it is doing.
 
 He does not elaborate. He moves on to the next raised hand.
 
-But once during the next minute, when Wren is not looking at him, Ozaki glances at Wren.
+But once during the next minute, when I am not looking at him, Ozaki glances at me.
 
 -> end_of_class
 
@@ -173,11 +172,11 @@ But once during the next minute, when Wren is not looking at him, Ozaki glances 
 = path_silent
 ~ class_engagement = "silent"
 
-Wren does not raise a hand.
+I do not raise a hand.
 
 Three more students contribute over the next few minutes. The discussion goes on. Ozaki listens more than he talks.
 
-Wren listens too. Wren listens harder than usual, perhaps. The HUD does not record this.
+I listen too. I listen harder than usual, perhap. The HUD does not record this.
 
 -> end_of_class
 
@@ -185,18 +184,18 @@ Wren listens too. Wren listens harder than usual, perhaps. The HUD does not reco
 = path_note
 ~ class_engagement = "note"
 
-Wren keeps both hands down.
+I keep both hands down.
 
-Wren opens the suit's private text buffer — a feature most students do not use. It is for in-class notes nobody else can see.
+I open the suit's private text buffer. A feature most students do not use. It is for in-class notes nobody else can see.
 
-Wren writes one sentence.
+I write one sentence.
 
 # speaker: hud
 PRIVATE BUFFER: The woman at the basin.
 
-Wren does not write anything else.
+I do not write anything else.
 
-Wren saves it. Closes the buffer. Watches the rest of the discussion.
+I save it. Closes the buffer. Watches the rest of the discussion.
 
 -> end_of_class
 
@@ -211,12 +210,12 @@ Read whatever you like before next class. Anything. Not for an assignment. Just 
 
 The classroom begins to dismiss.
 
-As Wren passes the front of the room toward the door, the lectern is on the right; Ozaki's desk is on the left. On the desk is a stack of student work — yesterday's, ungraded.
+As I pass the front of the room toward the door, the lectern is on the right; Ozaki's desk is on the left. On the desk is a stack of student work. Yesterday's, ungraded.
 
 The top one is a poem. Half-on, half-off the stack.
 
 # art: be-more-honest-worksheet
-Wren does not stop walking. Wren reads it sideways anyway.
+I do not stop walking. I read it sideways anyway.
 
 # speaker: hud
 STUDENT POEM (visible margin): "...the colors we / wear so as to be / accidentally seen..."
@@ -226,7 +225,7 @@ In the margin, in pencil, a single note in tidy handwriting:
 # speaker: hud
 *be more honest*
 
-Wren keeps walking.
+I keep walking.
 
 -> the_doorway
 
@@ -249,18 +248,17 @@ Wren keeps walking.
 
 In the doorway, waiting near the wall, is the freshman in the faded-blue suit. The one with the one star sticker.
 
-She is not looking at Wren directly. She is looking at a point three feet to Wren's left.
+She is not looking at me directly. She is looking at a point three feet to my left.
 
-As Wren passes her, she says — just loud enough, into the air —
-
+As I pass her, she says. Just loud enough, into the air ...
 # speaker: hud
 FRESHMAN (faded-blue): Thanks for yesterday.
 
-Wren has the half-second sense of not knowing what to say.
+I have the half-second sense of not knowing what to say.
 
 The girl is already walking the other way down the hallway.
 
-Wren keeps walking.
+I keep walking.
 
 The HUD does not flag the exchange.
 
@@ -269,35 +267,35 @@ The HUD does not flag the exchange.
 
 = callback_silent
 
-Wren walks out of the classroom alone.
+I walk out of the classroom alone.
 
-The hallway is filling up — students from a dozen other classrooms moving toward fifth period.
+The hallway is filling up. Students from a dozen other classrooms moving toward fifth period.
 
 # speaker: hud
 Pace: nominal.
 
-No one approaches Wren. No one greets Wren. Tae is in another wing.
+No one approaches I. No one greets me. Tae is in another wing.
 
-For a half-second, Wren registers something: that no one has spoken to Wren since the cafeteria.
+For a half-second, I register something: that no one has spoken to me since the cafeteria.
 
 Not Cael, not anyone at lunch after the joke, not a teacher all afternoon. The HUD does not flag this. It is not something the HUD knows to flag.
 
-Wren keeps walking.
+I keep walking.
 
 -> after_class
 
 
 = callback_deflect
 
-A classmate Wren has barely spoken to — one of the back-row students who answered Ozaki's question — passes Wren in the doorway.
+A classmate I have barely spoken to. One of the back-row students who answered Ozaki's question. Passes I in the doorway.
 
 He does not stop. He does not slow.
 
-But as he passes, he gives Wren a nod. Small. Not making it into a thing.
+But as he passes, he gives me a nod. Small. Not making it into a thing.
 
-Wren nods back, more out of habit than intention.
+I nod back, more out of habit than intention.
 
-Then they are gone in opposite directions, and Wren is in the hallway with the half-feeling of having had a conversation Wren cannot remember.
+Then they are gone in opposite directions, and I am in the hallway with the half-feeling of having had a conversation I cannot remember.
 
 -> after_class
 

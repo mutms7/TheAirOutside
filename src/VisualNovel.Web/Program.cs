@@ -29,6 +29,11 @@ using (var scope = host.Services.CreateScope())
     if (save.HasSave)
     {
         story.MergeVisited(save.Current.VisitedScenes);
+        if (save.Current.PrologueDone)
+        {
+            // Returning user: restore name and skip the prologue.
+            story.SetProtagonistName(save.Current.ProtagonistName);
+        }
     }
 }
 

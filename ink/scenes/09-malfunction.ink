@@ -20,16 +20,16 @@
 # bg: hallway-day
 # char: wren neutral
 
-The corridor between fifth and sixth period. The other students are already in their classrooms.
+The corridor between fifth and sixth period. The other students are already in my classrooms.
 
-Wren is walking alone.
+I am walking alone.
 
 # speaker: hud
 SIXTH PERIOD in 3 minutes.
 
 The hallway is empty. The fluorescent overheads hum, very faintly, where the suit's audio filter does not fully suppress them.
 
-Wren walks.
+I walk.
 
 -> the_alert
 
@@ -38,17 +38,17 @@ Wren walks.
 # sfx: seal-alert
 
 # speaker: hud
-SEAL WARN — CHEST 1.
+SEAL WARN. CHEST 1.
 
-A small chime. Wren has gotten warnings before — humidity, pressure, transient noise. Wren keeps walking.
-
-# speaker: hud
-SEAL WARN — CHEST 1.
-
-The chime is louder. Wren slows.
+A small chime. I have gotten warnings before. Humidity, pressure, transient noise. I keep walking.
 
 # speaker: hud
-SEAL WARN — CHEST 1.
+SEAL WARN. CHEST 1.
+
+The chime is louder. I slow.
+
+# speaker: hud
+SEAL WARN. CHEST 1.
 
 # sfx: seal-fail
 
@@ -60,7 +60,7 @@ SEAL WARN — CHEST 1.
 # art: chest-seal-crack
 
 # speaker: hud
-SEAL FAILURE — CHEST 1. RESEALING.
+SEAL FAILURE. CHEST 1. RESEALING.
 
 For two seconds, the chest plate is cracked open along its central seam.
 
@@ -68,13 +68,13 @@ Air.
 
 Cool air. On the collarbone. On the bare skin of the upper sternum that the suit normally covers and no one touches.
 
-The hallway air has a smell — floor wax, faintly. The hallway air has a sound — the small whisper of the building's ventilation, not muffled by the helmet shell. A small rush.
+The hallway air has a smell. Floor wax, faintly. The hallway air has a sound. The small whisper of the building's ventilation, not muffled by the helmet shell. A small rush.
 
-Wren's lungs catch on a breath the suit's intake regulator did not soften.
+My lungs catch on a breath the suit's intake regulator did not soften.
 
-Wren's heart rate jumps — recorded, flagged, archived.
+My heart rate jumps. Recorded, flagged, archived.
 
-Wren does not move.
+I do not move.
 
 -> the_close
 # sfx: seal-close
@@ -90,15 +90,15 @@ Two seconds. The whole event.
 The seal-glow runs once around the chest plate, diagnostic. Settles into standby.
 
 # speaker: hud
-SEAL re-engaged. Replacement recommended. NURSE OFFICE — 30 meters.
+SEAL re-engaged. Replacement recommended. NURSE OFFICE. 30 meters.
 
-Wren is standing in the empty corridor with their suit fully sealed.
+I am standing in the empty corridor with my suit fully sealed.
 
-Wren is shaking inside the suit.
+I am shaking inside the suit.
 
-Wren stops shaking.
+I stop shaking.
 
-Wren has decided not to think about it.
+I have decided not to think about it.
 
 The HUD's bio-monitor scrolls a small graph of the heart rate spike, levels it, archives it. The graph goes away.
 
@@ -110,19 +110,19 @@ The whole event is now a four-line entry in the suit log.
 = the_nurse
 # bg: nurse-office
 
-The nurse's office is at the end of the corridor. The door is open. The nurse — a middle-aged woman in a clean white over-coat over a beige service-class suit — does not look surprised.
+The nurse's office is at the end of the corridor. The door is open. The nurse. A middle-aged woman in a clean white over-coat over a beige service-class suit. Does not look surprised.
 
 # speaker: hud
 NURSE-OFFICE INTERCOM: Sit down. Lift the chest plate. I'll swap the gasket.
 
-Wren sits on the small examination bench. The chest plate hinges back, slow and controlled this time — the way it is supposed to.
+I sit on the small examination bench. The chest plate hinges back, slow and controlled this time. The way it is supposed to.
 
 The nurse runs a hand-tool along the seam, pulls a degraded gasket out, slots a fresh one in. It takes maybe ninety seconds.
 
 # speaker: hud
 NURSE-OFFICE INTERCOM: Humidity gets them this time of year. Especially the older models. Don't worry about it.
 
-Wren does not say what they need to say. Wren does not know what they need to say. Wren nods.
+I do not say what they need to say. I do not know what they need to say. I nod.
 
 The chest plate closes.
 
@@ -131,12 +131,12 @@ The seal-glow runs around its rim and settles.
 # speaker: hud
 NURSE-OFFICE INTERCOM: You can go.
 
-Wren stands up. Says "Thank you" in the suit-warmed voice that comes out a half-pitch too friendly.
+I stand up. Says "Thank you" in the suit-warmed voice that comes out a half-pitch too friendly.
 
 # speaker: wren
 Thank you.
 
-Wren walks out.
+I walk out.
 
 -> after_nurse
 
@@ -146,16 +146,16 @@ Wren walks out.
 
 The hallway is filling up again. Sixth period has just started somewhere; some hallway noise has come back.
 
-Wren walks past the window at the far end of the corridor. The rain has started again, very lightly. The window shows the rain. The suit-cam does not auto-zoom this time.
+I walk past the window at the far end of the corridor. The rain has started again, very lightly. The window shows the rain. The suit-cam does not auto-zoom this time.
 
 # speaker: hud
 SIXTH PERIOD already in progress. You may report as late or proceed quietly.
 
-Wren proceeds quietly.
+I proceed quietly.
 
-The four-line entry in the suit log is not currently visible. Wren does not look it up. Wren will not look it up.
+The four-line entry in the suit log is not currently visible. I do not look it up. I will not look it up.
 
-Wren is fine.
+I am fine.
 
 # speaker: hud
 SIXTH PERIOD: in session.

@@ -24,7 +24,7 @@ The passing period bell has rung. The hallway is full of suits in motion, headin
 # speaker: hud
 HISTORY (lit substitute) in 5 minutes. Room 207.
 
-Wren turns the corner toward Room 207.
+I turn the corner toward Room 207.
 
 -> the_window
 
@@ -36,20 +36,20 @@ Wren turns the corner toward Room 207.
 # art: corridor-windows
 The corner opens into the long hallway with the high windows along the west side of the building. Rain is steady on the glass, the light gray-green through it.
 
-At the third window — the one nobody usually stops at — there is a girl.
+At the third window. The one nobody usually stops at. There is a girl.
 
 She is not in a suit.
 
-She is in plain clothes — a long olive-gray cardigan over a dark shirt, dark trousers. Her hair is loose. Her hands are on the windowsill, bare.
+She is in plain clothes. A long olive-gray cardigan over a dark shirt, dark trousers. Her hair is loose. Her hands are on the windowsill, bare.
 
 She is watching the rain.
 
-The suit-cam auto-zooms a quarter-second before Wren has decided to look.
+The suit-cam auto-zooms a quarter-second before I have decided to look.
 
 # speaker: hud
 Pace: slowing. Bio-irregularity logged.
 
-Wren slows.
+I slow.
 
 -> the_hands
 
@@ -59,9 +59,9 @@ Wren slows.
 
 The girl's hands.
 
-She is older — a junior, by the build. Two years older than Wren maybe.
+She is older. A junior, by the build. Two years older than I maybe.
 
-There are small marks on her hands — old scars across two of the knuckles, a thin pale cut on the back of one finger that healed slightly the wrong way.
+There are small marks on her hands. Old scars across two of the knuckles, a thin pale cut on the back of one finger that healed slightly the wrong way.
 
 She is not hiding them.
 
@@ -76,9 +76,9 @@ Nobody else at this school has hands like that visible.
 
 The girl turns her head. Slowly. Without looking surprised.
 
-She has seen Wren.
+She has seen I.
 
-She looks at Wren's face — at where Wren's face would be, behind the visor.
+She looks at my face. At where my face would be, behind the visor.
 
 She does not say anything.
 
@@ -106,32 +106,30 @@ Outside, the rain.
 = path_approach
 ~ gate2 = "approach"
 
-Wren takes a step.
+I take a step.
 
 Then another.
 
 # char: iris bare
 
-Wren stops a polite distance away, at the next window over. Not too close. Not pretending the girl isn't there.
+I stop a polite distance away, at the next window over. Not too close. Not pretending the girl isn't there.
 
-Wren looks at the rain too.
+I look at the rain too.
 
 For a second they are two people at two windows looking at the same rain.
 
 # speaker: iris
 Hi.
 
-Her voice is quieter than Wren expected. Not warmer than it is. The voice-modulator is not on, because the suit is not on.
+Her voice is quieter than I expected. Not warmer than it is. The voice-modulator is not on, because the suit is not on.
 
 # speaker: wren
 Hi.
 
 # speaker: wren
-Sorry, I—
-
+Sorry, I...
 # speaker: wren
-I'm late for—
-
+I'm late for...
 # speaker: iris
 It's okay.
 
@@ -140,34 +138,32 @@ You can be late.
 
 A beat.
 
-Wren does not know what to do with this sentence.
+I do not know what to do with this sentence.
 
 # speaker: iris
 The rain sounds different outside.
 
-She does not turn from the window when she says it. She is not selling Wren on anything. She is just saying a thing she knows.
+She does not turn from the window when she says it. She is not selling I on anything. She is just saying a thing she knows.
 
-Wren listens. From inside the suit, the rain still sounds like ambient pressure on the helmet shell.
+I listen. From inside the suit, the rain still sounds like ambient pressure on the helmet shell.
 
-Wren watches the rain for one more beat with her.
+I watch the rain for one more beat with her.
 
-Then —
-
+Then ...
 # speaker: wren
-I should—
-
+I should...
 # speaker: iris
 Yeah.
 
 # speaker: iris
 Go.
 
-Wren goes.
+I go.
 
 # speaker: hud
 HISTORY in 2 minutes.
 
-Wren walks the rest of the hallway. The girl is still at the window when Wren turns the corner. She has gone back to looking at the rain.
+I walk the rest of the hallway. The girl is still at the window when I turn the corner. She has gone back to looking at the rain.
 
 -> after_iris
 
@@ -175,11 +171,11 @@ Wren walks the rest of the hallway. The girl is still at the window when Wren tu
 = path_pretend
 ~ gate2 = "avoid"
 
-Wren keeps walking.
+I keep walking.
 
-Wren's eyes do not return to the third window.
+My eyes do not return to the third window.
 
-Wren's eyes go to the floor instead — to the polished line of tile where the wall meets the floor — as if that is what Wren was looking at all along.
+My eyes go to the floor instead. To the polished line of tile where the wall meets the floor. As if that is what I was looking at all along.
 
 The girl's gaze, at the edge of the suit-cam, holds for another second and then releases.
 
@@ -188,13 +184,13 @@ Pace: nominal.
 
 The HUD does not flag anything. The vitals settle.
 
-Wren passes the third window, the fourth, the fifth.
+I pass the third window, the fourth, the fifth.
 
-Wren reaches the corner.
+I reach the corner.
 
-Wren has the half-second sense of wanting to turn back to see if the girl is still there.
+I have the half-second sense of wanting to turn back to see if the girl is still there.
 
-Wren does not turn back.
+I do not turn back.
 
 -> after_iris
 
@@ -202,23 +198,23 @@ Wren does not turn back.
 = path_turn_away
 ~ gate2 = "avoid"
 
-Wren stops walking.
+I stop walking.
 
 # speaker: hud
 Pace: stopped.
 
-Wren turns around. Walks back the way they came, three steps, five steps.
+I turn around. Walks back the way they came, three steps, five steps.
 
 The hallway behind goes back to ordinary. No window with a bare girl. Just the wall they came from.
 
-Wren takes the long way around to Room 207 — through the connecting corridor by the gym, past the trophy case, the way that adds a minute to the walk.
+I take the long way around to Room 207. Through the connecting corridor by the gym, past the trophy case, the way that adds a minute to the walk.
 
 # speaker: hud
 HISTORY in 1 minute.
 
-Wren walks faster.
+I walk faster.
 
-The girl is somewhere behind, at a window, looking at rain. Wren does not look at her again. Wren does not know what they would have done if they had.
+The girl is somewhere behind, at a window, looking at rain. I do not look at her again. I do not know what they would have done if they had.
 
 -> after_iris
 

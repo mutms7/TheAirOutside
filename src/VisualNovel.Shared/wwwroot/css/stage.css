@@ -76,9 +76,68 @@ html, body {
     font-size: calc(18px * var(--text-size-mult));
 }
 
-.stage.reduce-motion * {
-    animation: none !important;
-    transition: none !important;
+.stage.reduce-motion *,
+.stage.reduce-motion *::before,
+.stage.reduce-motion *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Dark-background UI awareness — when the current scene's bg is dark
+   (regardless of theme), the topbar and key overlays use light ink.
+   ────────────────────────────────────────────────────────────────────────── */
+.stage.bg-dark .topbar__btn {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.stage.bg-dark .topbar__btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.stage.bg-dark .background__label {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.stage.bg-dark .dialogue {
+    background: color-mix(in srgb, #1A1A20 88%, transparent);
+    color: #E8E4DA;
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.stage.bg-dark .dialogue__text--narration {
+    color: rgba(232, 228, 218, 0.78);
+}
+
+.stage.bg-dark .dialogue__text--hud {
+    color: rgba(232, 228, 218, 0.72);
+    border-left-color: rgba(232, 228, 218, 0.3);
+}
+
+.stage.bg-dark .dialogue__hud-label {
+    color: rgba(232, 228, 218, 0.45);
+}
+
+.stage.bg-dark .stage__choices {
+    background: color-mix(in srgb, #1A1A20 96%, transparent);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.stage.bg-dark .stage__choice {
+    color: #E8E4DA;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.stage.bg-dark .stage__choice:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.stage.bg-dark .stage__ending {
+    background: color-mix(in srgb, #1A1A20 96%, transparent);
+    color: rgba(232, 228, 218, 0.6);
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -124,7 +183,8 @@ html, body {
     justify-self: center;
     position: relative;
     z-index: 1;
-    padding-bottom: 2.5rem;
+    padding-bottom: 0;
+    margin-bottom: -1rem;
     pointer-events: none;
     animation: fade-in 1.2s ease;
 }
@@ -137,28 +197,14 @@ html, body {
 }
 
 .character__art {
-    width: 200px;
-    height: 400px;
+    width: 240px;
+    height: 480px;
     display: block;
-    filter: drop-shadow(0 2px 8px var(--color-shadow));
+    filter: drop-shadow(0 4px 4px var(--color-shadow));
 }
 
 .character__nameplate {
-    margin-top: 0.6rem;
-    text-align: center;
-    font-family: var(--type-mono);
-    font-size: 0.7rem;
-    color: var(--color-muted);
-}
-
-.character__name {
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
-
-.character__expression {
-    margin-left: 0.4rem;
-    opacity: 0.65;
+    display: none;
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -571,6 +617,20 @@ html, body {
     overflow: hidden;
 }
 
+.settings__seg--wrap {
+    flex-wrap: wrap;
+    gap: 0;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.settings__seg--wrap .settings__seg-btn {
+    flex: 1 0 22%;
+    min-width: 4rem;
+    border-right: 1px solid var(--color-rule);
+    border-bottom: 1px solid var(--color-rule);
+}
+
 .settings__seg-btn {
     background: transparent;
     border: none;
@@ -938,4 +998,200 @@ html, body {
 @keyframes slide-in-right {
     from { transform: translateX(100%); }
     to   { transform: translateX(0); }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Prologue / name input
+   ────────────────────────────────────────────────────────────────────────── */
+.prologue {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #080B14;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    animation: fade-in 1s ease;
+}
+
+.prologue__landscape {
+    position: absolute;
+    inset: 0;
+}
+
+.prologue__landscape svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.prologue__cloud-strip {
+    animation: prologue-drift 90s linear infinite;
+}
+
+.prologue__cloud-strip--slow {
+    animation-duration: 160s;
+    animation-direction: reverse;
+}
+
+@keyframes prologue-drift {
+    from { transform: translateX(-60px); }
+    to   { transform: translateX(60px); }
+}
+
+.prologue__content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 8vw;
+    text-align: center;
+    color: #E8E4DA;
+}
+
+.prologue__text {
+    font-family: "Source Serif Pro", "Cambria", "Georgia", serif;
+    font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+    line-height: 1.7;
+    max-width: 40rem;
+    color: rgba(232, 228, 218, 0.92);
+    animation: prologue-text-in 1.2s ease;
+    margin: 0;
+}
+
+.prologue__hint {
+    margin-top: 2.5rem;
+    font-family: "JetBrains Mono", "Consolas", monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: rgba(232, 228, 218, 0.4);
+    animation: fade-in 3s ease 1s both;
+}
+
+.prologue__prompt {
+    font-family: "Source Serif Pro", "Cambria", "Georgia", serif;
+    font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+    line-height: 1.5;
+    color: rgba(232, 228, 218, 0.95);
+    margin: 0 0 1.5rem 0;
+    animation: prologue-text-in 1s ease;
+}
+
+.prologue__input-wrap {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    animation: prologue-text-in 1.2s ease 0.3s both;
+    cursor: text;
+}
+
+.prologue__input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(232, 228, 218, 0.4);
+    color: #FAF7F1;
+    font-family: "Source Serif Pro", "Cambria", "Georgia", serif;
+    font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+    text-align: center;
+    padding: 0.5rem 1rem;
+    outline: none;
+    width: 14rem;
+    letter-spacing: 0.04em;
+    transition: border-color 0.2s ease;
+}
+
+.prologue__input::placeholder { color: rgba(232, 228, 218, 0.3); }
+.prologue__input:focus { border-bottom-color: rgba(232, 228, 218, 0.8); }
+
+.prologue__begin {
+    margin-top: 2rem;
+    background: rgba(232, 228, 218, 0.06);
+    border: 1px solid rgba(232, 228, 218, 0.35);
+    color: #FAF7F1;
+    font-family: "JetBrains Mono", "Consolas", monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: lowercase;
+    padding: 0.7rem 2.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    animation: fade-in 2s ease 0.5s both;
+}
+
+.prologue__begin:hover {
+    background: rgba(232, 228, 218, 0.12);
+    border-color: rgba(232, 228, 218, 0.6);
+}
+
+.prologue__skip {
+    position: absolute;
+    bottom: 1.2rem;
+    right: 1.2rem;
+    background: transparent;
+    border: none;
+    color: rgba(232, 228, 218, 0.35);
+    font-family: "JetBrains Mono", "Consolas", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: lowercase;
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+}
+
+.prologue__skip:hover { color: rgba(232, 228, 218, 0.7); }
+
+@keyframes prologue-text-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Responsive: tablet + mobile
+   ────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .stage { font-size: calc(16px * var(--text-size-mult)); }
+    .character__art { width: 200px; height: 400px; }
+    .dialogue { padding: 1.2rem 1.5rem 1.5rem; min-height: 6rem; }
+    .stage__choices { padding: 0.8rem 1.25rem 1.2rem; }
+    .panel { width: min(440px, 92vw); }
+    .panel__body { padding: 1.2rem 1.5rem; }
+    .spotart__svg { max-width: 360px; max-height: 240px; }
+    .topbar { top: 0.5rem; right: 0.5rem; }
+}
+
+@media (max-width: 600px) {
+    .stage { font-size: calc(15px * var(--text-size-mult)); }
+    .character__art { width: 160px; height: 320px; }
+    .character { margin-bottom: -0.5rem; }
+    .dialogue { padding: 1rem 1rem 1.25rem; min-height: 5rem; }
+    .dialogue__speaker { font-size: 0.66rem; }
+    .dialogue__text { line-height: 1.55rem; max-width: 100%; }
+    .dialogue__text--narration { max-width: 100%; }
+    .dialogue__hud-label { font-size: 0.58rem; }
+    .dialogue__text--hud { font-size: 0.84rem; padding-left: 0.65rem; }
+    .stage__choices { padding: 0.7rem 0.9rem 1.1rem; }
+    .stage__choice { font-size: 0.94rem; padding: 0.65rem 0.85rem; }
+    .panel { width: 100vw; border-left: none; }
+    .panel__header { padding: 1.25rem 1.25rem 0.9rem; }
+    .panel__body { padding: 1.1rem 1.25rem; }
+    .panel__title { font-size: 1rem; }
+    .panel__subtitle { font-size: 0.8rem; }
+    .topbar { top: 0.4rem; right: 0.4rem; gap: 0.1rem; }
+    .topbar__btn { padding: 0.3rem; }
+    .topbar__btn svg { width: 18px; height: 18px; }
+    .background__label { font-size: 0.62rem; top: 0.5rem; left: 0.5rem; }
+    .spotart { top: 4%; max-width: 80vw; }
+    .spotart__svg { max-width: 280px; max-height: 200px; }
+    .climax__line { font-size: 0.95rem; }
+    .modal { padding: 1.25rem 1.25rem 1rem; }
+    .modal__title { font-size: 0.92rem; }
+    .modal__body { font-size: 0.88rem; }
+    .scene-row { grid-template-columns: 2rem 1fr auto; gap: 0.7rem; padding: 0.65rem 0.7rem; }
+    .scene-row__title { font-size: 0.88rem; }
+    .scene-row__meta { font-size: 0.66rem; }
+    .map__node { grid-template-columns: 2rem 1fr; gap: 0.7rem; }
+    .map__dot { width: 1.8rem; height: 1.8rem; font-size: 0.72rem; }
+    .map__title { font-size: 0.85rem; }
+    .settings__seg--wrap .settings__seg-btn { flex: 1 0 30%; }
 }

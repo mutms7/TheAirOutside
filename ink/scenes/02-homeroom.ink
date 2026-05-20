@@ -21,25 +21,24 @@
 = arrival
 # bg: classroom
 
-The homeroom is filling up. Suits move into their assigned desks, the small hiss of hip-seals locking into the charge contacts under each chair.
+The homeroom is filling up. Suits move into my assigned desks, the small hiss of hip-seals locking into the charge contacts under each chair.
 
 # speaker: hud
 DESK 14B: docked. Suit power 99%.
 
-Wren sits down. The pin clicks. The seal-glow flickers, settles.
+I sit down. The pin clicks. The seal-glow flickers, settles.
 
 # char: tae warm
 
-Tae is one row over, already seated, suit shimmering — a fresh coral sticker on the left shoulder, three stacked rhinestones along the collar, the small enamel pin she has worn every day this term.
+Tae is one row over, already seated, suit shimmering. A fresh coral sticker on the left shoulder, three stacked rhinestones along the collar, the small enamel pin she has worn every day this term.
 
 # speaker: tae
 There you are. You scared me with that pause. Are you sleeping enough?
 
 # speaker: wren
-Yeah. I'm—
-
+Yeah. I'm...
 # speaker: wren
-fine.
+Fine.
 
 # speaker: tae
 You'd tell me, right? If you weren't?
@@ -50,7 +49,7 @@ Yeah.
 # speaker: tae
 Good. Because I would notice. I do notice.
 
-Tae's voice is warm. She is not interrogating. She is loving Wren in the only language she knows how to speak.
+Tae's voice is warm. She is not interrogating. She is loving I in the only language she knows how to speak.
 
 -> cael_background
 
@@ -62,11 +61,11 @@ Tae's voice is warm. She is not interrogating. She is loving Wren in the only la
 Across the room, Cael is holding court at the back desks. Four or five of the front-row kids are angled to face him.
 
 # speaker: cael
-— and I told him, *that sticker*? That exact sticker? My grandfather had that. On his *charging cradle*. So.
+ And I told him, *that sticker*? That exact sticker? My grandfather had that. On his *charging cradle*. So.
 
 A small ripple of laughter from the back row.
 
-Wren laughs too. A short, polite, suit-warmed laugh.
+I laugh too. A short, polite, suit-warmed laugh.
 
 # speaker: hud
 Bio-irregularity logged. (Vital nominal.)
@@ -110,7 +109,7 @@ Yeah. It's nice.
 # speaker: tae
 *Thank* you.
 
-Tae leans across. Her gloved fingers — the same coral as her own decoration — smooth the sticker onto Wren's shoulder plate.
+Tae leans across. Her gloved fingers. The same coral as her own decoration. Smooth the sticker onto my shoulder plate.
 
 # speaker: tae
 There. Beautiful. Don't pick at it. I will see if you pick at it.
@@ -124,10 +123,9 @@ I won't.
 = path_variant
 
 # speaker: wren
-Could the mint go—
-
+Could the mint go...
 # speaker: wren
-on the cuff instead?
+On the cuff instead?
 
 Tae's smile holds, but something in it adjusts. A measured pause.
 
@@ -151,27 +149,26 @@ Next week we'll experiment. Promise.
 = path_decline
 
 # speaker: wren
-Maybe today I could—
-
+Maybe today I could...
 # speaker: wren
-just go plain?
+Just go plain?
 
 Tae's face moves the smallest amount.
 
 # speaker: tae
 Plain? Today?
 
-Tae is looking at Wren with concern. Real concern. The smile is still there but it is doing different work.
+Tae is looking at me with concern. Real concern. The smile is still there but it is doing different work.
 
 # speaker: tae
-Okay. Okay. You don't have to do the peach. But here — just this one then.
+Okay. Okay. You don't have to do the peach. But here. Just this one then.
 
 Tae reaches into her case again and pulls out something smaller. A thin enamel arc, the same peach, half the size.
 
 # speaker: tae
-You can't go fully bare, Wren. Cael will say something. I don't want him to say something.
+You can't go fully bare, {protagonist_name}. Cael will say something. I don't want him to say something.
 
-Tae presses the smaller sticker onto Wren's shoulder. Her hand stays on the plate a half-second longer than she needs it to.
+Tae presses the smaller sticker onto my shoulder. Her hand stays on the plate a half-second longer than she needs it to.
 
 # speaker: tae
 Is something wrong? You can tell me.
@@ -203,11 +200,11 @@ At the open doorway of the classroom, someone passes with a cleaning cart.
 
 It is the janitor. She does not look in. She is humming something to herself, very quietly, the way a person hums while they work.
 
-For a half-second the shape of the hum reaches Wren under the room's noise.
+For a half-second the shape of the hum reaches I under the room's noise.
 
-A different shape than the boot tune. Different than the chimes of the suits sealing into their charge contacts. Different than the music coming through someone's helmet speaker two desks over.
+A different shape than the boot tune. Different than the chimes of the suits sealing into my charge contacts. Different than the music coming through someone's helmet speaker two desks over.
 
-Wren does not register it.
+I do not register it.
 
 The janitor passes on down the hallway. The hum goes with her.
 
@@ -223,7 +220,7 @@ A soft chime in the room and in every suit's HUD at once. Homeroom is starting.
 
 Tae faces forward. The teacher's voice begins from the front of the room, something about attendance, something about Friday.
 
-Wren looks at the new sticker on their shoulder.
+I look at the new sticker on my shoulder.
 
 It catches the light a little.
 

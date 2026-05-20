@@ -25,10 +25,31 @@ public sealed class StoryService
     public HashSet<int> VisitedScenes { get; } = new();
     public List<HistoryEntry> History { get; } = new();
 
+    public bool IsPrologueDone { get; private set; }
+
     public void MergeVisited(IEnumerable<int> scenes)
     {
         foreach (var s in scenes) VisitedScenes.Add(s);
         StateChanged?.Invoke();
+    }
+
+    public void MarkPrologueDone()
+    {
+        IsPrologueDone = true;
+        StateChanged?.Invoke();
+    }
+
+    public void SetProtagonistName(string name)
+    {
+        if (_story is null) return;
+        var n = string.IsNullOrWhiteSpace(name) ? "Wren" : name.Trim();
+        try
+        {
+            _story.variablesState["protagonist_name"] = n;
+        }
+        catch { /* variable may not exist yet, safely ignored */ }
+        IsPrologueDone = true;
+        Start();
     }
 
     public bool IsLoaded => _story is not null;
@@ -38,9 +59,19 @@ public sealed class StoryService
 
     public event Action? StateChanged;
 
+    private bool _started;
+
     public void LoadFromJson(string json)
     {
         _story = new Story(json);
+        _started = false;
+        StateChanged?.Invoke();
+    }
+
+    public void Start()
+    {
+        if (_started) return;
+        _started = true;
         Advance();
     }
 
@@ -85,6 +116,14 @@ public sealed class StoryService
         if (_story is null || string.IsNullOrEmpty(knot)) return false;
         try
         {
+            // Reset persistent stage state so a new scene doesn't inherit
+            // the previous scene's character, background, motif, art etc.
+            Background = "";
+            CharacterOnStage = "";
+            Motif = "";
+            Art = "";
+            Audio = "";
+
             _story.ChoosePathString(knot);
             Advance();
             return true;

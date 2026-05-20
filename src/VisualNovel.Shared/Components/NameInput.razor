@@ -1,0 +1,114 @@
+@inject StoryService Story
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="prologue">
+    <div class="prologue__landscape" aria-hidden="true">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <linearGradient id="prologue-sky" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"  stop-color="#0A0E18"/>
+                    <stop offset="60%" stop-color="#1A2030"/>
+                    <stop offset="100%" stop-color="#2A2F3A"/>
+                </linearGradient>
+            </defs>
+            <rect width="1600" height="900" fill="url(#prologue-sky)"/>
+            <g fill="#FFE8A0" opacity="0.45">
+                <circle cx="120"  cy="140" r="1.5"/>
+                <circle cx="260"  cy="80"  r="1"/>
+                <circle cx="420"  cy="160" r="1"/>
+                <circle cx="540"  cy="60"  r="1.5"/>
+                <circle cx="780"  cy="120" r="1"/>
+                <circle cx="980"  cy="80"  r="1"/>
+                <circle cx="1180" cy="140" r="1.5"/>
+                <circle cx="1340" cy="100" r="1"/>
+                <circle cx="1480" cy="180" r="1"/>
+            </g>
+            <g class="prologue__cloud-strip" fill="#3A4250" opacity="0.45">
+                <ellipse cx="120"  cy="280" rx="160" ry="14"/>
+                <ellipse cx="520"  cy="320" rx="200" ry="12"/>
+                <ellipse cx="940"  cy="260" rx="180" ry="14"/>
+                <ellipse cx="1320" cy="310" rx="170" ry="12"/>
+            </g>
+            <g class="prologue__cloud-strip prologue__cloud-strip--slow" fill="#2A3040" opacity="0.4">
+                <ellipse cx="240"  cy="420" rx="220" ry="14"/>
+                <ellipse cx="800"  cy="450" rx="260" ry="16"/>
+                <ellipse cx="1440" cy="430" rx="220" ry="14"/>
+            </g>
+            <polygon points="0,900 100,640 240,720 420,610 600,680 760,580 920,650 1080,560 1240,640 1400,580 1600,650 1600,900" fill="#1A2030"/>
+            <polygon points="0,900 120,720 280,760 460,690 640,740 820,670 1000,720 1180,640 1340,710 1500,650 1600,700 1600,900" fill="#0F1424"/>
+            <polygon points="0,900 220,800 440,830 660,790 880,820 1100,780 1320,810 1500,790 1600,800 1600,900" fill="#080B14"/>
+            <line x1="760" y1="830" x2="765" y2="780" stroke="#22272F" stroke-width="2"/>
+            <path d="M 750 780 Q 762 750 776 778 L 768 780 Q 765 760 762 775 L 754 780 Z" fill="#22272F"/>
+            <rect y="895" width="1600" height="5" fill="#000"/>
+        </svg>
+    </div>
+
+    <div class="prologue__content" @onclick="OnContentClick">
+        @if (_screen < _lines.Length)
+        {
+            <p class="prologue__text" @key="_screen">@_lines[_screen]</p>
+            @if (_screen < _lines.Length - 1)
+            {
+                <p class="prologue__hint">click to continue</p>
+            }
+            else
+            {
+                <p class="prologue__hint">click to continue, or skip ahead</p>
+            }
+        }
+        else
+        {
+            <p class="prologue__prompt">What is your name?</p>
+            <div class="prologue__input-wrap" @onclick:stopPropagation="true">
+                <input type="text" class="prologue__input" maxlength="14" value="@_name" placeholder="Wren"
+                       @oninput="@(e => _name = e.Value?.ToString() ?? "")"
+                       @onkeydown="@OnKey"
+                       autofocus />
+            </div>
+            <p class="prologue__hint">leave blank for the default name. press enter when ready.</p>
+            <button class="prologue__begin" @onclick="Submit" @onclick:stopPropagation="true">begin</button>
+        }
+    </div>
+
+    <button class="prologue__skip" @onclick="Skip" @onclick:stopPropagation="true" title="Skip the prologue">skip</button>
+</div>
+
+@code {
+    private int _screen = 0;
+    private string _name = "";
+
+    private readonly string[] _lines =
+    {
+        "A long time ago, people decided they could be safer if they wore something between themselves and the world.",
+        "The first suits were simple. Filters, skins, a little protection from the cold.",
+        "That was a long time ago. The suits got better. The world stayed the same.",
+        "Now everyone wears one. The suits keep us safe. We do not remember being any other way.",
+        "This is a story about one ordinary person, one ordinary morning, who slowed down on a curb to look at an ant.",
+    };
+
+    private void OnContentClick()
+    {
+        if (_screen < _lines.Length)
+        {
+            _screen++;
+            StateHasChanged();
+        }
+    }
+
+    private void OnKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") Submit();
+    }
+
+    private void Submit()
+    {
+        var n = string.IsNullOrWhiteSpace(_name) ? "Wren" : _name.Trim();
+        Story.SetProtagonistName(n);
+    }
+
+    private void Skip()
+    {
+        var n = string.IsNullOrWhiteSpace(_name) ? "Wren" : _name.Trim();
+        Story.SetProtagonistName(n);
+    }
+}

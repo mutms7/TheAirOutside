@@ -28,13 +28,13 @@
 # bg: bedroom-morning
 # char: wren bare
 
-Wren wakes early. The light through the window is pale and thin. The window is still open from last night. The room smells like outside.
+I wake early. The light through the window is pale and thin. The window is still open from last night. The room smells like outside.
 
-The suit is on the floor where Wren left it — chest plate open in standby, leg sleeves in two careful piles, helmet on the desk beside the external HUD.
+The suit is on the floor where I left it. Chest plate open in standby, leg sleeves in two careful piles, helmet on the desk beside the external HUD.
 
-Wren sits up. Looks at the suit on the floor.
+I sit up. Looks at the suit on the floor.
 
-Wren has to decide.
+I have to decide.
 
 + [Leave the suit on the floor. Go to school without it.]
     ~ gate4 = "stay_out"
@@ -49,57 +49,57 @@ Wren has to decide.
 
 = prepare_stay_out
 
-Wren leaves the suit where it is.
+I leave the suit where it is.
 
-Wren puts on plain clothes — what people would wear under the suit, mostly. A long-sleeved shirt. Trousers. Soft shoes. A jacket Wren has not worn in a year because the suit's outer shell handled all weather.
+I put on plain clothes. What people would wear under the suit, mostly. A long-sleeved shirt. Trousers. Soft shoes. A jacket I have not worn in a year because the suit's outer shell handled all weather.
 
-The external HUD goes in a pocket — habit. Wren turns it off.
+The external HUD goes in a pocket. Habit. I turn it off.
 
-In the hallway mirror, Wren sees their face. Both eyes. The whole face. The small constellation of two freckles on the left cheek Wren had not seen in person in months.
+In the hallway mirror, I see my face. Both eyes. The whole face. The small constellation of two freckles on the left cheek I had not seen in person in months.
 
-The house is empty. Wren leaves through the front door, in plain clothes, into morning air that is not filtered.
+The house is empty. I leave through the front door, in plain clothes, into morning air that is not filtered.
 
 -> the_walk
 
 
 = prepare_no_deco
 
-Wren puts the suit on. Slowly. Each piece's seal-glow registers the reconnection, then settles.
+I put the suit on. Slowly. Each piece's seal-glow registers the reconnection, then settles.
 
-But Wren does not open the small case on the desk where last year's stickers and this season's stickers are sorted by color. Wren does not apply anything.
+But I do not open the small case on the desk where last year's stickers and this season's stickers are sorted by color. I do not apply anything.
 
-The peach from yesterday is still in Tae's drawer — the second one, the one Tae has kept. Wren cannot apply that one.
+The peach from yesterday is still in Tae's drawer. The second one, the one Tae has kept. I cannot apply that one.
 
-The shoulder plate of Wren's suit is bare.
+The shoulder plate of my suit is bare.
 
 The seal-glow around the empty enamel-mount does its usual one circuit and settles.
 
 # speaker: hud
-GOOD MORNING, WREN. Suit power 91%. Calendar: HOMEROOM in 26 minutes. Weather: clear.
+GOOD MORNING, {protagonist_name}. Suit power 91%. Calendar: HOMEROOM in 26 minutes. Weather: clear.
 
-Wren leaves through the front door.
+I leave through the front door.
 
 -> the_walk
 
 
 = prepare_re_enter
 
-Wren puts the suit on. Slowly — slower than other mornings.
+I put the suit on. Slowly. Slower than other mornings.
 
 The chest plate. The leg sleeves. The gauntlets. The helmet.
 
-Wren opens the small case on the desk. The peach sticker — one of Wren's own from last week, an extra — comes out. Wren applies it to the shoulder plate. Mint crescent at the rim. Exactly where Tae would have put it.
+I open the small case on the desk. The peach sticker. One of my own from last week, an extra. Comes out. I apply it to the shoulder plate. Mint crescent at the rim. Exactly where Tae would have put it.
 
 The seal-glow runs once around the new attachment.
 
 # speaker: hud
-GOOD MORNING, WREN. Decoration registered. Calendar: HOMEROOM in 26 minutes. Weather: clear.
+GOOD MORNING, {protagonist_name}. Decoration registered. Calendar: HOMEROOM in 26 minutes. Weather: clear.
 
-In the mirror, Wren looks the same as yesterday morning.
+In the mirror, I look the same as yesterday morning.
 
-But the eyes behind the visor are looking out. Wren is looking out.
+But the eyes behind the visor are looking out. I am looking out.
 
-Wren leaves through the front door.
+I leave through the front door.
 
 -> the_walk
 
@@ -109,15 +109,15 @@ Wren leaves through the front door.
 
 The morning street is the morning street. Other suits in motion. The service-class woman with the cart, somewhere up ahead. A delivery suit at the corner. The yellow-suited dinosaur kid is not late this morning; he is walking with his mother, both decorated together.
 
-Wren walks the same route.
+I walk the same route.
 
 {
     - gate4 == "stay_out":
-        Wren's bare face is in the air. The morning is cold against the cheekbones. People are looking. Some keep looking. Some look away. One older man slows down and watches Wren pass, his expression unreadable behind his visor. Wren does not look at him. Wren walks.
+        My bare face is in the air. The morning is cold against the cheekbones. People are looking. Some keep looking. Some look away. One older man slows down and watches me pass, his expression unreadable behind his visor. I do not look at him. I walk.
     - gate4 == "suit_no_deco":
-        The empty shoulder catches the morning light. A few suit-cams auto-zoom, briefly, on the absence. Wren does not look back at them.
+        The empty shoulder catches the morning light. A few suit-cams auto-zoom, briefly, on the absence. I do not look back at them.
     - gate4 == "re_enter":
-        Wren looks at the morning the way Wren did not look at it yesterday. The way the light hits the side of the building. The patches of grass at the curb where the rain has gone. Wren has not changed how Wren is dressed. Wren has changed what Wren is doing inside the dressing.
+        I look at the morning the way I did not look at it yesterday. The way the light hits the side of the building. The patches of grass at the curb where the rain has gone. I have not changed how I am dressed. I have changed what I am doing inside the dressing.
 }
 
 -> the_curb
@@ -127,10 +127,10 @@ Wren walks the same route.
 
 The curb comes up. The ant hill is still there, in its half-crushed state. The rebuilders have made progress overnight. The cone is most of the way back, slightly smaller than it was the morning before yesterday.
 
-Wren slows for two breaths. Then keeps walking. The hill will be itself again by tomorrow.
+I slow for two breaths. Then keeps walking. The hill will be itself again by tomorrow.
 
 # speaker: hud
-{ gate4 == "stay_out": (no HUD entry — Wren has no suit on.) | HOMEROOM in 9 minutes. }
+{ gate4 == "stay_out": (no HUD entry. {protagonist_name} has no suit on.) | HOMEROOM in 9 minutes. }
 
 -> arrival
 
@@ -141,12 +141,12 @@ Wren slows for two breaths. Then keeps walking. The hill will be itself again by
 
 The morning corridor. Suits filing in through the main doors in twos and threes, the way they do every morning.
 
-Wren walks in.
+I walk in.
 
 The first ten meters: heads turn. A few. Some not at all. Some that turn quickly and turn quickly back.
 
 # speaker: hud
-{ gate4 == "stay_out": (no HUD entry — Wren is bare.) | Pace: nominal. Bio-irregularity logged across approximately 14 nearby suits. }
+{ gate4 == "stay_out": (no HUD entry. {protagonist_name} is bare.) | Pace: nominal. Bio-irregularity logged across approximately 14 nearby suits. }
 
 -> tae_meets
 
@@ -156,15 +156,15 @@ The first ten meters: heads turn. A few. Some not at all. Some that turn quickly
 
 Tae is at her locker.
 
-Tae sees Wren.
+Tae sees me.
 
 {
     - gate4 == "stay_out":
-        Tae's face does a series of things in the half-second before she has a chance to compose it. Surprise. Fear. Something that is neither. Then she sees Wren's face — both eyes, the whole face, the constellation of two freckles on the left cheek — and she closes the locker softly and walks toward Wren.
+        Tae's face does a series of things in the half-second before she has a chance to compose it. Surprise. Fear. Something that is neither. Then she sees my face. Both eyes, the whole face, the constellation of two freckles on the left cheek. And she closes the locker softly and walks toward me.
         # speaker: tae
         Oh.
         # speaker: tae
-        Oh. Wren.
+        Oh. {protagonist_name}.
         She is not telling anyone. Her hand goes up toward her wrist-comm, then away again. She has decided not to flag this.
         # speaker: tae
         Walk with me?
@@ -177,7 +177,7 @@ Tae sees Wren.
         Hi.
         # speaker: wren
         Hi.
-        She has her case of stickers in her bag. Wren can see the outline of it. Her hand goes to the bag. Her hand comes back to her side.
+        She has her case of stickers in her bag. I can see the outline of it. Her hand goes to the bag. Her hand comes back to her side.
         # speaker: tae
         Coral assembly tomorrow, by the way. Just in case.
         # speaker: wren
@@ -190,14 +190,14 @@ Tae sees Wren.
         Yeah.
         They walk to homeroom together. Tae does not bring out the case. The empty shoulder is the empty shoulder. Tae does not look away from it. Tae does not stare at it.
     - gate4 == "re_enter":
-        Tae sees the peach. Tae sees the mint accent at the rim. Tae sees the eyes behind Wren's visor.
+        Tae sees the peach. Tae sees the mint accent at the rim. Tae sees the eyes behind my visor.
         Tae knows something is different. She does not know what.
         # speaker: tae
         You look good.
         # speaker: wren
         Yeah?
         # speaker: tae
-        Yeah. Better than yesterday actually. The placement is — it's the same as yesterday but it's better. I don't know.
+        Yeah. Better than yesterday actually. The placement is. It's the same as yesterday but it's better. I don't know.
         # speaker: tae
         Are you okay?
         # speaker: wren
@@ -214,13 +214,13 @@ Tae sees Wren.
 = ozaki_passes
 # char: ozaki neutral
 
-Across the wide corridor, near the dexterity-hall door, Mr. Ozaki is talking to another teacher. He sees Wren.
+Across the wide corridor, near the dexterity-hall door, Mr. Ozaki is talking to another teacher. He sees me.
 
 He does not pause his conversation.
 
-But he meets Wren's eyes — through the visor or without, depending on whether Wren has one — and he nods once. Small. Not making it into a thing.
+But he meets my eyes. Through the visor or without, depending on whether I have one. And he nods once. Small. Not making it into a thing.
 
-Wren nods back.
+I nod back.
 
 The other teacher does not notice.
 
@@ -234,31 +234,31 @@ Ozaki goes back to his conversation.
 
 Up ahead, the freshman girl in the faded-blue suit is at her locker. The one with the one star sticker.
 
-She sees Wren.
+She sees me.
 
 {
     - gate1 == "speak":
-        She holds Wren's gaze for a longer moment than necessary. The kind of look you give a person when you are trying to say something without saying it. Then she nods — very small — and goes back to her locker. The one star sticker on her shoulder catches the corridor light.
+        She holds my gaze for a longer moment than necessary. The kind of look you give a person when you are trying to say something without saying it. Then she nods. Very small. And goes back to her locker. The one star sticker on her shoulder catches the corridor light.
     - else:
-        She holds Wren's gaze for the length of a breath. Then she looks down and goes back to her locker.
+        She holds my gaze for the length of a breath. Then she looks down and goes back to her locker.
 }
 
-Wren walks past.
+I walk past.
 
 -> cael_silent
 
 
 = cael_silent
 
-At the back of the corridor, near the homeroom doorway, Cael is standing with his usual group. He sees Wren.
+At the back of the corridor, near the homeroom doorway, Cael is standing with his usual group. He sees me.
 
-He sees Wren.
+He sees me.
 
 He does not have a script for this.
 
-His mouth opens — for half a second, the start of a sentence forming — and then closes. He turns to one of the kids beside him and says something Wren cannot hear. The kid laughs, but a beat late, because the kid is also looking at Wren.
+His mouth opens. For half a second, the start of a sentence forming. And then closes. He turns to one of the kids beside him and say something I cannot hear. The kid laughs, but a beat late, because the kid is also looking at me.
 
-Cael does not look at Wren again as Wren passes.
+Cael does not look at me again as I pass.
 
 This is the closest thing to grace Cael will produce today, and he does not know it.
 
@@ -267,10 +267,10 @@ This is the closest thing to grace Cael will produce today, and he does not know
 
 = homeroom_door
 
-Tae is still beside Wren at the homeroom doorway.
+Tae is still beside me at the homeroom doorway.
 
 # speaker: tae
-After class, can we — just walk somewhere. Anywhere.
+After class, can we. Just walk somewhere. Anywhere.
 
 # speaker: wren
 Yeah.

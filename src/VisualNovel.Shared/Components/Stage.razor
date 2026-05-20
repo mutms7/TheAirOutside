@@ -4,8 +4,13 @@
 @inject SaveService SaveSvc
 @implements IDisposable
 
-<div class="stage voice-@Story.Voice pacing-@Story.Pacing theme-@SettingsSvc.Current.Theme @(SettingsSvc.Current.ReduceMotion ? "reduce-motion" : "") @(Story.IsClimaxPause ? "climax-pause" : "")"
-     style="--text-size-mult: @(SettingsSvc.Current.TextSize.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));"
+@if (!Story.IsPrologueDone && Story.Scene == 0)
+{
+    <NameInput />
+}
+
+<div class="stage voice-@Story.Voice pacing-@Story.Pacing theme-@SettingsSvc.Current.Theme @(SettingsSvc.Current.ReduceMotion ? "reduce-motion" : "") @(Story.IsClimaxPause ? "climax-pause" : "") @(IsDarkBackground ? "bg-dark" : "bg-light")"
+     style="--text-size-mult: @(SettingsSvc.Current.TextSize.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)); @(Story.IsPrologueDone ? "" : "visibility: hidden;")"
      @onclick="OnStageClick">
 
     @if (!Story.IsClimaxPause)
@@ -98,6 +103,21 @@
 </div>
 
 @code {
+    private static readonly HashSet<string> DarkBackgrounds = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "bedroom-night", "hallway-night", "taes-room",
+        "field-night", "field-clearing", "nurse-office-night"
+    };
+
+    private bool IsDarkBackground
+    {
+        get
+        {
+            if (SettingsSvc.Current.Theme == "dark") return true;
+            return !string.IsNullOrEmpty(Story.Background) && DarkBackgrounds.Contains(Story.Background);
+        }
+    }
+
     private Timer? _autoTimer;
     private bool _transitioning;
     private TopBar.Panel _openPanel = TopBar.Panel.None;
@@ -113,9 +133,13 @@
 
     private async void OnProgressChanged()
     {
-        if (Story.Scene > 0)
+        if (Story.IsPrologueDone)
         {
-            await SaveSvc.SaveAsync(Story.VisitedScenes, Story.Scene);
+            await SaveSvc.SaveAsync(
+                Story.VisitedScenes,
+                Story.Scene,
+                Story.IsPrologueDone,
+                Story.GetVar("protagonist_name"));
         }
     }
 

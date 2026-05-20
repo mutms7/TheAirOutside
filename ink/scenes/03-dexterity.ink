@@ -33,7 +33,7 @@ Three positions today. First. Second. Third. Without breaking the line of your a
 Watch. Try. Repeat.
 
 # art: dexterity-positions
-Ozaki demonstrates with the suit on — the three positions, slowly, the suit's measured precision smoothing each motion.
+Ozaki demonstrates with the suit on. The three positions, slowly, the suit's measured precision smoothing each motion.
 
 # speaker: ozaki
 Begin.
@@ -45,13 +45,13 @@ Begin.
 
 The class moves. Twenty-six suits move into the first position together.
 
-Two suits move into the second position out of sync. A small chime — the out-of-pace marker, soft enough not to embarrass anyone but clear enough to be heard.
+Two suits move into the second position out of sync. A small chime. The out-of-pace marker, soft enough not to embarrass anyone but clear enough to be heard.
 
-Wren's suit moves with the rest. The arm coordination is smooth. The first to the second is almost effortless.
+My suit moves with the rest. The arm coordination is smooth. The first to the second is almost effortless.
 
 The second to the third is not.
 
-Wren stops between two and three, hesitates, the suit recalibrates.
+I stop between two and three, hesitate, the suit recalibrates.
 
 # speaker: hud
 Pace check: 92%.
@@ -68,36 +68,35 @@ Across the room, others are also recalibrating. There is a small ripple of out-o
 
 = path_focus
 
-Wren closes their eyes for a second.
+I close my eyes for a second.
 
-The suit's helmet visor darkens slightly — focus mode, an old feature most students don't use anymore.
+The suit's helmet visor darkens slightly. Focus mode, an old feature most students don't use anymore.
 
-The second position is a thing the body holds, not a thing the suit calculates. Wren can almost feel where the arm wants to be. The suit takes them there.
+The second position is a thing the body holds, not a thing the suit calculates. I can almost feel where the arm wants to be. The suit takes me there.
 
 A small chime. Pace check: 96%.
 
 # speaker: hud
 Coordination improved.
 
-Wren does not know what to do with this.
+I do not know what to do with this.
 
 -> convergence
 
 
 = path_question
 
-Wren raises a hand. The suit's signal flag lights up at the wrist.
+I raise a hand. The suit's signal flag lights up at the wrist.
 
 # speaker: ozaki
 Yes.
 
 # speaker: wren
-The second position — is the elbow leading, or—
-
+The second position. Is the elbow leading, or...
 # speaker: wren
-or the wrist?
+Or the wrist?
 
-Ozaki considers Wren for a moment longer than other teachers would.
+Ozaki considers me for a moment longer than other teachers would.
 
 # speaker: ozaki
 The elbow.
@@ -108,7 +107,7 @@ Always the elbow.
 # speaker: ozaki
 The wrist follows. Try again.
 
-Wren tries again. The second position lands cleaner.
+I try again. The second position lands cleaner.
 
 # speaker: ozaki
 There.
@@ -118,15 +117,15 @@ There.
 
 = path_drift
 
-For a second, Wren's eyes leave the drill.
+For a second, my eyes leave the drill.
 
 Through the high south window: rain is starting. Tiny lines on the glass.
 
-Beyond the rain, on the path along the side of the building — a figure.
+Beyond the rain, on the path along the side of the building. A figure.
 
 Walking slowly, not in a hurry. No helmet. The shoulder line of plain clothes. No suit at all.
 
-Wren has never seen anyone in this school like this.
+I have never seen anyone in this school like this.
 
 The figure is too far for the suit-cam to auto-zoom.
 
@@ -134,7 +133,7 @@ A second more.
 
 The figure passes out of frame behind the row of trees that runs along the path.
 
-Wren's eyes return to the drill. The suit's coordination has held the pose without them.
+My eyes return to the drill. The suit's coordination has held the pose without me.
 
 ~ seen_iris_through_window = true
 
@@ -145,7 +144,7 @@ Wren's eyes return to the drill. The suit's coordination has held the pose witho
 # motif: rain-window
 ~ rain_state = 1
 
-The rain has become steadier. From inside the suit, it sounds like muffled white noise — a low, ambient pressure against the helmet shell. The hall's audio system filters most of it out.
+The rain has become steadier. From inside the suit, it sounds like muffled white noise. A low, ambient pressure against the helmet shell. The hall's audio system filters most of it out.
 
 The class is still struggling with the third position. Two-thirds of the room cannot make the second-to-third transition smooth. There are more out-of-pace chimes than not, now.
 
@@ -174,16 +173,16 @@ The class is suddenly silent.
 
 # char: ozaki bare
 
-Ozaki steps out of the suit. The suit stands behind him on its own — autoframe locked, helmet still on the rest, the blinking diagnostic light running through its cycle softly.
+Ozaki steps out of the suit. The suit stands behind him on its own. Autoframe locked, helmet still on the rest, the blinking diagnostic light running through its cycle softly.
 
 Ozaki is wearing a plain undershirt and plain trousers. He is mid-forties. His shoulders are narrower than the suit suggested. There is a small scar near his collarbone that the suit normally covers.
 
 # speaker: hud
 Suit autoframe: standby. Instructor unsuited.
 
-A bio-irregularity blip flashes across the HUDs of several students at the same time — small spikes, recorded and dismissed by the system. The class is not breathing the way it was a second ago.
+A bio-irregularity blip flashes across the HUDs of several students at the same time. Small spikes, recorded and dismissed by the system. The class is not breathing the way it was a second ago.
 
-Wren is one of the spikes.
+I am one of the spikes.
 
 # speaker: ozaki
 First.
@@ -231,12 +230,12 @@ Two more attempts each, please. First, second, third. Then we are done for today
 
 The class moves again. Slower. Paying more attention now.
 
-Wren tries the sequence once. The second-to-third lands cleaner than before.
+I try the sequence once. The second-to-third lands cleaner than before.
 
 # speaker: hud
 Pace check: 95%.
 
-Wren does not know why.
+I do not know why.
 
 -> end_of_class
 
