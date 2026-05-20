@@ -21,28 +21,34 @@
         @if (s.AutoAdvance)
         {
             <div class="settings__row">
-                <label class="settings__label">Auto-advance delay: @s.AutoAdvanceDelay.ToString("0.0")s</label>
+                <label class="settings__label">Auto-advance delay <span class="settings__value">@s.AutoAdvanceDelay.ToString("0.0")s</span></label>
                 <input type="range" min="1.0" max="10.0" step="0.5" value="@s.AutoAdvanceDelay"
-                       @onchange="@(async e => await Update(set => set.AutoAdvanceDelay = double.Parse(e.Value!.ToString()!)))" />
+                       @oninput="@(async e => await Update(set => set.AutoAdvanceDelay = double.Parse(e.Value!.ToString()!)))" />
             </div>
         }
 
         <div class="settings__row">
-            <label class="settings__label">Text fade: @s.TextFadeMs.ToString("0")ms</label>
+            <label class="settings__label">Text fade <span class="settings__value">@s.TextFadeMs.ToString("0")ms</span></label>
             <input type="range" min="0" max="500" step="25" value="@s.TextFadeMs"
-                   @onchange="@(async e => await Update(set => set.TextFadeMs = double.Parse(e.Value!.ToString()!)))" />
+                   @oninput="@(async e => await Update(set => set.TextFadeMs = double.Parse(e.Value!.ToString()!)))" />
         </div>
 
         <div class="settings__row">
-            <label class="settings__label">Text size</label>
-            <div class="settings__seg settings__seg--wrap">
-                @foreach (var size in TextSizes)
+            <label class="settings__label">Text size <span class="settings__value">@s.TextSize.ToString("0.##")×</span></label>
+            <input type="range" min="0" max="5" step="1" value="@TextSizeIndex" list="text-size-marks"
+                   @oninput="OnTextSizeInput" />
+            <datalist id="text-size-marks">
+                <option value="0"></option>
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value="4"></option>
+                <option value="5"></option>
+            </datalist>
+            <div class="settings__slider-marks">
+                @foreach (var v in TextSizes)
                 {
-                    var v = size;
-                    <button class="settings__seg-btn @(Math.Abs(s.TextSize - v) < 0.005 ? "settings__seg-btn--active" : "")"
-                            @onclick="@(async () => await Update(set => set.TextSize = v))">
-                        @v.ToString("0.##")×
-                    </button>
+                    <span class="settings__slider-mark @(Math.Abs(s.TextSize - v) < 0.005 ? "settings__slider-mark--active" : "")">@v.ToString("0.##")×</span>
                 }
             </div>
         </div>
@@ -76,21 +82,28 @@
         <p class="settings__hint">Audio is not wired in the prototype. Sliders save for the future.</p>
 
         <div class="settings__row">
-            <label class="settings__label">Master: @((int)(s.MasterVolume * 100))%</label>
+            <label class="settings__label">Master <span class="settings__value">@((int)(s.MasterVolume * 100))%</span></label>
             <input type="range" min="0" max="1" step="0.05" value="@s.MasterVolume"
-                   @onchange="@(async e => await Update(set => set.MasterVolume = double.Parse(e.Value!.ToString()!)))" />
+                   @oninput="@(async e => await Update(set => set.MasterVolume = double.Parse(e.Value!.ToString()!)))" />
         </div>
 
         <div class="settings__row">
-            <label class="settings__label">Music: @((int)(s.MusicVolume * 100))%</label>
+            <label class="settings__label">Music <span class="settings__value">@((int)(s.MusicVolume * 100))%</span></label>
             <input type="range" min="0" max="1" step="0.05" value="@s.MusicVolume"
-                   @onchange="@(async e => await Update(set => set.MusicVolume = double.Parse(e.Value!.ToString()!)))" />
+                   @oninput="@(async e => await Update(set => set.MusicVolume = double.Parse(e.Value!.ToString()!)))" />
         </div>
 
         <div class="settings__row">
-            <label class="settings__label">Sound effects: @((int)(s.SfxVolume * 100))%</label>
+            <label class="settings__label">Sound effects <span class="settings__value">@((int)(s.SfxVolume * 100))%</span></label>
             <input type="range" min="0" max="1" step="0.05" value="@s.SfxVolume"
-                   @onchange="@(async e => await Update(set => set.SfxVolume = double.Parse(e.Value!.ToString()!)))" />
+                   @oninput="@(async e => await Update(set => set.SfxVolume = double.Parse(e.Value!.ToString()!)))" />
+        </div>
+    </section>
+
+    <section class="settings__group">
+        <div class="settings__row">
+            <button class="settings__reset" @onclick="ResetDefaults">Reset to defaults</button>
+            <p class="settings__hint">Returns every setting to its starting value. Your save and progress are not affected.</p>
         </div>
     </section>
 </div>
@@ -98,7 +111,17 @@
 @code {
     private GameSettings s => SettingsSvc.Current;
 
-    private static readonly double[] TextSizes = { 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0 };
+    private static readonly double[] TextSizes = { 0.75, 1.0, 1.25, 1.5, 1.75, 2.0 };
+
+    private int TextSizeIndex
+    {
+        get
+        {
+            for (int i = 0; i < TextSizes.Length; i++)
+                if (Math.Abs(s.TextSize - TextSizes[i]) < 0.01) return i;
+            return 1; // default to 1.0
+        }
+    }
 
     protected override void OnInitialized() => SettingsSvc.Changed += OnChanged;
     private void OnChanged() => InvokeAsync(StateHasChanged);
@@ -106,6 +129,29 @@
     private async Task Update(Action<GameSettings> mutate)
     {
         await SettingsSvc.UpdateAsync(mutate);
+    }
+
+    private async Task OnTextSizeInput(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var idx) && idx >= 0 && idx < TextSizes.Length)
+        {
+            await Update(set => set.TextSize = TextSizes[idx]);
+        }
+    }
+
+    private async Task ResetDefaults()
+    {
+        await SettingsSvc.UpdateAsync(set => {
+            set.AutoAdvance = false;
+            set.AutoAdvanceDelay = 3.5;
+            set.TextFadeMs = 150;
+            set.TextSize = 1.0;
+            set.MasterVolume = 0.8;
+            set.MusicVolume = 0.7;
+            set.SfxVolume = 0.8;
+            set.Theme = "light";
+            set.ReduceMotion = false;
+        });
     }
 
     public void Dispose() => SettingsSvc.Changed -= OnChanged;

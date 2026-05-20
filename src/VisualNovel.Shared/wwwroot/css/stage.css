@@ -140,6 +140,135 @@ html, body {
     color: rgba(232, 228, 218, 0.6);
 }
 
+.stage.bg-dark .dialogue__text--wren,
+.stage.bg-dark .dialogue__text--tae,
+.stage.bg-dark .dialogue__text--iris,
+.stage.bg-dark .dialogue__text--ozaki,
+.stage.bg-dark .dialogue__text--cael,
+.stage.bg-dark .dialogue__text--janitor {
+    color: #E8E4DA;
+}
+
+.stage.bg-dark .climax__line {
+    color: rgba(232, 228, 218, 0.7);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Custom tooltips (replaces browser default title= tooltip)
+   ────────────────────────────────────────────────────────────────────────── */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: color-mix(in srgb, var(--color-ink) 92%, transparent);
+    color: var(--color-paper);
+    padding: 0.4rem 0.7rem;
+    border-radius: 4px;
+    font-family: var(--type-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 50;
+    box-shadow: 0 4px 16px var(--color-shadow);
+}
+
+[data-tooltip]::before {
+    content: "";
+    position: absolute;
+    top: calc(100% + 0.1rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid color-mix(in srgb, var(--color-ink) 92%, transparent);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 50;
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.stage.bg-dark [data-tooltip]::after {
+    background: rgba(250, 247, 241, 0.95);
+    color: #1A1A20;
+}
+
+.stage.bg-dark [data-tooltip]::before {
+    border-bottom-color: rgba(250, 247, 241, 0.95);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Settings: live slider values + reset button + slider marks
+   ────────────────────────────────────────────────────────────────────────── */
+.settings__value {
+    float: right;
+    font-family: var(--type-mono);
+    font-size: 0.78rem;
+    color: var(--color-wren);
+    letter-spacing: 0.06em;
+    background: color-mix(in srgb, var(--color-wren) 12%, transparent);
+    padding: 0.05rem 0.5rem;
+    border-radius: 3px;
+    min-width: 3rem;
+    text-align: center;
+}
+
+.settings__slider-marks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+    font-family: var(--type-mono);
+    font-size: 0.62rem;
+    color: var(--color-muted);
+    letter-spacing: 0.04em;
+}
+
+.settings__slider-mark {
+    flex: 1;
+    text-align: center;
+    transition: color 0.15s ease;
+}
+
+.settings__slider-mark--active {
+    color: var(--color-wren);
+    font-weight: 600;
+}
+
+.settings__reset {
+    background: transparent;
+    border: 1px solid var(--color-rule);
+    color: var(--color-ink);
+    font-family: var(--type-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: lowercase;
+    padding: 0.55rem 1.2rem;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.settings__reset:hover {
+    background: var(--color-paper-dim);
+    border-color: color-mix(in srgb, var(--color-ink) 28%, transparent);
+}
+
 /* ──────────────────────────────────────────────────────────────────────────
    Background
    ────────────────────────────────────────────────────────────────────────── */
@@ -212,7 +341,7 @@ html, body {
    ────────────────────────────────────────────────────────────────────────── */
 .motif {
     position: absolute;
-    top: 32%;
+    top: 28%;
     right: 12%;
     z-index: 1;
     pointer-events: none;
@@ -221,10 +350,25 @@ html, body {
     animation: fade-in 1.2s ease;
 }
 
+.motif--ant-hill-building,
+.motif--ant-hill-crushed,
+.motif--ant-hill-eye-level {
+    top: auto;
+    bottom: 9rem;
+    right: 8%;
+}
+
 .motif__icon {
-    width: 72px;
-    height: 72px;
+    width: 96px;
+    height: 96px;
     display: block;
+}
+
+.motif--ant-hill-building .motif__icon,
+.motif--ant-hill-crushed .motif__icon,
+.motif--ant-hill-eye-level .motif__icon {
+    width: 140px;
+    height: 105px;
 }
 
 .theme-dark .motif__icon ellipse,

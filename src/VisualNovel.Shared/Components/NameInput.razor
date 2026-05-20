@@ -1,7 +1,7 @@
 @inject StoryService Story
 @using Microsoft.AspNetCore.Components.Web
 
-<div class="prologue">
+<div class="prologue" @onclick="OnContentClick">
     <div class="prologue__landscape" aria-hidden="true">
         <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
             <defs>
@@ -43,7 +43,7 @@
         </svg>
     </div>
 
-    <div class="prologue__content" @onclick="OnContentClick">
+    <div class="prologue__content">
         @if (_screen < _lines.Length)
         {
             <p class="prologue__text" @key="_screen">@_lines[_screen]</p>
@@ -70,7 +70,7 @@
         }
     </div>
 
-    <button class="prologue__skip" @onclick="Skip" @onclick:stopPropagation="true" title="Skip the prologue">skip</button>
+    <button class="prologue__skip" @onclick="Skip" @onclick:stopPropagation="true" data-tooltip="Skip the prologue">skip</button>
 </div>
 
 @code {

@@ -6,20 +6,20 @@ public static class SceneRegistry
 {
     public static readonly IReadOnlyList<SceneInfo> Scenes = new SceneInfo[]
     {
-        new(1,  "cold_open",        "Cold Open: Ants"),
-        new(2,  "homeroom",         "Homeroom: Stickers"),
-        new(3,  "dexterity_pe",     "PE: Smooth"),
-        new(4,  "cafeteria",        "Lunch: The Lesser Suits",   Gate: "gate1"),
-        new(5,  "hallway_iris",     "Hallway: Out",              Gate: "gate2"),
-        new(6,  "evening_charging", "Evening: Charging"),
-        new(7,  "crushed",          "Morning: Crushed"),
-        new(8,  "classroom_ozaki",  "Be More Honest",            CallbackFrom: 4),
+        new(1,  "cold_open",        "Ants"),
+        new(2,  "homeroom",         "Stickers"),
+        new(3,  "dexterity_pe",     "Smooth"),
+        new(4,  "cafeteria",        "The Lesser Suits",  Gate: "gate1"),
+        new(5,  "hallway_iris",     "The Window",        Gate: "gate2"),
+        new(6,  "evening_charging", "Charging"),
+        new(7,  "crushed",          "Crushed"),
+        new(8,  "classroom_ozaki",  "Be More Honest",    CallbackFrom: 4),
         new(9,  "malfunction",      "Air"),
-        new(10, "taes_drawer",      "Tae's Drawer"),
-        new(11, "night_hallway",    "Night Hallway: Humming"),
-        new(12, "the_door",         "The Door",                  Gate: "gate3"),
-        new(13, "step_outside",     "Step Outside"),
-        new(14, "next_day",         "Next Day: Bare",            Gate: "gate4"),
+        new(10, "taes_drawer",      "The Drawer"),
+        new(11, "night_hallway",    "Humming"),
+        new(12, "the_door",         "The Door",          Gate: "gate3"),
+        new(13, "step_outside",     "Outside"),
+        new(14, "next_day",         "Bare",              Gate: "gate4"),
         new(15, "coda",             "Watching"),
     };
 

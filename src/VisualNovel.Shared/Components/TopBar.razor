@@ -1,7 +1,7 @@
 @inject StoryService Story
 
 <div class="topbar @(Story.IsClimaxPause ? "topbar--hidden" : "")">
-    <button class="topbar__btn" title="Settings" aria-label="Settings"
+    <button class="topbar__btn" data-tooltip="Settings" aria-label="Settings"
             @onclick="() => OnOpen.InvokeAsync(Panel.Settings)" @onclick:stopPropagation="true">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
             <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
@@ -9,7 +9,7 @@
                   fill="none" stroke="currentColor" stroke-width="1.5"/>
         </svg>
     </button>
-    <button class="topbar__btn" title="Scenes" aria-label="Scenes"
+    <button class="topbar__btn" data-tooltip="Scenes" aria-label="Scenes"
             @onclick="() => OnOpen.InvokeAsync(Panel.Scenes)" @onclick:stopPropagation="true">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
             <rect x="4" y="4" width="16" height="16" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
@@ -18,7 +18,7 @@
             <line x1="8" y1="15" x2="13" y2="15" stroke="currentColor" stroke-width="1.5"/>
         </svg>
     </button>
-    <button class="topbar__btn" title="Timeline" aria-label="Timeline map"
+    <button class="topbar__btn" data-tooltip="Story map" aria-label="Story map"
             @onclick="() => OnOpen.InvokeAsync(Panel.Map)" @onclick:stopPropagation="true">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
             <circle cx="6"  cy="6"  r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
@@ -32,7 +32,7 @@
             <line x1="13" y1="15" x2="17" y2="19" stroke="currentColor" stroke-width="1.5"/>
         </svg>
     </button>
-    <button class="topbar__btn" title="History" aria-label="Backlog"
+    <button class="topbar__btn" data-tooltip="History" aria-label="History"
             @onclick="() => OnOpen.InvokeAsync(Panel.Backlog)" @onclick:stopPropagation="true">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
             <path d="M3 12 a9 9 0 1 0 3-6.7" fill="none" stroke="currentColor" stroke-width="1.5"/>
