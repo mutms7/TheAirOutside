@@ -1,101 +1,169 @@
 // Ambient music engine for "The Air Outside".
-// Procedural — no audio files, no external libraries.
-// Each scene maps to a "mood": a chord voicing + character settings.
-// Voices are sine/triangle oscillators with slow LFO detune and per-voice stereo pan.
-// Mood transitions crossfade over ~4 seconds. The whole thing is intentionally quiet.
+// Procedural — no audio files. Each scene maps to a "mood": a tempo, a
+// 4-chord progression, a melody scale, and gain/brightness settings.
+//
+// Layers per chord:
+//   bass     — short attack, long decay; root + low octave
+//   pad      — sustained chord voicing, slow attack
+//   melody   — sparse notes drawn from the mood's scale (chord tones
+//              weighted higher), played at probabilistic half-beat positions
+//
+// Mood transitions crossfade over ~4 seconds while the new progression
+// starts fresh from its first chord.
+//
+// Scheduling uses the standard "two clocks" pattern: a setInterval that
+// looks ~180ms ahead and queues notes with absolute AudioContext times.
 (function () {
     'use strict';
 
+    // ──────────────────────────────────────────────────────────────────
+    // Mood definitions. All MIDI numbers; 60 = middle C.
+    // ──────────────────────────────────────────────────────────────────
+
     const MOODS = {
-        // Warm, hopeful — morning light, ordinary day.
+        // I  vi  IV  V — warm, hopeful. Cmaj9 → Am9 → Fmaj9 → G7sus4
         morning: {
-            chord: [36, 48, 55, 60, 64, 67],
+            bpm: 60,
             brightness: 0.55,
-            detune: 6,
-            lfoHz: 0.06,
-            gain: 0.045
+            gains: { pad: 0.040, bass: 0.075, melody: 0.062 },
+            melodyBeatProb: [0.55, 0.08, 0.30, 0.10, 0.45, 0.08, 0.25, 0.10],
+            melodyScale: [72, 74, 76, 79, 81, 84],         // C5 D5 E5 G5 A5 C6 (Cmaj pentatonic)
+            progression: [
+                { bass: [36, 48], pad: [60, 64, 67, 71, 74], chordTones: [60, 64, 67, 71], beats: 4 },
+                { bass: [33, 45], pad: [57, 60, 64, 67, 71], chordTones: [57, 60, 64, 67], beats: 4 },
+                { bass: [29, 41], pad: [60, 65, 69, 72, 76], chordTones: [65, 69, 72, 77], beats: 4 },
+                { bass: [31, 43], pad: [55, 60, 62, 67, 71], chordTones: [55, 62, 67, 71], beats: 4 }
+            ]
         },
-        // Cool, sparse — drills, conformity pressure.
+
+        // i  bVI  bIII  V7 — uneasy, unresolved. Dm9 → Bbmaj7 → Fmaj7 → A7sus4
         tension: {
-            chord: [38, 50, 53, 57, 65],
+            bpm: 54,
             brightness: 0.30,
-            detune: 9,
-            lfoHz: 0.11,
-            gain: 0.035
+            gains: { pad: 0.034, bass: 0.062, melody: 0.048 },
+            melodyBeatProb: [0.35, 0.05, 0.15, 0.05, 0.30, 0.05, 0.15, 0.05],
+            melodyScale: [74, 77, 79, 81, 84, 89],         // D5 F5 G5 A5 C6 F6 (modal Dm)
+            progression: [
+                { bass: [38, 50], pad: [62, 65, 69, 72, 76], chordTones: [62, 65, 69, 72], beats: 4 },
+                { bass: [34, 46], pad: [58, 62, 65, 69, 72], chordTones: [58, 62, 65, 69], beats: 4 },
+                { bass: [29, 41], pad: [60, 65, 69, 72, 76], chordTones: [65, 69, 72, 76], beats: 4 },
+                { bass: [33, 45], pad: [57, 62, 64, 67, 71], chordTones: [57, 62, 64, 67], beats: 4 }
+            ]
         },
-        // Gentle minor — wistful, the window, the rain.
+
+        // i  bVI  bIII  bVII — gentle longing. Am9 → Fmaj7 → Cmaj7 → G6
         wistful: {
-            chord: [33, 45, 52, 57, 64, 67],
+            bpm: 56,
             brightness: 0.38,
-            detune: 5,
-            lfoHz: 0.05,
-            gain: 0.045
+            gains: { pad: 0.038, bass: 0.068, melody: 0.055 },
+            melodyBeatProb: [0.45, 0.10, 0.25, 0.10, 0.40, 0.08, 0.20, 0.10],
+            melodyScale: [69, 72, 76, 79, 81, 84],         // A4 C5 E5 G5 A5 C6 (Am add B)
+            progression: [
+                { bass: [33, 45], pad: [57, 60, 64, 67, 71], chordTones: [57, 60, 64, 67], beats: 4 },
+                { bass: [29, 41], pad: [60, 65, 69, 72, 76], chordTones: [65, 69, 72, 76], beats: 4 },
+                { bass: [36, 48], pad: [60, 64, 67, 72, 74], chordTones: [60, 64, 67, 71], beats: 4 },
+                { bass: [35, 47], pad: [55, 59, 62, 67, 71], chordTones: [55, 59, 62, 67], beats: 4 }
+            ]
         },
-        // Open suspended — contemplative, in-between.
+
+        // All suspensions — open, in-between. Csus2 → Fsus2 → G6sus4 → Csus2
         contemplative: {
-            chord: [36, 48, 50, 55, 62, 67],
-            brightness: 0.48,
-            detune: 4,
-            lfoHz: 0.04,
-            gain: 0.042
+            bpm: 52,
+            brightness: 0.46,
+            gains: { pad: 0.036, bass: 0.058, melody: 0.045 },
+            melodyBeatProb: [0.35, 0.04, 0.12, 0.04, 0.28, 0.04, 0.10, 0.04],
+            melodyScale: [72, 74, 76, 79, 81, 84],         // C5 D5 E5 G5 A5 C6
+            progression: [
+                { bass: [36, 48], pad: [60, 62, 67, 72, 74], chordTones: [60, 62, 67, 74], beats: 4 },
+                { bass: [29, 41], pad: [60, 65, 67, 72, 77], chordTones: [65, 67, 72, 77], beats: 4 },
+                { bass: [31, 43], pad: [55, 60, 62, 64, 67], chordTones: [55, 62, 64, 67], beats: 4 },
+                { bass: [36, 48], pad: [60, 62, 67, 72, 74], chordTones: [60, 62, 67, 74], beats: 4 }
+            ]
         },
-        // Close, warm — Tae's room, intimate.
+
+        // ii-V loop on F — close and warm. Fmaj9 → Am11 → Dm9 → Bbmaj7
         intimate: {
-            chord: [29, 41, 48, 53, 60, 65],
-            brightness: 0.50,
-            detune: 7,
-            lfoHz: 0.07,
-            gain: 0.045
+            bpm: 64,
+            brightness: 0.52,
+            gains: { pad: 0.042, bass: 0.072, melody: 0.060 },
+            melodyBeatProb: [0.55, 0.15, 0.35, 0.15, 0.50, 0.10, 0.30, 0.15],
+            melodyScale: [72, 74, 77, 79, 81, 84, 86],     // C5 D5 F5 G5 A5 C6 D6
+            progression: [
+                { bass: [29, 41], pad: [57, 60, 65, 69, 72], chordTones: [57, 60, 65, 69], beats: 4 },
+                { bass: [33, 45], pad: [57, 60, 64, 67, 71, 74], chordTones: [57, 60, 64, 67, 71], beats: 4 },
+                { bass: [38, 50], pad: [62, 65, 69, 72, 76], chordTones: [62, 65, 69, 72], beats: 4 },
+                { bass: [34, 46], pad: [58, 62, 65, 69, 72], chordTones: [58, 62, 65, 69], beats: 4 }
+            ]
         },
-        // Wide and shimmering — climax, awe.
+
+        // I  V  vi  IV — slow, wide. C → G/B → Am → F (octave-doubled root)
         awe: {
-            chord: [24, 36, 48, 55, 60, 67, 72, 79],
-            brightness: 0.68,
-            detune: 4,
-            lfoHz: 0.035,
-            gain: 0.040
+            bpm: 50,
+            brightness: 0.65,
+            gains: { pad: 0.040, bass: 0.062, melody: 0.052 },
+            melodyBeatProb: [0.30, 0.0, 0.10, 0.0, 0.22, 0.0, 0.06, 0.0],
+            melodyScale: [79, 84, 88, 91, 96],              // G5 C6 E6 G6 C7 (bell-like high)
+            progression: [
+                { bass: [24, 36, 48], pad: [55, 60, 64, 67, 72], chordTones: [60, 64, 67, 72], beats: 4 },
+                { bass: [23, 35, 47], pad: [55, 59, 62, 67, 74], chordTones: [55, 59, 62, 67], beats: 4 },
+                { bass: [33, 45], pad: [57, 60, 64, 69, 72], chordTones: [57, 60, 64, 69], beats: 4 },
+                { bass: [29, 41], pad: [60, 65, 69, 72, 77], chordTones: [65, 69, 72, 77], beats: 4 }
+            ]
         },
-        // Soft major resolution — after.
+
+        // IV  I  ii  bVII — soft resolution. Fmaj9 → Cmaj7 → Dm9 → Bbmaj7
         tender: {
-            chord: [29, 41, 48, 57, 60, 64, 67],
+            bpm: 60,
             brightness: 0.58,
-            detune: 5,
-            lfoHz: 0.055,
-            gain: 0.045
+            gains: { pad: 0.042, bass: 0.068, melody: 0.058 },
+            melodyBeatProb: [0.45, 0.10, 0.25, 0.10, 0.40, 0.08, 0.20, 0.10],
+            melodyScale: [72, 74, 77, 81, 84, 86],         // C5 D5 F5 A5 C6 D6
+            progression: [
+                { bass: [29, 41], pad: [57, 60, 65, 69, 72], chordTones: [57, 60, 65, 69], beats: 4 },
+                { bass: [36, 48], pad: [60, 64, 67, 71, 74], chordTones: [60, 64, 67, 71], beats: 4 },
+                { bass: [38, 50], pad: [62, 65, 69, 72, 76], chordTones: [62, 65, 69, 72], beats: 4 },
+                { bass: [34, 46], pad: [58, 62, 65, 69, 72], chordTones: [58, 62, 65, 69], beats: 4 }
+            ]
         }
     };
 
-    // Scene number → mood key. Scene 0 is the prologue.
     const SCENE_MOODS = {
-        0: 'morning',
-        1: 'morning',
-        2: 'morning',
-        3: 'tension',
-        4: 'tension',
-        5: 'wistful',
-        6: 'wistful',
-        7: 'wistful',
-        8: 'contemplative',
-        9: 'awe',
+        0: 'morning',  1: 'morning', 2: 'morning',
+        3: 'tension',  4: 'tension',
+        5: 'wistful',  6: 'wistful', 7: 'wistful',
+        8: 'contemplative', 11: 'contemplative',
+        9: 'awe',     12: 'awe',    13: 'awe',
         10: 'intimate',
-        11: 'contemplative',
-        12: 'awe',
-        13: 'awe',
-        14: 'tender',
-        15: 'tender'
+        14: 'tender', 15: 'tender'
     };
 
-    const FADE_SEC = 4.0;
+    // ──────────────────────────────────────────────────────────────────
+    // Engine state
+    // ──────────────────────────────────────────────────────────────────
+
+    const SCHED_INTERVAL_MS = 25;
+    const LOOKAHEAD_SEC = 0.18;
+    const MOOD_FADE_SEC = 3.5;
 
     let ctx = null;
     let masterGain = null;
     let musicGain = null;
-    let voices = [];
-    let currentMood = null;
     let masterVol = 0.8;
     let musicVol = 0.7;
 
-    const midiToFreq = (m) => 440 * Math.pow(2, (m - 69) / 12);
+    let mood = null;
+    let moodKey = null;
+    let progIdx = 0;
+    let nextChordTime = 0;
+    let activeVoices = [];   // currently playing voices, pruned by scheduler
+    let schedTimer = null;
+
+    const midiToHz = (m) => 440 * Math.pow(2, (m - 69) / 12);
+    const rand = (a, b) => a + Math.random() * (b - a);
+
+    // ──────────────────────────────────────────────────────────────────
+    // Context setup
+    // ──────────────────────────────────────────────────────────────────
 
     function ensureCtx() {
         if (ctx) return;
@@ -116,9 +184,19 @@
         }
     }
 
-    function createVoice(midi, mood) {
-        const t = ctx.currentTime;
-        const freq = midiToFreq(midi);
+    // ──────────────────────────────────────────────────────────────────
+    // Voice factories
+    // ──────────────────────────────────────────────────────────────────
+
+    function makePadVoice(midi, when, chordDuration, m) {
+        // Pad voice lives past the chord boundary so the next chord's pad
+        // attack overlaps with this chord's release. No silence valleys.
+        const attack = 1.4;
+        const tail   = 1.5;
+        const total  = chordDuration + tail;
+        const holdEnd = Math.max(attack + 0.3, total * 0.4);
+
+        const freq = midiToHz(midi);
 
         const osc1 = ctx.createOscillator();
         const osc2 = ctx.createOscillator();
@@ -126,39 +204,30 @@
         osc2.type = 'triangle';
         osc1.frequency.value = freq;
         osc2.frequency.value = freq;
-        osc1.detune.value = -mood.detune;
-        osc2.detune.value =  mood.detune;
+        osc1.detune.value = -rand(4, 8);
+        osc2.detune.value =  rand(4, 8);
 
-        // Slow LFO for breathing detune — keeps the chord alive.
         const lfo = ctx.createOscillator();
         const lfoAmt = ctx.createGain();
-        lfo.frequency.value = mood.lfoHz * (0.7 + Math.random() * 0.6);
-        lfo.type = 'sine';
-        lfoAmt.gain.value = 4 + Math.random() * 4;
+        lfo.frequency.value = rand(0.04, 0.10);
+        lfoAmt.gain.value = rand(2.5, 5);
         lfo.connect(lfoAmt);
         lfoAmt.connect(osc1.detune);
 
-        // Triangle oscillator gets a tiny softer LFO too.
-        const lfo2Amt = ctx.createGain();
-        lfo2Amt.gain.value = 2 + Math.random() * 3;
-        lfo.connect(lfo2Amt);
-        lfo2Amt.connect(osc2.detune);
-
-        // Volume envelope — long attack so transitions are gentle.
         const env = ctx.createGain();
-        env.gain.value = 0;
-        env.gain.linearRampToValueAtTime(mood.gain, t + FADE_SEC);
+        env.gain.setValueAtTime(0.0001, when);
+        env.gain.linearRampToValueAtTime(m.gains.pad, when + attack);
+        env.gain.setValueAtTime(m.gains.pad, when + holdEnd);
+        env.gain.linearRampToValueAtTime(0.0001, when + total);
 
-        // Lowpass — keeps it warm. Higher-midi notes get slightly more brightness.
         const filter = ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        const noteBrightness = Math.min(1, midi / 84);
-        filter.frequency.value = 280 + mood.brightness * (1100 + noteBrightness * 1400);
-        filter.Q.value = 0.6;
+        const noteBrightness = Math.min(1, Math.max(0, (midi - 48) / 36));
+        filter.frequency.value = 380 + m.brightness * (900 + noteBrightness * 1500);
+        filter.Q.value = 0.5;
 
-        // Wide stereo so chord feels spacious.
         const panner = ctx.createStereoPanner();
-        panner.pan.value = (Math.random() - 0.5) * 0.7;
+        panner.pan.value = rand(-0.35, 0.35);
 
         osc1.connect(env);
         osc2.connect(env);
@@ -166,45 +235,231 @@
         filter.connect(panner);
         panner.connect(musicGain);
 
-        osc1.start(t);
-        osc2.start(t);
-        lfo.start(t);
+        const stopAt = when + total + 0.08;
+        osc1.start(when);
+        osc2.start(when);
+        lfo.start(when);
+        osc1.stop(stopAt);
+        osc2.stop(stopAt);
+        lfo.stop(stopAt);
 
-        return { osc1, osc2, lfo, env, filter, panner };
+        return { oscs: [osc1, osc2, lfo], env, endTime: stopAt };
     }
 
-    function stopVoice(v, when) {
-        try {
-            v.env.gain.cancelScheduledValues(when);
-            v.env.gain.setValueAtTime(v.env.gain.value, when);
-            v.env.gain.linearRampToValueAtTime(0, when + FADE_SEC);
-            const stopAt = when + FADE_SEC + 0.05;
-            v.osc1.stop(stopAt);
-            v.osc2.stop(stopAt);
-            v.lfo.stop(stopAt);
-        } catch (e) { /* already stopped */ }
+    function makeBassVoice(midi, when, duration, m) {
+        const freq = midiToHz(midi);
+
+        const osc = ctx.createOscillator();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+
+        const sub = ctx.createOscillator();
+        sub.type = 'sine';
+        sub.frequency.value = freq;
+        sub.detune.value = -2;
+
+        const env = ctx.createGain();
+        const peak = m.gains.bass;
+        env.gain.setValueAtTime(0.0001, when);
+        env.gain.linearRampToValueAtTime(peak, when + 0.08);
+        // Slow decay — bass pulses on the chord change and sinks under the pad
+        env.gain.exponentialRampToValueAtTime(peak * 0.25, when + 1.6);
+        env.gain.exponentialRampToValueAtTime(0.001, when + duration);
+        env.gain.linearRampToValueAtTime(0.0001, when + duration + 0.05);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 220 + m.brightness * 180;
+        filter.Q.value = 0.6;
+
+        osc.connect(env);
+        sub.connect(env);
+        env.connect(filter);
+        filter.connect(musicGain);
+
+        const stopAt = when + duration + 0.08;
+        osc.start(when);
+        sub.start(when);
+        osc.stop(stopAt);
+        sub.stop(stopAt);
+
+        return { oscs: [osc, sub], env, endTime: stopAt };
     }
 
-    function setMood(moodName) {
+    function makeMelodyNote(midi, when, duration, m) {
+        const freq = midiToHz(midi);
+
+        const osc1 = ctx.createOscillator();
+        osc1.type = 'triangle';
+        osc1.frequency.value = freq;
+
+        const osc2 = ctx.createOscillator();
+        osc2.type = 'sine';
+        osc2.frequency.value = freq;
+        osc2.detune.value = rand(3, 7);
+
+        const env = ctx.createGain();
+        const peak = m.gains.melody;
+        env.gain.setValueAtTime(0.0001, when);
+        env.gain.linearRampToValueAtTime(peak, when + 0.06);
+        env.gain.exponentialRampToValueAtTime(peak * 0.35, when + 0.7);
+        env.gain.exponentialRampToValueAtTime(0.001, when + duration);
+        env.gain.linearRampToValueAtTime(0.0001, when + duration + 0.05);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1100 + m.brightness * 2400;
+        filter.Q.value = 0.6;
+
+        const panner = ctx.createStereoPanner();
+        panner.pan.value = rand(-0.25, 0.25);
+
+        osc1.connect(env);
+        osc2.connect(env);
+        env.connect(filter);
+        filter.connect(panner);
+        panner.connect(musicGain);
+
+        const stopAt = when + duration + 0.08;
+        osc1.start(when);
+        osc2.start(when);
+        osc1.stop(stopAt);
+        osc2.stop(stopAt);
+
+        return { oscs: [osc1, osc2], env, endTime: stopAt };
+    }
+
+    // ──────────────────────────────────────────────────────────────────
+    // Melody picker — weight chord tones higher than scale-only notes
+    // ──────────────────────────────────────────────────────────────────
+
+    function pickMelodyMidi(chord, m) {
+        const scale = m.melodyScale;
+        const chordSet = new Set();
+        chord.chordTones.forEach(t => {
+            // Match by pitch class so any octave of a chord tone counts as "in chord"
+            chordSet.add(((t % 12) + 12) % 12);
+        });
+        // Weighted: chord tones ×3, other scale notes ×1
+        const weighted = [];
+        scale.forEach(midi => {
+            const pc = ((midi % 12) + 12) % 12;
+            const weight = chordSet.has(pc) ? 3 : 1;
+            for (let i = 0; i < weight; i++) weighted.push(midi);
+        });
+        return weighted[Math.floor(Math.random() * weighted.length)];
+    }
+
+    // ──────────────────────────────────────────────────────────────────
+    // Scheduler
+    // ──────────────────────────────────────────────────────────────────
+
+    function scheduleChord(idx, when) {
+        const chord = mood.progression[idx];
+        const beatSec = 60 / mood.bpm;
+        const chordDur = chord.beats * beatSec;
+
+        // Bass
+        chord.bass.forEach(midi => {
+            activeVoices.push(makeBassVoice(midi, when, chordDur, mood));
+        });
+
+        // Pad
+        chord.pad.forEach(midi => {
+            activeVoices.push(makePadVoice(midi, when, chordDur, mood));
+        });
+
+        // Melody — sparse, probabilistic per half-beat
+        const probs = mood.melodyBeatProb;
+        const halfBeats = chord.beats * 2;
+        for (let hb = 0; hb < halfBeats; hb++) {
+            const p = probs[hb % probs.length];
+            if (Math.random() < p) {
+                const midi = pickMelodyMidi(chord, mood);
+                const noteT = when + hb * (beatSec / 2);
+                const noteDur = beatSec * rand(1.3, 2.4);
+                activeVoices.push(makeMelodyNote(midi, noteT, noteDur, mood));
+            }
+        }
+    }
+
+    function scheduler() {
+        if (!ctx || !mood) return;
+        const now = ctx.currentTime;
+        const horizon = now + LOOKAHEAD_SEC;
+
+        while (nextChordTime < horizon) {
+            scheduleChord(progIdx, nextChordTime);
+            const chord = mood.progression[progIdx];
+            const beatSec = 60 / mood.bpm;
+            nextChordTime += chord.beats * beatSec;
+            progIdx = (progIdx + 1) % mood.progression.length;
+        }
+
+        // Prune voices that have finished playing
+        activeVoices = activeVoices.filter(v => v.endTime > now);
+    }
+
+    function startScheduler() {
+        if (schedTimer !== null) return;
+        scheduler();
+        schedTimer = setInterval(scheduler, SCHED_INTERVAL_MS);
+    }
+
+    function stopScheduler() {
+        if (schedTimer !== null) {
+            clearInterval(schedTimer);
+            schedTimer = null;
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────
+    // Mood crossfade
+    // ──────────────────────────────────────────────────────────────────
+
+    function fadeOutVoices(voices, fadeSec) {
+        if (!ctx) return;
+        const t = ctx.currentTime;
+        voices.forEach(v => {
+            try {
+                v.env.gain.cancelScheduledValues(t);
+                const cur = v.env.gain.value;
+                v.env.gain.setValueAtTime(cur, t);
+                v.env.gain.linearRampToValueAtTime(0.0001, t + fadeSec);
+                v.oscs.forEach(o => {
+                    try { o.stop(t + fadeSec + 0.05); } catch (e) {}
+                });
+            } catch (e) {}
+        });
+    }
+
+    // ──────────────────────────────────────────────────────────────────
+    // Public API
+    // ──────────────────────────────────────────────────────────────────
+
+    function setMood(newKey) {
         ensureCtx();
         if (!ctx) return;
         resumeCtx();
-        if (!MOODS[moodName] || moodName === currentMood) return;
+        if (!MOODS[newKey] || newKey === moodKey) return;
 
-        const t = ctx.currentTime;
-        // Fade out and stop old voices.
-        voices.forEach(v => stopVoice(v, t));
-        voices = [];
+        // Fade out everything currently playing.
+        stopScheduler();
+        fadeOutVoices(activeVoices, MOOD_FADE_SEC);
+        activeVoices = [];
 
-        // Start the new chord.
-        const mood = MOODS[moodName];
-        voices = mood.chord.map(m => createVoice(m, mood));
-        currentMood = moodName;
+        // Start the new progression. We let it overlap the fadeout — both
+        // mood layers play during the 3.5s crossfade.
+        mood = MOODS[newKey];
+        moodKey = newKey;
+        progIdx = 0;
+        nextChordTime = ctx.currentTime + 0.05;
+        startScheduler();
     }
 
     function setSceneMood(scene) {
-        const mood = SCENE_MOODS[scene];
-        if (mood) setMood(mood);
+        const key = SCENE_MOODS[scene];
+        if (key) setMood(key);
     }
 
     function clampVol(v) {
@@ -237,11 +492,11 @@
     }
 
     function stop() {
-        if (!ctx) return;
-        const t = ctx.currentTime;
-        voices.forEach(v => stopVoice(v, t));
-        voices = [];
-        currentMood = null;
+        stopScheduler();
+        fadeOutVoices(activeVoices, MOOD_FADE_SEC);
+        activeVoices = [];
+        mood = null;
+        moodKey = null;
     }
 
     window.ambient = {
