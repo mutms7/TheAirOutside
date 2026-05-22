@@ -1,5 +1,6 @@
 @inject StoryService Story
 @implements IDisposable
+@using System.Globalization
 
 <div class="storymap-overlay" @onclick="OnClose">
     <div class="storymap" @onclick:stopPropagation="true">
@@ -31,12 +32,13 @@
                     var cls = "storymap__node";
                     if (node.Kind == "gate") cls += " storymap__node--gate";
                     if (node.Kind == "ending") cls += " storymap__node--ending";
+                    if (node.Kind == "prologue") cls += " storymap__node--prologue";
                     if (node.Visited) cls += " storymap__node--visited";
                     if (node.Current) cls += " storymap__node--current";
                     if (node.Picked) cls += " storymap__node--picked";
 
                     <button class="@cls"
-                            style="left: @(node.X)px; top: @(node.Y)px;"
+                            style="left: @Xpct(node.X); top: @Ypct(node.Y);"
                             data-tooltip="@node.Tooltip"
                             @onclick="@(() => HandleClick(node))">
                         @if (node.Kind == "scene")
@@ -51,8 +53,13 @@
                         {
                             <span class="storymap__node-icon">★</span>
                         }
+                        else if (node.Kind == "prologue")
+                        {
+                            <span class="storymap__node-icon">◌</span>
+                        }
                     </button>
-                    <div class="storymap__node-label" style="left: @(node.X)px; top: @(node.Y + 60)px;">
+                    <div class="storymap__node-label @(node.Kind == "gate" ? "storymap__node-label--gate" : "")"
+                         style="left: @Xpct(node.X); top: @Ypct(node.Y);">
                         @node.Label
                     </div>
                 }
@@ -63,7 +70,13 @@
 
 @code {
     [Parameter] public EventCallback<SceneInfo> OnJump { get; set; }
+    [Parameter] public EventCallback OnPrologue { get; set; }
     [Parameter] public EventCallback OnCloseCallback { get; set; }
+
+    private const double GraphW = 1200.0;
+    private const double GraphH = 3260.0;
+    private static string Xpct(int x) => (x / GraphW * 100.0).ToString("0.000", CultureInfo.InvariantCulture) + "%";
+    private static string Ypct(int y) => (y / GraphH * 100.0).ToString("0.000", CultureInfo.InvariantCulture) + "%";
 
     private void OnClose() => OnCloseCallback.InvokeAsync();
 
@@ -103,8 +116,8 @@
 
         SceneInfo Sc(int n) => SceneRegistry.ByNumber(n)!;
 
-        // Prologue (always visited if story has started)
-        yield return new MapNode("prologue", 600, 80, "Before", "Prologue", "ending", Number: 0)
+        // Prologue (always visited if story has started; clickable to replay or rename)
+        yield return new MapNode("prologue", 600, 80, "Before", "Prologue · click to view again or change your name", "prologue", Number: 0)
         { Visited = Story.IsPrologueDone };
 
         // Main spine: scenes 1-4
@@ -270,8 +283,14 @@
 
     private async Task HandleClick(MapNode node)
     {
+        if (node.Kind == "prologue")
+        {
+            await OnPrologue.InvokeAsync();
+            return;
+        }
         if (node.Scene is not null)
         {
+            await OnCloseCallback.InvokeAsync();
             await OnJump.InvokeAsync(node.Scene);
         }
     }

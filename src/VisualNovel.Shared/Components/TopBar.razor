@@ -9,15 +9,6 @@
                   fill="none" stroke="currentColor" stroke-width="1.5"/>
         </svg>
     </button>
-    <button class="topbar__btn" data-tooltip="Scenes" aria-label="Scenes"
-            @onclick="() => OnOpen.InvokeAsync(Panel.Scenes)" @onclick:stopPropagation="true">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-            <rect x="4" y="4" width="16" height="16" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
-            <line x1="8" y1="9"  x2="16" y2="9"  stroke="currentColor" stroke-width="1.5"/>
-            <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="1.5"/>
-            <line x1="8" y1="15" x2="13" y2="15" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-    </button>
     <button class="topbar__btn" data-tooltip="Story map" aria-label="Story map"
             @onclick="() => OnOpen.InvokeAsync(Panel.Map)" @onclick:stopPropagation="true">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
@@ -42,7 +33,7 @@
 </div>
 
 @code {
-    public enum Panel { None, Settings, Scenes, Map, Backlog }
+    public enum Panel { None, Settings, Map, Backlog }
 
     [Parameter] public EventCallback<Panel> OnOpen { get; set; }
 

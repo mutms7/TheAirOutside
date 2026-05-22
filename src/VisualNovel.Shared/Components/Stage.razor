@@ -10,6 +10,10 @@
 {
     <NameInput />
 }
+else if (_showPrologueReplay)
+{
+    <NameInput IsReplay="true" OnClose="ClosePrologueReplay" />
+}
 
 <div class="stage voice-@Story.Voice pacing-@Story.Pacing theme-@SettingsSvc.Current.Theme @(SettingsSvc.Current.ReduceMotion ? "reduce-motion" : "") @(Story.IsClimaxPause ? "climax-pause" : "") @(IsDarkBackground ? "bg-dark" : "bg-light")"
      style="--text-size-mult: @(SettingsSvc.Current.TextSize.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)); @(Story.IsPrologueDone ? "" : "visibility: hidden;")"
@@ -72,7 +76,7 @@
 
     @if (_openPanel == TopBar.Panel.Map)
     {
-        <StoryMap OnJump="HandleJump" OnCloseCallback="ClosePanel" />
+        <StoryMap OnJump="HandleJump" OnPrologue="OpenPrologueReplay" OnCloseCallback="ClosePanel" />
     }
     else if (_openPanel != TopBar.Panel.None)
     {
@@ -83,9 +87,6 @@
                 {
                     case TopBar.Panel.Settings:
                         <Settings />
-                        break;
-                    case TopBar.Panel.Scenes:
-                        <ScenePicker OnJump="HandleJump" />
                         break;
                     case TopBar.Panel.Backlog:
                         <Backlog />
@@ -138,6 +139,7 @@
     private bool _transitioning;
     private TopBar.Panel _openPanel = TopBar.Panel.None;
     private SceneInfo? _pendingJump;
+    private bool _showPrologueReplay;
 
     protected override void OnInitialized()
     {
@@ -277,6 +279,21 @@
     private void CancelJump()
     {
         _pendingJump = null;
+        StateHasChanged();
+    }
+
+    private void OpenPrologueReplay()
+    {
+        _openPanel = TopBar.Panel.None;
+        _showPrologueReplay = true;
+        ResetTimer();
+        StateHasChanged();
+    }
+
+    private void ClosePrologueReplay()
+    {
+        _showPrologueReplay = false;
+        ResetTimer();
         StateHasChanged();
     }
 

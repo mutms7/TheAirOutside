@@ -58,7 +58,7 @@
         }
         else
         {
-            <p class="prologue__prompt">What is your name?</p>
+            <p class="prologue__prompt">@(IsReplay ? "Your name." : "What is your name?")</p>
             <div class="prologue__input-wrap" @onclick:stopPropagation="true">
                 <input type="text" class="prologue__input" maxlength="14" value="@_name" placeholder="Wren"
                        @oninput="@(e => _name = e.Value?.ToString() ?? "")"
@@ -66,16 +66,27 @@
                        autofocus />
             </div>
             <p class="prologue__hint">leave blank for the default name. press enter when ready.</p>
-            <button class="prologue__begin" @onclick="Submit" @onclick:stopPropagation="true">begin</button>
+            <button class="prologue__begin" @onclick="Submit" @onclick:stopPropagation="true">@(IsReplay ? "done" : "begin")</button>
         }
     </div>
 
-    <button class="prologue__skip" @onclick="Skip" @onclick:stopPropagation="true" data-tooltip="Skip the prologue">skip</button>
+    <button class="prologue__skip" @onclick="Skip" @onclick:stopPropagation="true" data-tooltip="@(IsReplay ? "Close" : "Skip the prologue")">@(IsReplay ? "close" : "skip")</button>
 </div>
 
 @code {
+    [Parameter] public bool IsReplay { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
     private int _screen = 0;
     private string _name = "";
+
+    protected override void OnInitialized()
+    {
+        if (IsReplay)
+        {
+            _name = Story.GetVar("protagonist_name") ?? "";
+        }
+    }
 
     private readonly string[] _lines =
     {
@@ -95,20 +106,22 @@
         }
     }
 
-    private void OnKey(KeyboardEventArgs e)
+    private async Task OnKey(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter") Submit();
+        if (e.Key == "Enter") await Submit();
     }
 
-    private void Submit()
+    private async Task Submit()
     {
         var n = string.IsNullOrWhiteSpace(_name) ? "Wren" : _name.Trim();
         Story.SetProtagonistName(n);
+        if (IsReplay && OnClose.HasDelegate) await OnClose.InvokeAsync();
     }
 
-    private void Skip()
+    private async Task Skip()
     {
         var n = string.IsNullOrWhiteSpace(_name) ? "Wren" : _name.Trim();
         Story.SetProtagonistName(n);
+        if (IsReplay && OnClose.HasDelegate) await OnClose.InvokeAsync();
     }
 }

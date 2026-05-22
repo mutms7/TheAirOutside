@@ -39,6 +39,9 @@ dotnet publish src/VisualNovel.Web -c Release -o publish
 # wwwroot/ is the static shipping folder
 ```
 
+**Vercel deploy:**
+The repo includes [vercel.json](vercel.json) and [build.sh](build.sh). Connect the GitHub repo in the Vercel dashboard — Vercel runs `bash build.sh` (installs .NET 10, compiles Ink → `story.json`, publishes Blazor WASM) and serves `publish/wwwroot`. SPA catch-all rewrites and a 1-year cache on hashed `/_framework/` assets are configured; `index.html` is `no-cache` so users always get the latest version. The first build is slow (~3-5 min) because the .NET 10 SDK has to download into Vercel's build container; subsequent builds reuse the cached install. If the .NET install ever fails on a channel change, edit the `--channel 10.0` line in `build.sh`.
+
 **If you hit a 404 on `/_framework/dotnet.<hash>.js` after a rebuild:**
 This is a Blazor WASM fingerprint cache mismatch — the browser has cached an `index.html` referencing old hashed asset names. Fix:
 1. F12 → Network tab → check "Disable cache"
