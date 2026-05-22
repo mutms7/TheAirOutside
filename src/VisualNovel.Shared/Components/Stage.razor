@@ -3,6 +3,7 @@
 @inject StoryService Story
 @inject SettingsService SettingsSvc
 @inject SaveService SaveSvc
+@inject MusicService MusicSvc
 @inject IJSRuntime JS
 @implements IDisposable
 
@@ -140,6 +141,7 @@ else if (_showPrologueReplay)
     private TopBar.Panel _openPanel = TopBar.Panel.None;
     private SceneInfo? _pendingJump;
     private bool _showPrologueReplay;
+    private int _lastMoodScene = -1;
 
     protected override void OnInitialized()
     {
@@ -158,6 +160,12 @@ else if (_showPrologueReplay)
                 Story.Scene,
                 Story.IsPrologueDone,
                 Story.GetVar("protagonist_name"));
+        }
+
+        if (Story.Scene != _lastMoodScene)
+        {
+            _lastMoodScene = Story.Scene;
+            await MusicSvc.SetSceneMoodAsync(Story.Scene);
         }
     }
 
@@ -206,6 +214,15 @@ else if (_showPrologueReplay)
         if (_openPanel != TopBar.Panel.None) return;
         if (!Story.CanAdvance) return;
         if (_transitioning) return;
+
+        // First click also unlocks the audio context for returning users who skip the prologue.
+        await MusicSvc.StartAsync();
+        if (_lastMoodScene == -1)
+        {
+            _lastMoodScene = Story.Scene;
+            await MusicSvc.SetSceneMoodAsync(Story.Scene);
+        }
+
         await TransitionAdvance();
     }
 

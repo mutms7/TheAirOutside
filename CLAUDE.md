@@ -65,7 +65,7 @@ dotnet run --project src/VisualNovel.Web
 | Script language | **Ink** (Inkle's narrative DSL) | Purpose-built for branching-state narrative. Gates, motif callbacks, and texture cascades map onto Ink's variables/knots ~1:1. Authored as plain `.ink` files. |
 | Ink runtime | **Qyl27.Ink.Engine** / **Qyl27.Ink.Compiler** | Modern community ports of Inkle's C# implementation. Inkle's own NuGet was abandoned. |
 | Renderer | **Blazor WebAssembly + .NET 10** | C# end-to-end. Static-shipping web target. |
-| Audio | **(not wired)** Howler.js via JS interop planned | All `# audio:` and `# sfx:` tags are parsed into state but not yet played. ~50 lines of JS interop to wire up. |
+| Audio | **Procedural Web Audio synth** ([audio.js](src/VisualNovel.Shared/wwwroot/js/audio.js)) | Ambient music is generated at runtime from sine/triangle oscillators tuned to mood-specific chord voicings. No audio files shipped. 7 moods (morning/tension/wistful/contemplative/intimate/awe/tender) map to scenes 0–15 via [audio.js:SCENE_MOODS](src/VisualNovel.Shared/wwwroot/js/audio.js). Moods crossfade over 4s. SFX still unwired. |
 | Save/load | **IJSRuntime localStorage** | Two keys: `the-air-outside.settings` and `the-air-outside.progress`. SaveService.cs persists visited scenes, last scene, prologue-done flag, and protagonist name. |
 | Build | `dotnet publish` | Static folder out. Drop on itch.io, Vercel, Cloudflare Pages, personal domain. |
 | Authoring tool | **Inky** (Inkle's free editor) | Visual playthrough + live state inspector during scene writing. Optional. |

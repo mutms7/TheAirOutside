@@ -1,4 +1,5 @@
 @inject StoryService Story
+@inject MusicService MusicSvc
 @using Microsoft.AspNetCore.Components.Web
 
 <div class="prologue" @onclick="OnContentClick">
@@ -97,8 +98,12 @@
         "This is a story about one ordinary person, one ordinary morning, who slowed down on a curb to look at an ant.",
     };
 
-    private void OnContentClick()
+    private async Task OnContentClick()
     {
+        // First user gesture — unlock the browser audio context and start the prologue mood.
+        await MusicSvc.StartAsync();
+        await MusicSvc.SetSceneMoodAsync(0);
+
         if (_screen < _lines.Length)
         {
             _screen++;

@@ -1,4 +1,5 @@
 @inject SettingsService SettingsSvc
+@inject MusicService MusicSvc
 @implements IDisposable
 
 <div class="panel__header">
@@ -79,18 +80,18 @@
 
     <section class="settings__group">
         <h3 class="settings__group-title">Audio</h3>
-        <p class="settings__hint">Audio is not wired in the prototype. Sliders save for the future.</p>
+        <p class="settings__hint">Ambient music is procedural and changes per scene. Sound effects are not wired yet.</p>
 
         <div class="settings__row">
             <label class="settings__label">Master <span class="settings__value">@((int)(s.MasterVolume * 100))%</span></label>
             <input type="range" min="0" max="1" step="0.05" value="@s.MasterVolume"
-                   @oninput="@(async e => await Update(set => set.MasterVolume = double.Parse(e.Value!.ToString()!)))" />
+                   @oninput="@(async e => await OnMasterInput(e))" />
         </div>
 
         <div class="settings__row">
             <label class="settings__label">Music <span class="settings__value">@((int)(s.MusicVolume * 100))%</span></label>
             <input type="range" min="0" max="1" step="0.05" value="@s.MusicVolume"
-                   @oninput="@(async e => await Update(set => set.MusicVolume = double.Parse(e.Value!.ToString()!)))" />
+                   @oninput="@(async e => await OnMusicInput(e))" />
         </div>
 
         <div class="settings__row">
@@ -137,6 +138,20 @@
         {
             await Update(set => set.TextSize = TextSizes[idx]);
         }
+    }
+
+    private async Task OnMasterInput(ChangeEventArgs e)
+    {
+        if (!double.TryParse(e.Value?.ToString(), out var v)) return;
+        await MusicSvc.SetMasterVolumeAsync(v);
+        await Update(set => set.MasterVolume = v);
+    }
+
+    private async Task OnMusicInput(ChangeEventArgs e)
+    {
+        if (!double.TryParse(e.Value?.ToString(), out var v)) return;
+        await MusicSvc.SetMusicVolumeAsync(v);
+        await Update(set => set.MusicVolume = v);
     }
 
     private async Task ResetDefaults()

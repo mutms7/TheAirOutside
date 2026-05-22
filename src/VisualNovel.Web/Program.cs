@@ -11,6 +11,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddSingleton<StoryService>();
 builder.Services.AddSingleton<SettingsService>();
 builder.Services.AddSingleton<SaveService>();
+builder.Services.AddSingleton<MusicService>();
 
 var host = builder.Build();
 
@@ -23,6 +24,10 @@ using (var scope = host.Services.CreateScope())
 
     var settings = host.Services.GetRequiredService<SettingsService>();
     await settings.LoadAsync();
+
+    var music = host.Services.GetRequiredService<MusicService>();
+    await music.SetMasterVolumeAsync(settings.Current.MasterVolume);
+    await music.SetMusicVolumeAsync(settings.Current.MusicVolume);
 
     var save = host.Services.GetRequiredService<SaveService>();
     await save.LoadAsync();
