@@ -339,6 +339,198 @@ html, body {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
+   Scene animations — gentle ambient motion baked into every scene
+   ────────────────────────────────────────────────────────────────────────── */
+
+.stage.reduce-motion .anim-cloud,
+.stage.reduce-motion .anim-cloud-slow,
+.stage.reduce-motion .anim-dust circle,
+.stage.reduce-motion .anim-rain line,
+.stage.reduce-motion .anim-rain rect,
+.stage.reduce-motion .anim-star,
+.stage.reduce-motion .anim-glow,
+.stage.reduce-motion .anim-flicker,
+.stage.reduce-motion .anim-twinkle circle,
+.stage.reduce-motion .anim-breath,
+.stage.reduce-motion .anim-firefly,
+.stage.reduce-motion .anim-sway,
+.stage.reduce-motion .anim-ant,
+.stage.reduce-motion .anim-rise,
+.stage.reduce-motion .anim-pulse {
+    animation: none !important;
+}
+
+/* Clouds slowly drift across a window */
+.anim-cloud      { animation: cloud-drift 110s linear infinite; transform-box: fill-box; }
+.anim-cloud-slow { animation: cloud-drift 180s linear infinite reverse; transform-box: fill-box; }
+@keyframes cloud-drift {
+    from { transform: translateX(-30px); }
+    to   { transform: translateX(50px); }
+}
+
+/* Dust motes float subtly. Multiple children get staggered timing via nth-child */
+.anim-dust circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: dust-float 14s ease-in-out infinite;
+}
+.anim-dust circle:nth-child(2n)  { animation-duration: 17s; animation-delay: -2s; }
+.anim-dust circle:nth-child(3n)  { animation-duration: 12s; animation-delay: -5s; }
+.anim-dust circle:nth-child(4n)  { animation-duration: 19s; animation-delay: -8s; }
+.anim-dust circle:nth-child(5n)  { animation-duration: 15s; animation-delay: -3s; }
+.anim-dust circle:nth-child(7n)  { animation-duration: 21s; animation-delay: -11s; }
+@keyframes dust-float {
+    0%, 100% { transform: translate(0, 0); opacity: 0.65; }
+    33%      { transform: translate(3px, -10px); opacity: 0.85; }
+    66%      { transform: translate(-2px, -6px); opacity: 0.55; }
+}
+
+/* Rain streaks fall on a loop */
+.anim-rain line,
+.anim-rain rect {
+    transform-box: fill-box;
+    animation: rain-fall 1.4s linear infinite;
+}
+.anim-rain line:nth-child(2n)  { animation-duration: 1.1s; animation-delay: -0.3s; }
+.anim-rain line:nth-child(3n)  { animation-duration: 1.6s; animation-delay: -0.7s; }
+.anim-rain line:nth-child(4n)  { animation-duration: 1.25s; animation-delay: -0.5s; }
+.anim-rain line:nth-child(5n)  { animation-duration: 1.5s; animation-delay: -1s; }
+@keyframes rain-fall {
+    0%   { transform: translateY(-40px); opacity: 0; }
+    15%  { opacity: 0.95; }
+    100% { transform: translateY(80px);  opacity: 0; }
+}
+
+/* Stars twinkle by subtle opacity. Use .anim-stars on the <g>, or .anim-star
+   on individual elements. */
+.anim-star,
+.anim-stars circle {
+    transform-box: fill-box;
+    animation: twinkle 4s ease-in-out infinite;
+}
+.anim-star:nth-child(2n),  .anim-stars circle:nth-child(2n)  { animation-duration: 3.2s; animation-delay: -0.8s; }
+.anim-star:nth-child(3n),  .anim-stars circle:nth-child(3n)  { animation-duration: 5.1s; animation-delay: -1.4s; }
+.anim-star:nth-child(4n),  .anim-stars circle:nth-child(4n)  { animation-duration: 4.6s; animation-delay: -2.2s; }
+.anim-star:nth-child(5n),  .anim-stars circle:nth-child(5n)  { animation-duration: 3.7s; animation-delay: -3s; }
+.anim-star:nth-child(7n),  .anim-stars circle:nth-child(7n)  { animation-duration: 6.2s; animation-delay: -1.8s; }
+@keyframes twinkle {
+    0%, 100% { opacity: 0.55; }
+    50%      { opacity: 1; }
+}
+
+/* Soft glow pulse — sunlight, moon halo, lamps */
+.anim-glow      { transform-box: fill-box; transform-origin: center; animation: glow-pulse 7s ease-in-out infinite; }
+.anim-glow-fast { transform-box: fill-box; transform-origin: center; animation: glow-pulse 3.5s ease-in-out infinite; }
+@keyframes glow-pulse {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50%      { opacity: 1.0;  transform: scale(1.04); }
+}
+
+/* Lamp flicker — barely perceptible variation */
+.anim-flicker {
+    transform-box: fill-box;
+    animation: lamp-flicker 4.5s ease-in-out infinite;
+}
+@keyframes lamp-flicker {
+    0%, 100% { opacity: 0.82; }
+    35%      { opacity: 0.98; }
+    55%      { opacity: 0.74; }
+    72%      { opacity: 0.92; }
+}
+
+/* Pink-light twinkle row (Tae's room) */
+.anim-twinkle circle {
+    transform-box: fill-box;
+    animation: twinkle 2.4s ease-in-out infinite;
+}
+.anim-twinkle circle:nth-child(2n)  { animation-duration: 3.1s; animation-delay: -0.5s; }
+.anim-twinkle circle:nth-child(3n)  { animation-duration: 2.7s; animation-delay: -1.2s; }
+.anim-twinkle circle:nth-child(4n)  { animation-duration: 3.5s; animation-delay: -0.8s; }
+
+/* Fireflies — small dots drifting in a meandering loop */
+.anim-firefly,
+.anim-fireflies circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: firefly-drift 9s ease-in-out infinite;
+}
+.anim-firefly:nth-child(2n),  .anim-fireflies circle:nth-child(2n)  { animation-duration: 11s; animation-delay: -2s; }
+.anim-firefly:nth-child(3n),  .anim-fireflies circle:nth-child(3n)  { animation-duration: 7.5s; animation-delay: -4s; }
+.anim-firefly:nth-child(4n),  .anim-fireflies circle:nth-child(4n)  { animation-duration: 10s; animation-delay: -1s; }
+.anim-firefly:nth-child(5n),  .anim-fireflies circle:nth-child(5n)  { animation-duration: 8.5s; animation-delay: -3s; }
+@keyframes firefly-drift {
+    0%, 100% { transform: translate(0, 0);     opacity: 0.4; }
+    25%      { transform: translate(8px, -6px); opacity: 0.9; }
+    50%      { transform: translate(-4px, -12px); opacity: 0.6; }
+    75%      { transform: translate(-10px, -4px); opacity: 0.85; }
+}
+
+/* Grass-blade sway for field scenes */
+.anim-sway line {
+    transform-box: fill-box;
+    transform-origin: bottom center;
+    animation: grass-sway 5s ease-in-out infinite;
+}
+.anim-sway line:nth-child(2n)  { animation-duration: 3.8s; animation-delay: -0.6s; }
+.anim-sway line:nth-child(3n)  { animation-duration: 4.4s; animation-delay: -1.3s; }
+.anim-sway line:nth-child(4n)  { animation-duration: 5.6s; animation-delay: -0.9s; }
+.anim-sway line:nth-child(5n)  { animation-duration: 4.0s; animation-delay: -2.1s; }
+@keyframes grass-sway {
+    0%, 100% { transform: rotate(-2deg); }
+    50%      { transform: rotate(2deg); }
+}
+
+/* Tree canopy gentle bob */
+.anim-bob {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+    animation: canopy-bob 8s ease-in-out infinite;
+}
+.anim-bob:nth-child(2n) { animation-duration: 11s; animation-delay: -1s; }
+.anim-bob:nth-child(3n) { animation-duration: 9s;  animation-delay: -3s; }
+@keyframes canopy-bob {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(2px, -2px); }
+}
+
+/* Cursor / blinking signal */
+.anim-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: cursor-pulse 1.6s ease-in-out infinite;
+}
+@keyframes cursor-pulse {
+    0%, 100% { opacity: 0.45; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.18); }
+}
+
+/* Motif "rise" — for the hummed song icon, drifts up and fades */
+.anim-rise {
+    transform-box: fill-box;
+    animation: motif-rise 4s ease-out infinite;
+}
+@keyframes motif-rise {
+    0%   { transform: translateY(6px);  opacity: 0; }
+    20%  { opacity: 0.85; }
+    100% { transform: translateY(-26px); opacity: 0; }
+}
+
+/* Ants crawling — tiny offset cycle for the dotted ants in the ant-hill motifs */
+.anim-ant {
+    transform-box: fill-box;
+    animation: ant-crawl 3s ease-in-out infinite;
+}
+.anim-ant:nth-child(2n) { animation-duration: 3.8s; animation-delay: -0.7s; }
+.anim-ant:nth-child(3n) { animation-duration: 4.4s; animation-delay: -1.5s; }
+.anim-ant:nth-child(4n) { animation-duration: 3.2s; animation-delay: -2s; }
+@keyframes ant-crawl {
+    0%, 100% { transform: translate(0, 0); }
+    25%      { transform: translate(3px, -1px); }
+    50%      { transform: translate(0, 1px); }
+    75%      { transform: translate(-3px, -1px); }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
    Character
    ────────────────────────────────────────────────────────────────────────── */
 .character {
@@ -350,7 +542,36 @@ html, body {
     padding-bottom: 0;
     margin-bottom: -1rem;
     pointer-events: none;
-    animation: fade-in 1.2s ease;
+    animation:
+        char-enter 0.9s cubic-bezier(0.2, 0.7, 0.3, 1) both,
+        char-breath 5.2s ease-in-out 0.9s infinite;
+}
+
+.stage.reduce-motion .character {
+    animation: fade-in 0.8s ease both !important;
+}
+
+@keyframes char-enter {
+    from { opacity: 0; transform: translateX(36px) translateY(0); }
+    to   { opacity: 1; transform: translateX(0)   translateY(0); }
+}
+
+@keyframes char-breath {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-3px); }
+}
+
+/* When the character is the player (wren default) entering from the prologue,
+   stage them centred without a horizontal slide — they're "already there". */
+.character.character--wren {
+    animation:
+        char-fade-only 1.0s ease both,
+        char-breath 5.5s ease-in-out 1.0s infinite;
+}
+
+@keyframes char-fade-only {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .character__silhouette {

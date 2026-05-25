@@ -2,7 +2,7 @@
 
 @if (!string.IsNullOrEmpty(Id))
 {
-    <div class="character character--@Name character--@(Name)-@Expression">
+    <div class="character character--@Name character--@(Name)-@Expression" @key="@Name">
         @switch (Name)
         {
             case "wren":
