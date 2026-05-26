@@ -1,0 +1,38 @@
+@inject StoryService Story
+@inject SettingsService SettingsSvc
+@inject SaveService SaveSvc
+@inject MusicService MusicSvc
+
+@if (_ready)
+{
+    <Stage />
+}
+
+@code {
+    private bool _ready;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Mirror the WASM host's startup (VisualNovel.Web/Program.cs). The story JSON is
+        // already parsed by App.xaml.cs; here we restore the localStorage-backed state,
+        // which needs the WebView's JS runtime to be live.
+        var settings = SettingsSvc;
+        await settings.LoadAsync();
+
+        await MusicSvc.SetMasterVolumeAsync(settings.Current.MasterVolume);
+        await MusicSvc.SetMusicVolumeAsync(settings.Current.MusicVolume);
+        await MusicSvc.SetSfxVolumeAsync(settings.Current.SfxVolume);
+
+        await SaveSvc.LoadAsync();
+        if (SaveSvc.HasSave)
+        {
+            Story.MergeVisited(SaveSvc.Current.VisitedScenes);
+            if (SaveSvc.Current.PrologueDone)
+            {
+                Story.SetProtagonistName(SaveSvc.Current.ProtagonistName);
+            }
+        }
+
+        _ready = true;
+    }
+}

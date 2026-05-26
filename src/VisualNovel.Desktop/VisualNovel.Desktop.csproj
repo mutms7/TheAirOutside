@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <!-- Windows 10 TFM (not bare net10.0-windows == windows7.0) so the WinRT projection
+         assembly Microsoft.Windows.SDK.NET.dll ships; WebView2's WPF composition control
+         needs it or the app crashes on first render with a FileNotFoundException. -->
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>VisualNovel.Desktop</RootNamespace>
+    <AssemblyName>The Air Outside</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="10.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VisualNovel.Shared\VisualNovel.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The Ink story is compiled into the Shared library's wwwroot by VisualNovel.InkBuild.
+         Copy it next to the desktop exe so the host can hand it to StoryService at startup. -->
+    <None Include="..\VisualNovel.Shared\wwwroot\story.json" Link="story.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

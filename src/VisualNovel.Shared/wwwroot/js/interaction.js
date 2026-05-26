@@ -66,6 +66,12 @@
 
             if (isTextInput(event.target) || isButtonActivation(event)) return;
 
+            if (key === "f" || event.key === "F11") {
+                event.preventDefault();
+                toggleFullscreen();
+                return;
+            }
+
             if (["w", "a", "s", "d"].includes(key)) {
                 keys.add(key);
                 updateLook();
@@ -135,5 +141,50 @@
         }, 140);
     }
 
-    window.visualNovelInput = { bind, unbind, closeApp };
+    function isFullscreen() {
+        return !!(document.fullscreenElement
+            || document.webkitFullscreenElement
+            || window.visualNovelHost?.isFullscreen?.());
+    }
+
+    async function enterFullscreen() {
+        if (window.visualNovelHost?.setFullscreen) {
+            try { window.visualNovelHost.setFullscreen(true); return; } catch { }
+        }
+        const el = document.documentElement;
+        const req = el.requestFullscreen || el.webkitRequestFullscreen;
+        if (req) {
+            try { await req.call(el); } catch { }
+        }
+    }
+
+    async function exitFullscreen() {
+        if (window.visualNovelHost?.setFullscreen) {
+            try { window.visualNovelHost.setFullscreen(false); return; } catch { }
+        }
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) {
+            try { await exit.call(document); } catch { }
+        }
+    }
+
+    async function toggleFullscreen() {
+        if (isFullscreen()) await exitFullscreen();
+        else await enterFullscreen();
+    }
+
+    function onFullscreenChange(dotNet) {
+        const handler = () => {
+            try { dotNet.invokeMethodAsync("FullscreenChangedFromInput", isFullscreen()); } catch { }
+        };
+        document.addEventListener("fullscreenchange", handler);
+        document.addEventListener("webkitfullscreenchange", handler);
+        return handler;
+    }
+
+    window.visualNovelInput = {
+        bind, unbind, closeApp,
+        isFullscreen, toggleFullscreen, enterFullscreen, exitFullscreen,
+        onFullscreenChange
+    };
 })();

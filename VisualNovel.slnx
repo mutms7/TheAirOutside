@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/VisualNovel.Desktop/VisualNovel.Desktop.csproj" />
     <Project Path="src/VisualNovel.InkBuild/VisualNovel.InkBuild.csproj" />
     <Project Path="src/VisualNovel.Shared/VisualNovel.Shared.csproj" />
     <Project Path="src/VisualNovel.Web/VisualNovel.Web.csproj" />

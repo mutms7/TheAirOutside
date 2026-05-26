@@ -22,22 +22,36 @@ These are the source of truth for the creative side. Do not redesign them withou
 
 Phases 1-7 are complete. The game runs end-to-end with all 15 scenes, 4 gates, and 9 distinct endings. Branch: `main`. Latest commit: `639ed5f`.
 
-**Run the game:**
+**Run the game (browser):**
 ```powershell
 dotnet run --project src/VisualNovel.Web
 # then open http://localhost:5156
 ```
+
+**Run the game (desktop app, Windows):**
+```powershell
+dotnet run --project src/VisualNovel.Desktop
+```
+`VisualNovel.Desktop` is a WPF + `BlazorWebView` host (`net10.0-windows10.0.19041.0`, `Microsoft.AspNetCore.Components.WebView.Wpf`) that renders the *same* `VisualNovel.Shared` Razor components natively in a window — no localhost server, no WASM download. **The TFM must be a Windows 10 target, not bare `net10.0-windows` (which resolves to `windows7.0`)**: WebView2's WPF composition control needs the WinRT projection assembly `Microsoft.Windows.SDK.NET.dll`, which only ships under a `windows10.0.*` TFM. With the wrong TFM the app launches and then crashes ~10s in on first render with `System.IO.FileNotFoundException: 'Microsoft.Windows.SDK.NET ...'`. It needs the Evergreen WebView2 Runtime (preinstalled on Win10/11). It reads the compiled `story.json` from disk: the csproj links `VisualNovel.Shared/wwwroot/story.json` and copies it next to the exe, so **re-run `VisualNovel.InkBuild` before building Desktop after editing scenes.** Settings/save still use the WebView's localStorage (per-user WebView2 data folder). Build note: if a Desktop build fails with `CS2001: ...g.cs could not be found` (a WPF `_wpftmp` markup-compile race), clean and rebuild single-threaded: `Remove-Item -Recurse -Force src/VisualNovel.Desktop/obj,src/VisualNovel.Desktop/bin; dotnet build src/VisualNovel.Desktop -m:1`.
+
+**Fullscreen:** a toggle lives in the TopBar (rightmost icon); `F` or `F11` toggle it too. In the browser it uses the DOM Fullscreen API; in the desktop app `interaction.js` prefers `window.visualNovelHost` (injected by `MainWindow.xaml.cs`), which relays toggle requests over a WebView2 web-message so fullscreen covers the whole OS window (borderless maximized), not just the WebView content area.
 
 **Rebuild the Ink story after editing scene files:**
 ```powershell
 dotnet run --project src/VisualNovel.InkBuild
 ```
 
-**Production publish:**
+**Production publish (web):**
 ```powershell
 dotnet publish src/VisualNovel.Web -c Release -o publish
 # wwwroot/ is the static shipping folder
 ```
+
+**Production publish (desktop, downloadable):**
+```powershell
+dotnet publish src/VisualNovel.Desktop -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish-desktop
+```
+Produces `publish-desktop/The Air Outside.exe` (~128 MB, bundles the .NET runtime so the player needs no install — only the preinstalled WebView2 runtime). Distribute the **whole `publish-desktop` folder** (the exe needs ~36 sibling files: WebView2 loader + the game's `_framework`/`_content` static assets + `story.json`); zip it to share. The exe is unsigned, so SmartScreen shows a "More info → Run anyway" prompt on first launch.
 
 **Vercel deploy:**
 The repo includes [vercel.json](vercel.json) and [build.sh](build.sh). Connect the GitHub repo in the Vercel dashboard — Vercel runs `bash build.sh` (installs .NET 10, compiles Ink → `story.json`, publishes Blazor WASM) and serves `publish/wwwroot`. SPA catch-all rewrites and a 1-year cache on hashed `/_framework/` assets are configured; `index.html` is `no-cache` so users always get the latest version. The first build is slow (~3-5 min) because the .NET 10 SDK has to download into Vercel's build container; subsequent builds reuse the cached install. If the .NET install ever fails on a channel change, edit the `--channel 10.0` line in `build.sh`.
@@ -74,6 +88,7 @@ dotnet run --project src/VisualNovel.Web
 - `ink/` — narrative scripts (16 files: story.ink + characters.ink + motifs.ink + gates.ink + scenes/01-16). Compiled to `story.json`.
 - `src/VisualNovel.Shared/` — Razor Class Library: components, services, the compiled `story.json` + CSS as static assets.
 - `src/VisualNovel.Web/` — Blazor WASM entry point. Thin shell over Shared.
+- `src/VisualNovel.Desktop/` — WPF + `BlazorWebView` desktop host (Windows). Thin shell over Shared; `App.xaml.cs` builds the DI container and parses `story.json`, `Main.razor` restores localStorage state then renders `<Stage/>`, `MainWindow.xaml.cs` owns native window fullscreen.
 - `src/VisualNovel.InkBuild/` — small console app that compiles `ink/story.ink` → `src/VisualNovel.Shared/wwwroot/story.json` via `Ink.Compiler`.
 - `scripts/first-person.pl` — Perl tool that converts third-person Wren narration to first-person and removes em-dashes. Used once in Phase 6; kept for future scene additions.
 
@@ -133,7 +148,7 @@ Four gate variables drive the branches:
 - **Working title** *The Air Outside* is a placeholder.
 - **Protagonist name** *Wren* is a default; the player chooses in the prologue.
 - **Audio**: not wired. All `# audio:` and `# sfx:` tags parse into state but nothing plays. Howler.js + JS interop is the planned path.
-- **MAUI Blazor Hybrid project** is intentionally not scaffolded yet; add it when desktop shipping becomes a near-term goal. `dotnet workload install maui` first.
+- **Desktop shipping** is now a WPF + `BlazorWebView` host (`src/VisualNovel.Desktop`, Windows-only). A **MAUI Blazor Hybrid** project (cross-platform: Mac/Android/iOS) is still not scaffolded; add it if non-Windows desktop/mobile shipping becomes a goal (`dotnet workload install maui` first). It would reuse the same `VisualNovel.Shared` library exactly as Desktop does.
 - **TimelineMap.razor** (Phase 4) is dead code, replaced by StoryMap.razor (Phase 7). Can be deleted in a cleanup pass.
 - **Some endings share epilogue art** (`epilogue-together-outside` for both iris+stay_out and iris+no_deco). The user requested distinct art per ending; an art polish pass could add 1-2 more unique SVGs.
 

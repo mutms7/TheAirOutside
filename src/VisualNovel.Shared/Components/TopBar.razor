@@ -1,4 +1,7 @@
+@using Microsoft.JSInterop
 @inject StoryService Story
+@inject IJSRuntime JS
+@implements IDisposable
 
 <div class="topbar @(Story.IsClimaxPause ? "topbar--hidden" : "")">
     <button class="topbar__btn" data-tooltip="Settings" aria-label="Settings"
@@ -30,6 +33,28 @@
             <polyline points="3,3 3,8 8,8" fill="none" stroke="currentColor" stroke-width="1.5"/>
         </svg>
     </button>
+    <button class="topbar__btn" data-tooltip="@(_isFullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)")"
+            aria-label="@(_isFullscreen ? "Exit fullscreen" : "Enter fullscreen")"
+            @onclick="ToggleFullscreen" @onclick:stopPropagation="true">
+        @if (_isFullscreen)
+        {
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <polyline points="9,3 9,9 3,9"  fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <polyline points="15,3 15,9 21,9" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <polyline points="9,21 9,15 3,15" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <polyline points="15,21 15,15 21,15" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+        }
+        else
+        {
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <polyline points="3,9 3,3 9,3"  fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <polyline points="21,9 21,3 15,3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <polyline points="3,15 3,21 9,21" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <polyline points="21,15 21,21 15,21" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+        }
+    </button>
 </div>
 
 @code {
@@ -37,7 +62,47 @@
 
     [Parameter] public EventCallback<Panel> OnOpen { get; set; }
 
-    protected override void OnInitialized() => Story.StateChanged += OnStateChanged;
+    private bool _isFullscreen;
+    private DotNetObjectReference<TopBar>? _selfRef;
+
+    protected override void OnInitialized()
+    {
+        Story.StateChanged += OnStateChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        _selfRef = DotNetObjectReference.Create(this);
+        try
+        {
+            await JS.InvokeVoidAsync("visualNovelInput.onFullscreenChange", _selfRef);
+            _isFullscreen = await JS.InvokeAsync<bool>("visualNovelInput.isFullscreen");
+            StateHasChanged();
+        }
+        catch { }
+    }
+
+    private async Task ToggleFullscreen()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("visualNovelInput.toggleFullscreen");
+        }
+        catch { }
+    }
+
+    [JSInvokable]
+    public void FullscreenChangedFromInput(bool isFullscreen)
+    {
+        _isFullscreen = isFullscreen;
+        InvokeAsync(StateHasChanged);
+    }
+
     private void OnStateChanged() => InvokeAsync(StateHasChanged);
-    public void Dispose() => Story.StateChanged -= OnStateChanged;
+    public void Dispose()
+    {
+        Story.StateChanged -= OnStateChanged;
+        _selfRef?.Dispose();
+    }
 }
