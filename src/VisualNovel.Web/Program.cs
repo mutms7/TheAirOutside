@@ -28,6 +28,7 @@ using (var scope = host.Services.CreateScope())
     var music = host.Services.GetRequiredService<MusicService>();
     await music.SetMasterVolumeAsync(settings.Current.MasterVolume);
     await music.SetMusicVolumeAsync(settings.Current.MusicVolume);
+    await music.SetSfxVolumeAsync(settings.Current.SfxVolume);
 
     var save = host.Services.GetRequiredService<SaveService>();
     await save.LoadAsync();

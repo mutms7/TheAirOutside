@@ -20,6 +20,18 @@ public sealed class MusicService
         try { await _js.InvokeVoidAsync("ambient.setSceneMood", scene); } catch { }
     }
 
+    public async Task PlayCueAsync(string cue, int scene)
+    {
+        if (string.IsNullOrWhiteSpace(cue)) return;
+        try { await _js.InvokeVoidAsync("ambient.playCue", cue, scene); } catch { }
+    }
+
+    public async Task PlaySfxAsync(string sfx)
+    {
+        if (string.IsNullOrWhiteSpace(sfx)) return;
+        try { await _js.InvokeVoidAsync("ambient.playSfx", sfx); } catch { }
+    }
+
     public async Task SetMasterVolumeAsync(double v)
     {
         try { await _js.InvokeVoidAsync("ambient.setMasterVolume", v); } catch { }
@@ -28,6 +40,11 @@ public sealed class MusicService
     public async Task SetMusicVolumeAsync(double v)
     {
         try { await _js.InvokeVoidAsync("ambient.setMusicVolume", v); } catch { }
+    }
+
+    public async Task SetSfxVolumeAsync(double v)
+    {
+        try { await _js.InvokeVoidAsync("ambient.setSfxVolume", v); } catch { }
     }
 
     public async Task StopAsync()

@@ -1,0 +1,185 @@
+.object-focus {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+    background: rgba(10, 12, 16, 0.34);
+    animation: object-focus-in 0.75s cubic-bezier(0.2, 0.72, 0.2, 1) both;
+}
+
+.object-focus__svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.object-focus__grain {
+    fill: rgba(255,255,255,0.03);
+}
+
+.object-focus__subject {
+    transform-origin: 800px 500px;
+    animation: object-focus-zoom 1.2s cubic-bezier(0.18, 0.75, 0.2, 1) both;
+}
+
+.object-focus--song .object-focus__subject,
+.object-focus--rain .object-focus__subject {
+    animation-duration: 1.5s;
+}
+
+.object-focus--ant .object-focus__svg {
+    background:
+        radial-gradient(ellipse 70% 50% at 50% 52%, rgba(255,241,205,0.22), transparent 62%),
+        linear-gradient(180deg, rgba(30,24,20,0.02), rgba(30,24,20,0.22));
+}
+
+.object-focus__reticle {
+    transform-origin: 800px 600px;
+    animation: object-reticle-lock 2.4s ease-in-out infinite;
+}
+
+.object-focus__ant {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: object-ant-crawl 3.2s ease-in-out infinite;
+}
+
+.object-focus__ant--two {
+    animation-delay: -0.8s;
+    animation-duration: 3.8s;
+}
+
+.object-focus__ant--three {
+    animation-delay: -1.5s;
+    animation-duration: 4.1s;
+}
+
+.object-focus__ant--four {
+    animation-delay: -2.2s;
+    animation-duration: 3.5s;
+}
+
+.object-focus__sticker-disc {
+    transform-origin: 800px 478px;
+    animation: sticker-closeup-press 2.8s ease-in-out infinite;
+}
+
+.object-focus__rain-lines line {
+    transform-box: fill-box;
+    animation: focus-rain-fall 1.3s linear infinite;
+}
+
+.object-focus__rain-lines line:nth-child(2n) {
+    animation-delay: -0.4s;
+    animation-duration: 1.05s;
+}
+
+.object-focus__rain-lines line:nth-child(3n) {
+    animation-delay: -0.8s;
+    animation-duration: 1.55s;
+}
+
+.object-focus__droplets ellipse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: focus-droplet-slide 2.8s ease-in-out infinite;
+}
+
+.object-focus__droplets ellipse:nth-child(2n) {
+    animation-delay: -1s;
+}
+
+.object-focus__note {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: focus-note-float 3.2s ease-in-out infinite;
+}
+
+.object-focus__note--two {
+    animation-delay: -1.2s;
+}
+
+.object-focus__crack {
+    stroke-dasharray: 42 18;
+    animation: focus-crack-pulse 1.9s ease-in-out infinite;
+}
+
+.object-focus--hud .object-focus__subject {
+    animation-name: object-focus-screen;
+}
+
+.object-focus--window .object-focus__subject {
+    animation-name: object-focus-window;
+}
+
+@keyframes object-focus-in {
+    from { opacity: 0; filter: blur(2px); }
+    to   { opacity: 1; filter: blur(0); }
+}
+
+@keyframes object-focus-zoom {
+    from { transform: scale(0.86) translateY(24px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes object-focus-screen {
+    from { transform: scale(0.92) translateY(18px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes object-focus-window {
+    from { transform: scale(1.08) translateY(20px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes object-reticle-lock {
+    0%, 100% { transform: scale(1); opacity: 0.52; }
+    50%      { transform: scale(0.96); opacity: 0.86; }
+}
+
+@keyframes object-ant-crawl {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    34%      { transform: translate(18px, -10px) rotate(8deg); }
+    66%      { transform: translate(-10px, 14px) rotate(-6deg); }
+}
+
+@keyframes sticker-closeup-press {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(0.985); }
+}
+
+@keyframes focus-rain-fall {
+    from { transform: translateY(-140px); opacity: 0; }
+    12%  { opacity: 0.9; }
+    to   { transform: translateY(220px); opacity: 0; }
+}
+
+@keyframes focus-droplet-slide {
+    0%, 100% { transform: translateY(-18px); opacity: 0.34; }
+    50%      { transform: translateY(34px); opacity: 0.9; }
+}
+
+@keyframes focus-note-float {
+    0%, 100% { transform: translateY(0); opacity: 0.58; }
+    50%      { transform: translateY(-28px); opacity: 1; }
+}
+
+@keyframes focus-crack-pulse {
+    0%, 100% { stroke-dashoffset: 0; opacity: 0.58; }
+    50%      { stroke-dashoffset: -24; opacity: 1; }
+}
+
+.stage.reduce-motion .object-focus,
+.stage.reduce-motion .object-focus *,
+.stage.reduce-motion .object-focus *::before,
+.stage.reduce-motion .object-focus *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+@media (max-width: 600px) {
+    .object-focus__subject--ant {
+        transform-origin: 800px 620px;
+    }
+}

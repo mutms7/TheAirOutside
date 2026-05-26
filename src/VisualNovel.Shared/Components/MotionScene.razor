@@ -1,0 +1,448 @@
+@inject StoryService Story
+@implements IDisposable
+
+<div class="motion-scene motion-scene--@Mode motion-scene--@WalkPhase motion-scene--@InteractionKind motion-scene--scene-@Story.Scene @(IsBareWren ? "motion-scene--bare-wren" : "") @(ShowRain ? "motion-scene--rain" : "")" aria-hidden="true">
+    <div class="motion-world motion-world--@Mode">
+        @if (ShowRain)
+        {
+            <div class="motion-rain">
+                @for (var i = 0; i < 24; i++)
+                {
+                    <span></span>
+                }
+            </div>
+        }
+
+        @if (IsWalkMode)
+        {
+            <div class="motion-road motion-road--far"></div>
+            <div class="motion-road motion-road--near"></div>
+
+            @if (ShowAnthill)
+            {
+                <div class="motion-prop motion-prop--anthill motion-prop--anthill-@AnthillState motion-prop--anthill-@AnthillMotion">
+                    <div class="motion-anthill__shadow"></div>
+                    <div class="motion-anthill__cone"></div>
+                    <div class="motion-anthill__ant motion-anthill__ant--one"></div>
+                    <div class="motion-anthill__ant motion-anthill__ant--two"></div>
+                    <div class="motion-anthill__ant motion-anthill__ant--three"></div>
+                </div>
+            }
+
+            @if (ShowDinosaurKid)
+            {
+                @Actor("caregiver", "passer-left", "walk", false, "passer")
+                @Actor("dino-child", "passer-child", "run", false, "passer")
+            }
+
+            @if (Story.Scene == 15 || Story.Scene == 16)
+            {
+                @Actor("janitor", "passer-janitor", "cart", false, "passer")
+            }
+        }
+
+        @if (Mode == "dexterity")
+        {
+            <div class="motion-training-floor">
+                <div class="motion-training-line motion-training-line--one"></div>
+                <div class="motion-training-line motion-training-line--two"></div>
+                <div class="motion-training-line motion-training-line--three"></div>
+                <div class="motion-training-target motion-training-target--one"></div>
+                <div class="motion-training-target motion-training-target--two"></div>
+                <div class="motion-training-target motion-training-target--three"></div>
+            </div>
+            @Actor("student", "trainee-a", "train", false, "background")
+            @Actor("student", "trainee-b", "train-delay", false, "background")
+            @Actor("student", "trainee-c", "train", false, "background")
+        }
+
+        @if (ShowGrandmaMemory)
+        {
+            <div class="motion-memory">
+                @Actor("grandmother", "memory-grandmother", "walk", true, "memory")
+                @Actor("memory-child", "memory-child", "walk-small", true, "memory")
+                <div class="motion-memory__song"></div>
+            </div>
+        }
+
+        @if (Mode == "hallway")
+        {
+            <div class="motion-hallway-depth">
+                <div></div><div></div><div></div><div></div>
+            </div>
+        }
+    </div>
+
+    <div class="motion-actors">
+        @if (Mode == "dexterity")
+        {
+            @Actor("wren", "hero-left", "train", IsBareWren)
+            @Actor("ozaki", "teacher", OzakiAction, OzakiAction == "train-demo-bare")
+        }
+        else if (Mode == "field")
+        {
+            @Actor("wren", "seated-left", "sit", true)
+            @Actor("iris", "seated-right", "sit-reach", true)
+        }
+        else if (InteractionKind == "handclasp")
+        {
+            @Actor("wren", "pair-left", "reach", IsBareWren)
+            @Actor(FocusName == "wren" ? "tae" : FocusName, "pair-right", "reach", FocusBare)
+        }
+        else if (InteractionKind == "sticker")
+        {
+            @Actor("wren", "pair-left", "receive-sticker", IsBareWren)
+            @Actor("tae", "pair-right", "apply-sticker", false)
+        }
+        else if (InteractionKind == "support")
+        {
+            @Actor("wren", "pair-left", "soften", IsBareWren)
+            @Actor("tae", "pair-right", "support-reach", false)
+        }
+        else if (InteractionKind == "companion-walk")
+        {
+            @Actor("wren", "companion-left", "walk", IsBareWren)
+            @Actor(FocusName == "wren" ? "iris" : FocusName, "companion-right", "walk", FocusBare)
+        }
+        else if (Mode == "room")
+        {
+            @Actor("wren", "room-left", RoomWrenAction, IsBareWren)
+            @Actor(FocusName == "wren" ? "tae" : FocusName, "room-right", RoomFocusAction, FocusBare)
+        }
+        else if (Mode == "hallway")
+        {
+            @Actor("wren", "hero", HallwayWrenAction, IsBareWren)
+            @if (FocusName == "iris")
+            {
+                @Actor("iris", "window-right", "window-still", true)
+            }
+            @if (Story.Scene == 11)
+            {
+                @Actor("janitor", "hall-janitor", "mop", false, "background")
+            }
+        }
+        else
+        {
+            @Actor("wren", "hero", WrenAction, IsBareWren)
+            @if (ShouldShowFocusActor)
+            {
+                @Actor(FocusName, "focus", FocusAction, FocusBare)
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private string CurrentText => Story.CurrentText ?? "";
+    private string LowerText => CurrentText.ToLowerInvariant();
+
+    private string Mode
+    {
+        get
+        {
+            if (Story.Scene == 3 || Story.Background == "pe-hall") return "dexterity";
+            if (Story.Background is "field-night" or "field-clearing") return "field";
+            if (Story.Background is "hallway-day" or "hallway-night" || Story.Scene is 5 or 9 or 11) return "hallway";
+            if (Story.Background is "bedroom-night" or "taes-room" || Story.Scene is 10 or 12) return "room";
+            if (Story.Background == "street-morning") return "walk";
+            return "tableau";
+        }
+    }
+
+    private bool IsWalkMode => Mode == "walk";
+
+    private string WalkPhase
+    {
+        get
+        {
+            if (!IsWalkMode) return "walk-static";
+            return IsAntInspection || HasText("stop walking") || HasText("stopped walking") || HasText("slow for")
+                ? "walk-paused"
+                : "walk-moving";
+        }
+    }
+
+    private bool IsBareWren =>
+        Story.Voice == "bare"
+        || Story.CharacterOnStage.Contains("wren bare", StringComparison.OrdinalIgnoreCase)
+        || (Story.Scene is 14 or 15 or 16 && Story.GetVar("gate4") == "stay_out");
+
+    private string FocusName
+    {
+        get
+        {
+            var tagged = Story.CharacterOnStage.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.ToLowerInvariant() ?? "";
+            if (!string.IsNullOrEmpty(tagged) && tagged != "wren") return tagged;
+            if (Story.Scene == 3) return "ozaki";
+            if (Story.Scene is 5 or 11 or 13 || HasText("iris")) return "iris";
+            if (Story.Scene is 10 or 12 or 14 || HasText("tae")) return "tae";
+            if (Story.Scene == 4 || HasText("cael")) return "cael";
+            return "";
+        }
+    }
+
+    private bool FocusBare =>
+        FocusName == "iris"
+        || (FocusName == "ozaki" && (Story.Art == "ozaki-stepping-out" || HasText("steps out")))
+        || (FocusName == "tae" && HasText("bare hand"));
+
+    private bool ShouldShowFocusActor =>
+        !string.IsNullOrEmpty(FocusName)
+        && FocusName != "wren"
+        && Mode != "walk";
+
+    private string InteractionKind
+    {
+        get
+        {
+            if (Mode == "dexterity") return "dexterity";
+            if (Story.Art == "bare-hands-clasp" || HasText("bare hand") || HasText("hand in her bare hand") || HasText("finds my gauntleted")) return "handclasp";
+            if (FocusName == "tae" && HasText("sticker") && HasText("shoulder")) return "sticker";
+            if (FocusName == "tae" && (HasText("walks toward me") || HasText("can we. just walk"))) return "support";
+            if (HasText("walk together") || HasText("walk to homeroom together") || HasText("walking beside me")) return "companion-walk";
+            return "observe";
+        }
+    }
+
+    private string WrenAction => Mode switch
+    {
+        "walk" => WalkPhase == "walk-paused" ? "look-down" : "walk",
+        "hallway" => "walk-slow",
+        "room" => "sit",
+        _ => "idle"
+    };
+
+    private string FocusAction => FocusName switch
+    {
+        "tae" => "wave",
+        "cael" => "perform",
+        "iris" => "still",
+        "ozaki" => "observe",
+        _ => "idle"
+    };
+
+    private string OzakiAction =>
+        Story.Art == "ozaki-stepping-out" || HasText("steps out") || HasText("plain undershirt")
+            ? "train-demo-bare"
+            : "train-demo";
+
+    private string RoomWrenAction => InteractionKind == "handclasp" ? "reach" : "sit";
+    private string RoomFocusAction => InteractionKind == "handclasp" ? "reach" : "sit";
+    private string HallwayWrenAction => HasText("walk") ? "walk-slow" : "observe";
+
+    private bool ShowDinosaurKid =>
+        Story.Art == "dinosaur-kid"
+        || HasText("dinosaur kid")
+        || HasText("yellow suit covered in dinosaur stickers");
+
+    private bool ShowGrandmaMemory => Story.Motif == "song-grandma" || (Story.Scene == 6 && HasText("song"));
+
+    private bool ShowRain => Story.Motif.Contains("rain", StringComparison.OrdinalIgnoreCase) || HasText("rain");
+
+    private bool IsAntInspection =>
+        IsAntReference
+        && !IsAntLeaving
+        && (IsAntSequenceByState
+            || Story.Motif.StartsWith("ant-hill", StringComparison.OrdinalIgnoreCase)
+            || HasText("curb")
+            || HasText("auto-zoom")
+            || HasText("i slow")
+            || HasText("stopped walking")
+            || HasText("pace: stopped")
+            || HasText("watch")
+            || HasText("ant comes")
+            || HasText("another ant")
+            || HasText("ant climbs")
+            || HasText("rebuilders")
+            || HasText("half-crushed")
+            || HasText("curb level"));
+
+    private bool IsAntLeaving =>
+        IsAntReference
+        && (HasText("resume walking")
+            || HasText("start walking")
+            || HasText("keep walking")
+            || HasText("auto-zoom releases")
+            || HasText("releases the zoom")
+            || HasText("reticle fades")
+            || HasText("recedes behind me")
+            || HasText("last block"));
+
+    private bool IsAntReference =>
+        Story.Motif.StartsWith("ant-hill", StringComparison.OrdinalIgnoreCase)
+        || IsAntSequenceByState
+        || HasText("ant hill")
+        || HasText("ant comes")
+        || HasText("another ant")
+        || HasText("ant climbs")
+        || HasText("rebuilders")
+        || HasText("curb level");
+
+    private bool ShowAnthill => Story.Background == "street-morning" && IsAntReference;
+
+    private string AnthillMotion => IsAntLeaving ? "leaving" : "inspection";
+
+    private bool HasActiveAntState
+    {
+        get
+        {
+            var state = Story.GetVar("ant_state");
+            return !string.IsNullOrWhiteSpace(state) && state != "0";
+        }
+    }
+
+    private bool IsAntSequenceByState =>
+        Story.Background == "street-morning"
+        && HasActiveAntState
+        && (
+            (Story.Scene == 1 && !HasText("school comes") && !HasText("homeroom in 18 minutes") && !HasText("pace: nominal"))
+            || (Story.Scene == 7 && !HasText("school comes") && !HasText("homeroom in 12 minutes"))
+        );
+
+    private string AnthillState
+    {
+        get
+        {
+            if (Story.Motif.Contains("crushed", StringComparison.OrdinalIgnoreCase) || Story.Scene == 7) return "crushed";
+            if (Story.Motif.Contains("eye-level", StringComparison.OrdinalIgnoreCase) || Story.Scene is 15 or 16) return "rebuilt";
+            return "building";
+        }
+    }
+
+    private bool HasText(string value) => LowerText.Contains(value, StringComparison.OrdinalIgnoreCase);
+
+    private RenderFragment Actor(string name, string slot, string action, bool bare = false, string extra = "") => builder =>
+    {
+        var spec = MotionSpec.For(name);
+        var extraClass = string.IsNullOrWhiteSpace(extra) ? "" : $"motion-actor--layer-{extra}";
+        var className = $"motion-actor motion-actor--{name} motion-actor--{slot} motion-actor--{action} {(bare ? "motion-actor--bare" : "motion-actor--suited")} {extraClass}";
+        var style = $"--actor-primary:{spec.Primary};--actor-secondary:{spec.Secondary};--actor-accent:{spec.Accent};--actor-accent-2:{spec.Accent2};--actor-skin:{spec.Skin};--actor-hair:{spec.Hair};--actor-dark:{spec.Dark};";
+
+        builder.OpenElement(0, "div");
+        builder.AddAttribute(1, "class", className);
+        builder.AddAttribute(2, "style", style);
+
+        builder.OpenElement(3, "div");
+        builder.AddAttribute(4, "class", "motion-actor__shadow");
+        builder.CloseElement();
+
+        builder.OpenElement(5, "div");
+        builder.AddAttribute(6, "class", "motion-actor__rig");
+
+        builder.OpenElement(7, "div");
+        builder.AddAttribute(8, "class", "motion-actor__leg motion-actor__leg--left");
+        builder.OpenElement(9, "span");
+        builder.AddAttribute(10, "class", "motion-actor__foot");
+        builder.CloseElement();
+        builder.CloseElement();
+
+        builder.OpenElement(11, "div");
+        builder.AddAttribute(12, "class", "motion-actor__leg motion-actor__leg--right");
+        builder.OpenElement(13, "span");
+        builder.AddAttribute(14, "class", "motion-actor__foot");
+        builder.CloseElement();
+        builder.CloseElement();
+
+        builder.OpenElement(15, "div");
+        builder.AddAttribute(16, "class", "motion-actor__torso");
+        builder.OpenElement(17, "span");
+        builder.AddAttribute(18, "class", "motion-actor__decal");
+        builder.CloseElement();
+        builder.OpenElement(19, "span");
+        builder.AddAttribute(20, "class", "motion-actor__name");
+        builder.AddContent(21, NameLetters(name));
+        builder.CloseElement();
+        builder.CloseElement();
+
+        builder.OpenElement(22, "div");
+        builder.AddAttribute(23, "class", "motion-actor__arm motion-actor__arm--left");
+        builder.OpenElement(24, "span");
+        builder.AddAttribute(25, "class", "motion-actor__hand");
+        builder.CloseElement();
+        builder.CloseElement();
+
+        builder.OpenElement(26, "div");
+        builder.AddAttribute(27, "class", "motion-actor__arm motion-actor__arm--right");
+        builder.OpenElement(28, "span");
+        builder.AddAttribute(29, "class", "motion-actor__hand");
+        builder.CloseElement();
+        builder.CloseElement();
+
+        builder.OpenElement(30, "div");
+        builder.AddAttribute(31, "class", "motion-actor__head");
+        builder.OpenElement(32, "span");
+        builder.AddAttribute(33, "class", "motion-actor__visor");
+        builder.CloseElement();
+        builder.OpenElement(34, "span");
+        builder.AddAttribute(35, "class", "motion-actor__eye motion-actor__eye--left");
+        builder.CloseElement();
+        builder.OpenElement(36, "span");
+        builder.AddAttribute(37, "class", "motion-actor__eye motion-actor__eye--right");
+        builder.CloseElement();
+        builder.OpenElement(38, "span");
+        builder.AddAttribute(39, "class", "motion-actor__mouth");
+        builder.CloseElement();
+        builder.CloseElement();
+
+        builder.CloseElement();
+        builder.CloseElement();
+    };
+
+    private string NameLetters(string name)
+    {
+        if (name == "wren")
+        {
+            var n = Story.GetVar("protagonist_name");
+            return Spaced(string.IsNullOrWhiteSpace(n) ? "WREN" : n);
+        }
+        return name switch
+        {
+            "tae" => "T A E",
+            "iris" => "I R I S",
+            "ozaki" => "O Z",
+            "cael" => "C A E L",
+            "janitor" => "S",
+            "dino-child" => "D",
+            "caregiver" => "M",
+            _ => ""
+        };
+    }
+
+    private static string Spaced(string value)
+    {
+        var clean = new string(value.ToUpperInvariant().Where(char.IsLetterOrDigit).Take(6).ToArray());
+        return string.Join(" ", clean.ToCharArray());
+    }
+
+    protected override void OnInitialized() => Story.StateChanged += OnStoryChanged;
+
+    private void OnStoryChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Story.StateChanged -= OnStoryChanged;
+
+    private sealed record MotionSpec(
+        string Primary,
+        string Secondary,
+        string Accent,
+        string Accent2,
+        string Skin,
+        string Hair,
+        string Dark)
+    {
+        public static MotionSpec For(string name) => name switch
+        {
+            "wren" => new("#F5B68C", "#D98F5E", "#A8E6CF", "#FFF1CD", "#E5BC97", "#3A2818", "#6A4028"),
+            "tae" => new("#FF6B9D", "#D84473", "#FFD1DC", "#FFD24A", "#D9A27F", "#322033", "#79314E"),
+            "iris" => new("#B8B0A8", "#8F877E", "#E8E4DA", "#7A7A6A", "#D9B89C", "#2A2018", "#5C5C54"),
+            "ozaki" => new("#6B6855", "#444232", "#E8E0D2", "#A89580", "#C9A685", "#1F1A14", "#2F2D21"),
+            "cael" => new("#FFD24A", "#C99820", "#FF6B9D", "#FF8C5C", "#C79A72", "#3A2818", "#8A5F08"),
+            "janitor" => new("#8E8E8A", "#62625E", "#D4D4CA", "#A89580", "#BFA08A", "#3A342E", "#3D3D3A"),
+            "dino-child" => new("#FFD24A", "#C99820", "#4F9A66", "#FF8C5C", "#C79A72", "#3A2818", "#8A5F08"),
+            "caregiver" => new("#8FA5B0", "#637A86", "#E8E4DA", "#A8E6CF", "#BFA08A", "#3A342E", "#354852"),
+            "grandmother" => new("#A89580", "#7A6957", "#E8E0D2", "#C9B080", "#BFA08A", "#FAF7F1", "#3F3530"),
+            "memory-child" => new("#C9B080", "#9B8060", "#F5B68C", "#A8E6CF", "#D9B89C", "#5C4632", "#3F3530"),
+            "student" => new("#9CB8C5", "#6F8792", "#FAF7F1", "#FFD24A", "#C79A72", "#3A2818", "#3A4A52"),
+            _ => new("#CCCCCC", "#999999", "#FFFFFF", "#AAAAAA", "#D9B89C", "#2A2018", "#555555")
+        };
+    }
+}

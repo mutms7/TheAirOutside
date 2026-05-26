@@ -1,0 +1,405 @@
+@inject StoryService Story
+@implements IDisposable
+
+@if (Focus is { } focus)
+{
+    <div class="object-focus object-focus--@focus.Kind object-focus--@focus.Variant" @key="focus.Key" aria-hidden="true">
+        <svg class="object-focus__svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <radialGradient id="focus-warm" cx="50%" cy="45%" r="70%">
+                    <stop offset="0%" stop-color="#FFF1CD" stop-opacity="0.95" />
+                    <stop offset="54%" stop-color="#F5B68C" stop-opacity="0.45" />
+                    <stop offset="100%" stop-color="#2A2A2E" stop-opacity="0.72" />
+                </radialGradient>
+                <radialGradient id="focus-cool" cx="52%" cy="42%" r="70%">
+                    <stop offset="0%" stop-color="#E8F4FF" stop-opacity="0.9" />
+                    <stop offset="58%" stop-color="#8FA5B0" stop-opacity="0.42" />
+                    <stop offset="100%" stop-color="#15151A" stop-opacity="0.74" />
+                </radialGradient>
+                <linearGradient id="focus-paper" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#FAF7F1" />
+                    <stop offset="100%" stop-color="#ECE6D8" />
+                </linearGradient>
+                <linearGradient id="focus-skin" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#F1C7A1" />
+                    <stop offset="100%" stop-color="#B77D5D" />
+                </linearGradient>
+                <filter id="focus-soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.22" />
+                </filter>
+            </defs>
+
+            <rect width="1600" height="900" fill="@(focus.Tone == "cool" ? "url(#focus-cool)" : "url(#focus-warm)")" />
+            <rect class="object-focus__grain" width="1600" height="900" fill="transparent" />
+
+            @switch (focus.Kind)
+            {
+                case "ant":
+                    <g class="object-focus__subject object-focus__subject--ant" filter="url(#focus-soft-shadow)">
+                        <ellipse cx="800" cy="705" rx="540" ry="86" fill="#2A2018" opacity="0.18" />
+                        <path d="@AntHillPath(focus.Variant)" fill="#8B5C3D" />
+                        <path d="@AntHillHighlightPath(focus.Variant)" fill="#D7AD7D" opacity="0.76" />
+                        <g class="object-focus__grains" fill="#E6C79A" opacity="0.82">
+                            <circle cx="676" cy="572" r="8" /><circle cx="728" cy="510" r="6" />
+                            <circle cx="793" cy="463" r="7" /><circle cx="842" cy="529" r="5" />
+                            <circle cx="909" cy="592" r="8" /><circle cx="762" cy="617" r="5" />
+                            <circle cx="866" cy="654" r="6" /><circle cx="711" cy="674" r="5" />
+                        </g>
+                        <g class="object-focus__ants" fill="#211713">
+                            <g class="object-focus__ant object-focus__ant--one"><ellipse cx="720" cy="602" rx="16" ry="10" /><circle cx="699" cy="599" r="8" /><circle cx="742" cy="604" r="8" /></g>
+                            <g class="object-focus__ant object-focus__ant--two"><ellipse cx="848" cy="548" rx="16" ry="10" /><circle cx="827" cy="545" r="8" /><circle cx="870" cy="551" r="8" /></g>
+                            <g class="object-focus__ant object-focus__ant--three"><ellipse cx="927" cy="640" rx="16" ry="10" /><circle cx="906" cy="637" r="8" /><circle cx="949" cy="643" r="8" /></g>
+                            <g class="object-focus__ant object-focus__ant--four"><ellipse cx="774" cy="706" rx="16" ry="10" /><circle cx="753" cy="703" r="8" /><circle cx="796" cy="709" r="8" /></g>
+                        </g>
+                        <g class="object-focus__reticle" fill="none" stroke="#A8E6CF" stroke-width="4" opacity="0.72">
+                            <circle cx="800" cy="600" r="250" />
+                            <path d="M800 306 L800 386 M800 814 L800 734 M506 600 L586 600 M1094 600 L1014 600" />
+                        </g>
+                    </g>
+                    break;
+                case "sticker":
+                    <g class="object-focus__subject object-focus__subject--sticker" filter="url(#focus-soft-shadow)">
+                        @if (focus.Variant == "drawer")
+                        {
+                            <rect x="360" y="250" width="880" height="500" rx="24" fill="#5D463A" />
+                            <rect x="420" y="302" width="760" height="360" rx="18" fill="#CDA887" />
+                        }
+                        else if (focus.Variant == "window" || focus.Variant == "brick")
+                        {
+                            <g fill="#8A5F4A" opacity="0.82">
+                                @for (var y = 210; y < 720; y += 86)
+                                {
+                                    <rect x="260" y="@y" width="1080" height="70" rx="4" />
+                                }
+                            </g>
+                            <g stroke="#5F4034" stroke-width="4" opacity="0.36">
+                                @for (var x = 330; x < 1320; x += 190)
+                                {
+                                    <line x1="@x" y1="210" x2="@(x - 60)" y2="720" />
+                                }
+                            </g>
+                        }
+                        else
+                        {
+                            <path d="M386 706 C410 520 496 368 646 284 C756 222 900 224 1014 288 C1162 372 1216 528 1180 690 Z" fill="url(#focus-skin)" />
+                        }
+                        <circle class="object-focus__sticker-disc" cx="800" cy="478" r="190" fill="#F5B68C" />
+                        <path d="M886 308 A190 190 0 0 1 990 538 A138 138 0 0 0 828 360 Z" fill="#A8E6CF" opacity="0.92" />
+                        <circle cx="748" cy="420" r="28" fill="#FFF1CD" opacity="0.5" />
+                        <path d="M650 596 Q800 660 950 596" stroke="#D98F5E" stroke-width="22" stroke-linecap="round" fill="none" opacity="0.42" />
+                    </g>
+                    break;
+                case "rain":
+                    <g class="object-focus__subject object-focus__subject--rain" filter="url(#focus-soft-shadow)">
+                        @if (focus.Variant == "bare")
+                        {
+                            <path d="M335 660 C435 455 600 338 780 312 C973 284 1146 370 1252 575 C1132 736 944 802 752 786 C574 771 432 728 335 660 Z" fill="url(#focus-skin)" />
+                        }
+                        else
+                        {
+                            <rect x="300" y="150" width="1000" height="620" rx="16" fill="#D8E7EC" opacity="0.52" />
+                            <line x1="800" y1="150" x2="800" y2="770" stroke="#7D8D94" stroke-width="8" opacity="0.48" />
+                            <line x1="300" y1="462" x2="1300" y2="462" stroke="#7D8D94" stroke-width="8" opacity="0.38" />
+                        }
+                        <g class="object-focus__rain-lines" stroke="#EAF7FF" stroke-width="5" stroke-linecap="round" opacity="0.82">
+                            @for (var i = 0; i < 18; i++)
+                            {
+                                var x = 360 + (i * 52);
+                                <line x1="@x" y1="180" x2="@(x - 42)" y2="520" />
+                            }
+                        </g>
+                        <g class="object-focus__droplets" fill="#EAF7FF" opacity="0.76">
+                            <ellipse cx="620" cy="560" rx="18" ry="30" />
+                            <ellipse cx="846" cy="420" rx="12" ry="22" />
+                            <ellipse cx="1018" cy="640" rx="16" ry="28" />
+                        </g>
+                    </g>
+                    break;
+                case "song":
+                    <g class="object-focus__subject object-focus__subject--song" filter="url(#focus-soft-shadow)">
+                        <rect x="420" y="470" width="760" height="160" rx="26" fill="#E8E0D2" opacity="0.34" />
+                        <path d="M520 492 Q800 370 1080 492" stroke="#FFF1CD" stroke-width="12" stroke-linecap="round" fill="none" />
+                        <path d="M470 585 Q800 430 1130 585" stroke="#A8E6CF" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.65" />
+                        <path d="M590 670 Q800 560 1010 670" stroke="#FAF7F1" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.52" />
+                        <circle class="object-focus__note object-focus__note--one" cx="670" cy="392" r="25" fill="#FFF1CD" />
+                        <circle class="object-focus__note object-focus__note--two" cx="930" cy="430" r="22" fill="#A8E6CF" />
+                        <path d="M693 386 L693 260 M952 424 L952 292" stroke="#FFF1CD" stroke-width="9" stroke-linecap="round" />
+                    </g>
+                    break;
+                case "hands":
+                    <g class="object-focus__subject object-focus__subject--hands" filter="url(#focus-soft-shadow)">
+                        <path d="M350 575 C482 500 594 462 730 475 C786 481 826 506 850 552 C775 612 666 654 548 688 C462 713 392 672 350 575 Z" fill="url(#focus-skin)" />
+                        <path d="M1250 508 C1112 466 996 462 865 512 C814 532 786 568 786 618 C874 658 990 678 1113 672 C1204 668 1252 604 1250 508 Z" fill="#D99A78" />
+                        <path d="M718 556 C773 534 826 536 876 562" stroke="#FFF1CD" stroke-width="16" stroke-linecap="round" fill="none" opacity="0.65" />
+                        <path d="M510 640 Q620 578 754 558 M1048 618 Q948 575 838 568" stroke="#75452F" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.28" />
+                    </g>
+                    break;
+                case "paper":
+                    <g class="object-focus__subject object-focus__subject--paper" filter="url(#focus-soft-shadow)">
+                        <path d="M420 205 L800 270 L1180 205 L1180 718 L800 650 L420 718 Z" fill="url(#focus-paper)" />
+                        <path d="M800 270 L800 650" stroke="#C9BDA8" stroke-width="5" />
+                        <g stroke="#6B6855" stroke-width="6" stroke-linecap="round" opacity="0.38">
+                            <line x1="500" y1="340" x2="735" y2="378" />
+                            <line x1="500" y1="405" x2="712" y2="438" />
+                            <line x1="500" y1="470" x2="744" y2="506" />
+                            <line x1="866" y1="350" x2="1100" y2="315" />
+                            <line x1="866" y1="418" x2="1084" y2="386" />
+                            <line x1="866" y1="486" x2="1114" y2="450" />
+                        </g>
+                        @if (focus.Variant == "worksheet")
+                        {
+                            <rect x="640" y="545" width="320" height="56" rx="8" fill="#FFD24A" opacity="0.52" />
+                        }
+                    </g>
+                    break;
+                case "hud":
+                    <g class="object-focus__subject object-focus__subject--hud" filter="url(#focus-soft-shadow)">
+                        <rect x="330" y="160" width="940" height="580" rx="34" fill="#10151F" opacity="0.88" />
+                        <rect x="390" y="220" width="820" height="460" rx="20" fill="#1C2533" opacity="0.96" />
+                        <g stroke="#A8E6CF" stroke-width="5" opacity="0.82">
+                            <path d="M480 330 H1120" />
+                            <path d="M480 430 H840" />
+                            <path d="M480 530 H1010" />
+                            <circle cx="1110" cy="530" r="35" />
+                        </g>
+                        <g fill="#FFF1CD" opacity="0.88">
+                            <rect x="480" y="270" width="170" height="24" rx="12" />
+                            <rect x="480" y="610" width="420" height="18" rx="9" />
+                        </g>
+                    </g>
+                    break;
+                case "seal":
+                    <g class="object-focus__subject object-focus__subject--seal" filter="url(#focus-soft-shadow)">
+                        <path d="M520 190 Q800 115 1080 190 Q1160 405 1110 712 Q944 784 800 784 Q656 784 490 712 Q440 405 520 190 Z" fill="#F5B68C" />
+                        <path d="M800 165 Q775 335 820 430 Q760 496 805 720" stroke="#2A2A2E" stroke-width="12" stroke-linecap="round" fill="none" opacity="0.34" />
+                        <path class="object-focus__crack" d="M790 248 L833 330 L800 390 L852 468 L816 544 L860 640" stroke="#FFF1CD" stroke-width="10" stroke-linecap="round" fill="none" />
+                    </g>
+                    break;
+                case "drawer":
+                    <g class="object-focus__subject object-focus__subject--drawer" filter="url(#focus-soft-shadow)">
+                        <rect x="320" y="210" width="960" height="520" rx="32" fill="#5B4036" />
+                        <rect x="400" y="285" width="800" height="350" rx="22" fill="#C99B78" />
+                        <circle cx="800" cy="704" r="28" fill="#2A2018" opacity="0.34" />
+                        <g opacity="0.92">
+                            <circle cx="690" cy="452" r="58" fill="#F5B68C" />
+                            <path d="M720 401 A58 58 0 0 1 746 476 A42 42 0 0 0 704 417 Z" fill="#A8E6CF" />
+                            <circle cx="850" cy="520" r="42" fill="#C9B080" />
+                            <path d="M920 390 L1034 430 L950 512 Z" fill="#FFD24A" />
+                        </g>
+                    </g>
+                    break;
+                case "cup":
+                    <g class="object-focus__subject object-focus__subject--cup" filter="url(#focus-soft-shadow)">
+                        <ellipse cx="800" cy="245" rx="250" ry="70" fill="#FAF7F1" />
+                        <path d="M560 245 L628 720 Q800 788 972 720 L1040 245 Z" fill="#FFD1DC" opacity="0.9" />
+                        <ellipse cx="800" cy="245" rx="240" ry="60" fill="#E86592" opacity="0.62" />
+                        <g fill="#FF6B9D" opacity="0.7">
+                            <circle cx="710" cy="412" r="28" />
+                            <circle cx="872" cy="522" r="22" />
+                            <circle cx="802" cy="628" r="18" />
+                        </g>
+                    </g>
+                    break;
+                case "trunk":
+                    <g class="object-focus__subject object-focus__subject--trunk" filter="url(#focus-soft-shadow)">
+                        <path d="M260 580 C520 456 860 404 1330 446 L1370 562 C930 545 572 604 310 720 Z" fill="#76523A" />
+                        <path d="M300 615 C614 544 980 512 1330 520" stroke="#D2A979" stroke-width="18" stroke-linecap="round" fill="none" opacity="0.28" />
+                        <g stroke="#3A2818" stroke-width="8" opacity="0.35">
+                            <line x1="490" y1="540" x2="545" y2="676" />
+                            <line x1="790" y1="486" x2="832" y2="602" />
+                            <line x1="1110" y1="456" x2="1140" y2="552" />
+                        </g>
+                    </g>
+                    break;
+                case "window":
+                    <g class="object-focus__subject object-focus__subject--window" filter="url(#focus-soft-shadow)">
+                        <rect x="320" y="120" width="960" height="660" rx="18" fill="#D8E7EC" opacity="0.4" />
+                        <rect x="360" y="160" width="880" height="580" rx="8" fill="#1A2030" opacity="0.28" />
+                        <line x1="800" y1="160" x2="800" y2="740" stroke="#FAF7F1" stroke-width="8" opacity="0.44" />
+                        <line x1="360" y1="450" x2="1240" y2="450" stroke="#FAF7F1" stroke-width="8" opacity="0.34" />
+                        @if (focus.Variant == "brick")
+                        {
+                            <circle cx="1140" cy="645" r="70" fill="#F5B68C" />
+                            <path d="M1172 596 A70 70 0 0 1 1205 672 A48 48 0 0 0 1158 616 Z" fill="#A8E6CF" />
+                        }
+                    </g>
+                    break;
+                case "dinosaur":
+                    <g class="object-focus__subject object-focus__subject--dinosaur" filter="url(#focus-soft-shadow)">
+                        <path d="M470 185 Q800 92 1130 185 Q1210 440 1135 725 Q960 800 800 800 Q640 800 465 725 Q390 440 470 185 Z" fill="#FFD24A" />
+                        <g fill="#4F9A66">
+                            <path d="M660 520 Q706 420 790 450 Q850 470 850 545 Q914 530 960 575 Q898 626 805 626 Q728 626 660 520 Z" />
+                            <circle cx="777" cy="435" r="28" />
+                        </g>
+                        <g fill="#FF8C5C" opacity="0.78">
+                            <circle cx="620" cy="330" r="30" />
+                            <circle cx="1010" cy="405" r="26" />
+                            <circle cx="935" cy="650" r="22" />
+                        </g>
+                    </g>
+                    break;
+                case "dexterity":
+                    <g class="object-focus__subject object-focus__subject--dexterity" filter="url(#focus-soft-shadow)">
+                        <circle cx="800" cy="470" r="250" fill="#FAF7F1" opacity="0.16" />
+                        <g stroke="#F5B68C" stroke-width="24" stroke-linecap="round" fill="none">
+                            <path d="M520 590 Q650 400 800 500 Q945 600 1080 408" />
+                            <path d="M520 430 Q650 590 800 490 Q950 390 1080 570" opacity="0.52" />
+                        </g>
+                        <g fill="#A8E6CF">
+                            <circle cx="520" cy="590" r="36" />
+                            <circle cx="800" cy="500" r="36" />
+                            <circle cx="1080" cy="408" r="36" />
+                        </g>
+                    </g>
+                    break;
+                default:
+                    <g class="object-focus__subject object-focus__subject--generic" filter="url(#focus-soft-shadow)">
+                        <circle cx="800" cy="470" r="220" fill="#FAF7F1" opacity="0.5" />
+                        <circle cx="800" cy="470" r="130" fill="#F5B68C" opacity="0.65" />
+                    </g>
+                    break;
+            }
+        </svg>
+    </div>
+}
+
+@code {
+    private string Motif => Story.Motif ?? "";
+    private string Art => Story.Art ?? "";
+    private string Text => Story.CurrentText ?? "";
+    private string LowerText => Text.ToLowerInvariant();
+
+    private FocusSpec? Focus => BuildFocus();
+
+    private FocusSpec? BuildFocus()
+    {
+        if (IsAntFocus()) return new("ant", AntVariant(), "warm", $"ant-{AntVariant()}-{Story.Scene}");
+        if (IsStickerFocus()) return new("sticker", StickerVariant(), "warm", $"sticker-{StickerVariant()}-{Story.Scene}");
+        if (IsRainFocus())
+        {
+            var rainVariant = Motif == "rain-bare" || Has("skin") || Has("bare") ? "bare" : "window";
+            return new("rain", rainVariant, "cool", $"rain-{rainVariant}-{Story.Scene}");
+        }
+        if (IsSongFocus()) return new("song", "air", "cool", $"song-air-{Story.Scene}");
+
+        return Art switch
+        {
+            "boot-up-hud" or "tae-ping" => new("hud", Art == "tae-ping" ? "ping" : "boot", "cool", $"hud-{Art}-{Story.Scene}"),
+            "dexterity-positions" => new("dexterity", "positions", "cool", $"dexterity-{Story.Scene}"),
+            "chest-seal-crack" => new("seal", "crack", "warm", $"seal-{Story.Scene}"),
+            "corridor-windows" or "wren-window-open" => new("window", "pane", "cool", $"window-{Art}-{Story.Scene}"),
+            "corner-brick-window" => new("window", "brick", "warm", $"window-brick-{Story.Scene}"),
+            "iris-bare-hand" or "bare-hands-clasp" => new("hands", "clasp", "warm", $"hands-{Art}-{Story.Scene}"),
+            "literature-book" or "basin-passage" => new("paper", "book", "warm", $"paper-{Art}-{Story.Scene}"),
+            "be-more-honest-worksheet" => new("paper", "worksheet", "warm", $"worksheet-{Story.Scene}"),
+            "wren-bedside-drawer" => new("drawer", "stickers", "warm", $"drawer-{Story.Scene}"),
+            "tae-strawberry-water" => new("cup", "strawberry", "warm", $"cup-{Story.Scene}"),
+            "fallen-tree-trunk" => new("trunk", "field", "cool", $"trunk-{Story.Scene}"),
+            "tae-coral-decoration" => new("sticker", "shoulder", "warm", $"decor-{Story.Scene}"),
+            "dinosaur-kid" => new("dinosaur", "sticker", "warm", $"dino-{Story.Scene}"),
+            _ => null
+        };
+    }
+
+    private bool IsAntFocus() =>
+        !IsAntLeaving
+        && (Motif.StartsWith("ant-hill", StringComparison.OrdinalIgnoreCase)
+            || IsAntSequenceByState
+            || Has("ant hill")
+            || Has("ant comes")
+            || Has("another ant")
+            || Has("ant climbs")
+            || Has("auto-zoom holds")
+            || Has("curb level"));
+
+    private bool IsAntLeaving =>
+        Has("resume walking")
+        || Has("start walking")
+        || Has("keep walking")
+        || Has("auto-zoom releases")
+        || Has("releases the zoom")
+        || Has("reticle fades")
+        || Has("recedes behind me")
+        || Has("last block");
+
+    private bool HasActiveAntState
+    {
+        get
+        {
+            var state = Story.GetVar("ant_state");
+            return !string.IsNullOrWhiteSpace(state) && state != "0";
+        }
+    }
+
+    private bool IsAntSequenceByState =>
+        Story.Background == "street-morning"
+        && HasActiveAntState
+        && (
+            (Story.Scene == 1 && !Has("school comes") && !Has("homeroom in 18 minutes") && !Has("pace: nominal"))
+            || (Story.Scene == 7 && !Has("school comes") && !Has("homeroom in 12 minutes"))
+        );
+
+    private bool IsStickerFocus() =>
+        Motif.StartsWith("sticker", StringComparison.OrdinalIgnoreCase)
+        || Has("peach sticker")
+        || Has("mint crescent")
+        || (Has("sticker") && (Has("shoulder") || Has("drawer") || Has("window") || Has("brick") || Has("case")));
+
+    private bool IsRainFocus() =>
+        Motif.StartsWith("rain", StringComparison.OrdinalIgnoreCase)
+        || Art == "corridor-windows"
+        || (Has("rain") && (Has("window") || Has("glass") || Has("skin") || Has("bare")));
+
+    private bool IsSongFocus() =>
+        Motif.StartsWith("song", StringComparison.OrdinalIgnoreCase)
+        || (Has("song") && (Has("humming") || Has("hum") || Has("grandmother")));
+
+    private string AntVariant()
+    {
+        if (Motif.Contains("crushed", StringComparison.OrdinalIgnoreCase) || Has("crushed")) return "crushed";
+        if (Motif.Contains("eye-level", StringComparison.OrdinalIgnoreCase) || Has("rebuilt")) return "rebuilt";
+        return "building";
+    }
+
+    private string StickerVariant()
+    {
+        if (Story.Scene == 10
+            && (Motif.Contains("drawer", StringComparison.OrdinalIgnoreCase)
+                || Has("drawer")
+                || Has("mint crescent")
+                || Has("wax paper")
+                || Has("last spring")
+                || Has("same sticker")))
+        {
+            return "drawer";
+        }
+        if (Motif.Contains("drawer", StringComparison.OrdinalIgnoreCase) || Has("drawer")) return "drawer";
+        if (Motif.Contains("window", StringComparison.OrdinalIgnoreCase) || Has("brick") || Has("window")) return "window";
+        if (Has("shoulder") || Art == "tae-coral-decoration") return "shoulder";
+        return "hand";
+    }
+
+    private string AntHillPath(string variant) => variant switch
+    {
+        "crushed" => "M420 705 C520 610 615 646 690 585 C760 528 825 642 902 578 C1004 494 1100 630 1195 702 C1008 746 646 752 420 705 Z",
+        "rebuilt" => "M485 715 C578 590 662 506 802 394 C936 510 1018 592 1125 715 C940 752 670 752 485 715 Z",
+        _ => "M430 718 C532 586 620 470 802 320 C980 468 1068 586 1174 718 C940 760 662 760 430 718 Z"
+    };
+
+    private string AntHillHighlightPath(string variant) => variant switch
+    {
+        "crushed" => "M580 660 C658 618 710 638 762 602 C820 562 850 624 916 604 C878 664 708 700 580 660 Z",
+        "rebuilt" => "M650 646 C705 548 756 486 808 432 C874 494 914 562 952 648 C858 690 746 690 650 646 Z",
+        _ => "M622 642 C686 532 742 452 806 382 C888 470 936 552 980 652 C876 702 732 700 622 642 Z"
+    };
+
+    private bool Has(string value) => LowerText.Contains(value, StringComparison.OrdinalIgnoreCase);
+
+    protected override void OnInitialized() => Story.StateChanged += OnStoryChanged;
+
+    private void OnStoryChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Story.StateChanged -= OnStoryChanged;
+
+    private sealed record FocusSpec(string Kind, string Variant, string Tone, string Key);
+}

@@ -16,16 +16,30 @@ else if (_showPrologueReplay)
     <NameInput IsReplay="true" OnClose="ClosePrologueReplay" />
 }
 
-<div class="stage voice-@Story.Voice pacing-@Story.Pacing theme-@SettingsSvc.Current.Theme @(SettingsSvc.Current.ReduceMotion ? "reduce-motion" : "") @(Story.IsClimaxPause ? "climax-pause" : "") @(IsDarkBackground ? "bg-dark" : "bg-light")"
+<div @ref="_stageRef"
+     class="stage voice-@Story.Voice pacing-@Story.Pacing scene-@Story.Scene background-@Story.Background audio-@Story.Audio theme-@SettingsSvc.Current.Theme @(SettingsSvc.Current.ReduceMotion ? "reduce-motion" : "") @(Story.IsClimaxPause ? "climax-pause" : "") @(IsDarkBackground ? "bg-dark" : "bg-light") @(_showPauseMenu ? "stage--menu-open" : "")"
      style="--text-size-mult: @(SettingsSvc.Current.TextSize.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)); @(Story.IsPrologueDone ? "" : "visibility: hidden;")"
+     tabindex="0"
      @onclick="OnStageClick">
 
     @if (!Story.IsClimaxPause)
     {
-        <Background Id="@Story.Background" Scene="@Story.Scene" />
-        <Character Id="@Story.CharacterOnStage" />
-        <Motif Id="@Story.Motif" />
-        <SpotArt Id="@Story.Art" />
+        <div class="stage__look-layer stage__look-layer--back" aria-hidden="true">
+            <Background Id="@Story.Background" Scene="@Story.Scene" />
+            <div class="stage__atmosphere stage__atmosphere--@Story.Background"></div>
+        </div>
+        <div class="stage__look-layer stage__look-layer--mid">
+            <MotionScene />
+            <ObjectFocus />
+            @if (ShowLegacyMotif)
+            {
+                <Motif Id="@Story.Motif" />
+            }
+            @if (ShowLegacySpotArt)
+            {
+                <SpotArt Id="@Story.Art" />
+            }
+        </div>
     }
 
     @if (Story.IsClimaxPause)
@@ -74,6 +88,23 @@ else if (_showPrologueReplay)
     }
 
     <TopBar OnOpen="OpenPanel" />
+
+    @if (_showPauseMenu)
+    {
+        <div class="pause-menu-overlay" @onclick="ClosePauseMenu" @onclick:stopPropagation="true">
+            <section class="pause-menu" @onclick:stopPropagation="true" aria-label="Game menu">
+                <div class="pause-menu__eyebrow">Paused</div>
+                <h2 class="pause-menu__title">Menu</h2>
+                <div class="pause-menu__actions">
+                    <button class="pause-menu__btn pause-menu__btn--primary" @onclick="ClosePauseMenu">Continue</button>
+                    <button class="pause-menu__btn" @onclick="() => OpenMenuPanel(TopBar.Panel.Settings)">Settings</button>
+                    <button class="pause-menu__btn" @onclick="() => OpenMenuPanel(TopBar.Panel.Map)">Story Map</button>
+                    <button class="pause-menu__btn" @onclick="() => OpenMenuPanel(TopBar.Panel.Backlog)">History</button>
+                    <button class="pause-menu__btn pause-menu__btn--exit" @onclick="ExitApplication">Exit</button>
+                </div>
+            </section>
+        </div>
+    }
 
     @if (_openPanel == TopBar.Panel.Map)
     {
@@ -141,7 +172,48 @@ else if (_showPrologueReplay)
     private TopBar.Panel _openPanel = TopBar.Panel.None;
     private SceneInfo? _pendingJump;
     private bool _showPrologueReplay;
+    private bool _showPauseMenu;
     private int _lastMoodScene = -1;
+    private ElementReference _stageRef;
+    private DotNetObjectReference<Stage>? _inputRef;
+
+    private static readonly HashSet<string> MotionHandledMotifs = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "ant-hill-building", "ant-hill-crushed", "ant-hill-eye-level",
+        "song-grandma", "rain-window", "rain-bare"
+    };
+
+    private static readonly HashSet<string> MotionHandledArt = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "dinosaur-kid", "dexterity-positions", "ozaki-stepping-out",
+        "bare-hands-clasp", "tae-from-doorway", "service-class-woman"
+    };
+
+    private static readonly HashSet<string> FocusHandledArt = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "boot-up-hud", "dinosaur-kid", "tae-ping",
+        "tae-coral-decoration", "dexterity-positions", "chest-seal-crack",
+        "corridor-windows", "iris-bare-hand", "literature-book",
+        "basin-passage", "be-more-honest-worksheet", "wren-bedside-drawer",
+        "tae-strawberry-water", "fallen-tree-trunk", "wren-window-open",
+        "bare-hands-clasp", "corner-brick-window"
+    };
+
+    private bool ShowLegacyMotif =>
+        !string.IsNullOrWhiteSpace(Story.Motif)
+        && !MotionHandledMotifs.Contains(Story.Motif)
+        && !IsFocusHandledMotif(Story.Motif);
+
+    private bool ShowLegacySpotArt =>
+        !string.IsNullOrWhiteSpace(Story.Art)
+        && !MotionHandledArt.Contains(Story.Art)
+        && !FocusHandledArt.Contains(Story.Art);
+
+    private static bool IsFocusHandledMotif(string motif) =>
+        motif.StartsWith("ant-hill", StringComparison.OrdinalIgnoreCase)
+        || motif.StartsWith("sticker", StringComparison.OrdinalIgnoreCase)
+        || motif.StartsWith("rain", StringComparison.OrdinalIgnoreCase)
+        || motif.StartsWith("song", StringComparison.OrdinalIgnoreCase);
 
     protected override void OnInitialized()
     {
@@ -149,6 +221,14 @@ else if (_showPrologueReplay)
         Story.StateChanged += OnProgressChanged;
         SettingsSvc.Changed += OnSettingsChanged;
         ResetTimer();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _inputRef = DotNetObjectReference.Create(this);
+        await JS.InvokeVoidAsync("visualNovelInput.bind", _stageRef, _inputRef);
     }
 
     private async void OnProgressChanged()
@@ -166,6 +246,16 @@ else if (_showPrologueReplay)
         {
             _lastMoodScene = Story.Scene;
             await MusicSvc.SetSceneMoodAsync(Story.Scene);
+        }
+
+        if (!string.IsNullOrWhiteSpace(Story.CurrentAudioCue))
+        {
+            await MusicSvc.PlayCueAsync(Story.CurrentAudioCue, Story.Scene);
+        }
+
+        foreach (var sfx in Story.CurrentSfx)
+        {
+            await MusicSvc.PlaySfxAsync(sfx);
         }
     }
 
@@ -194,6 +284,7 @@ else if (_showPrologueReplay)
         if (Story.IsClimaxPause) return;
         if (!SettingsSvc.Current.AutoAdvance) return;
         if (_openPanel != TopBar.Panel.None) return;
+        if (_showPauseMenu) return;
 
         var baseMs = SettingsSvc.Current.AutoAdvanceDelay * 1000;
         var ms = Story.Pacing == "slow" ? baseMs * 1.7 : baseMs;
@@ -202,7 +293,7 @@ else if (_showPrologueReplay)
         {
             await InvokeAsync(async () =>
             {
-                if (Story.CanAdvance && !Story.IsClimaxPause && _openPanel == TopBar.Panel.None)
+                if (Story.CanAdvance && !Story.IsClimaxPause && _openPanel == TopBar.Panel.None && !_showPauseMenu)
                     await TransitionAdvance();
             });
         };
@@ -211,7 +302,50 @@ else if (_showPrologueReplay)
 
     private async Task OnStageClick()
     {
+        await AdvanceRequested();
+    }
+
+    [JSInvokable]
+    public async Task AdvanceFromInput()
+    {
+        await AdvanceRequested();
+    }
+
+    [JSInvokable]
+    public Task BackFromInput()
+    {
+        if (!Story.IsPrologueDone) return Task.CompletedTask;
+        if (_showPauseMenu || _openPanel != TopBar.Panel.None || _pendingJump is not null || _showPrologueReplay) return Task.CompletedTask;
+        if (_transitioning) return Task.CompletedTask;
+
+        Story.GoBack();
+        return Task.CompletedTask;
+    }
+
+    [JSInvokable]
+    public Task ToggleMenuFromInput()
+    {
+        if (!Story.IsPrologueDone) return Task.CompletedTask;
+
+        if (_showPauseMenu)
+        {
+            ClosePauseMenu();
+        }
+        else
+        {
+            OpenPauseMenu();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private async Task AdvanceRequested()
+    {
+        if (!Story.IsPrologueDone) return;
         if (_openPanel != TopBar.Panel.None) return;
+        if (_showPauseMenu) return;
+        if (_pendingJump is not null) return;
+        if (_showPrologueReplay) return;
         if (!Story.CanAdvance) return;
         if (_transitioning) return;
 
@@ -246,6 +380,7 @@ else if (_showPrologueReplay)
 
     private void OpenPanel(TopBar.Panel p)
     {
+        _showPauseMenu = false;
         _openPanel = p;
         ResetTimer();
         StateHasChanged();
@@ -256,6 +391,33 @@ else if (_showPrologueReplay)
         _openPanel = TopBar.Panel.None;
         ResetTimer();
         StateHasChanged();
+    }
+
+    private void OpenPauseMenu()
+    {
+        _openPanel = TopBar.Panel.None;
+        _pendingJump = null;
+        _showPauseMenu = true;
+        ResetTimer();
+        StateHasChanged();
+    }
+
+    private void ClosePauseMenu()
+    {
+        _showPauseMenu = false;
+        ResetTimer();
+        StateHasChanged();
+    }
+
+    private void OpenMenuPanel(TopBar.Panel panel)
+    {
+        _showPauseMenu = false;
+        OpenPanel(panel);
+    }
+
+    private async Task ExitApplication()
+    {
+        await JS.InvokeVoidAsync("visualNovelInput.closeApp");
     }
 
     private async Task OnPlayAgain()
@@ -303,6 +465,7 @@ else if (_showPrologueReplay)
     {
         _openPanel = TopBar.Panel.None;
         _showPrologueReplay = true;
+        _showPauseMenu = false;
         ResetTimer();
         StateHasChanged();
     }
@@ -317,6 +480,8 @@ else if (_showPrologueReplay)
     public void Dispose()
     {
         _autoTimer?.Dispose();
+        try { _ = JS.InvokeVoidAsync("visualNovelInput.unbind", _stageRef); } catch { }
+        _inputRef?.Dispose();
         Story.StateChanged -= OnStateChanged;
         Story.StateChanged -= OnProgressChanged;
         SettingsSvc.Changed -= OnSettingsChanged;

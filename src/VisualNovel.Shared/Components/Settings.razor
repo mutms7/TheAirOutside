@@ -80,7 +80,7 @@
 
     <section class="settings__group">
         <h3 class="settings__group-title">Audio</h3>
-        <p class="settings__hint">Ambient music is procedural and changes per scene. Sound effects are not wired yet.</p>
+        <p class="settings__hint">Music and sound effects are procedural and change with the current scene.</p>
 
         <div class="settings__row">
             <label class="settings__label">Master <span class="settings__value">@((int)(s.MasterVolume * 100))%</span></label>
@@ -97,7 +97,7 @@
         <div class="settings__row">
             <label class="settings__label">Sound effects <span class="settings__value">@((int)(s.SfxVolume * 100))%</span></label>
             <input type="range" min="0" max="1" step="0.05" value="@s.SfxVolume"
-                   @oninput="@(async e => await Update(set => set.SfxVolume = double.Parse(e.Value!.ToString()!)))" />
+                   @oninput="@(async e => await OnSfxInput(e))" />
         </div>
     </section>
 
@@ -152,6 +152,13 @@
         if (!double.TryParse(e.Value?.ToString(), out var v)) return;
         await MusicSvc.SetMusicVolumeAsync(v);
         await Update(set => set.MusicVolume = v);
+    }
+
+    private async Task OnSfxInput(ChangeEventArgs e)
+    {
+        if (!double.TryParse(e.Value?.ToString(), out var v)) return;
+        await MusicSvc.SetSfxVolumeAsync(v);
+        await Update(set => set.SfxVolume = v);
     }
 
     private async Task ResetDefaults()

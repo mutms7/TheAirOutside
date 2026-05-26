@@ -1,456 +1,242 @@
 @inject StoryService StoryService
 
-@if (!string.IsNullOrEmpty(Id))
+@if (!string.IsNullOrWhiteSpace(Id))
 {
-    <div class="character character--@Name character--@(Name)-@Expression" @key="@Name">
-        @switch (Name)
-        {
-            case "wren":
-                @switch (Expression)
-                {
-                    case "bare":
-                    case "bare-cry":
-                        <svg class="character__art" viewBox="0 0 200 460" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-                            <ellipse cx="100" cy="62" rx="36" ry="44" fill="#E5BC97"/>
-                            <path d="M 64 56 Q 100 18 136 56 Q 138 30 100 26 Q 62 30 64 56" fill="#3A2818"/>
-                            <circle cx="88" cy="@(Expression == "bare-cry" ? "66" : "62")" r="2" fill="#2A2A30"/>
-                            <circle cx="112" cy="@(Expression == "bare-cry" ? "66" : "62")" r="2" fill="#2A2A30"/>
-                            @if (Expression == "bare-cry")
+    var name = Name;
+    var expression = Expression;
+    var spec = CharacterSpec.For(name);
+    var bare = IsBareExpression(name, expression);
+    var shell = $"url(#{SvgId("shell")})";
+    var helmet = $"url(#{SvgId("helmet")})";
+    var limb = $"url(#{SvgId("limb")})";
+    var fabric = $"url(#{SvgId("fabric")})";
+    var glass = $"url(#{SvgId("glass")})";
+
+    <div class="character character--@name @(bare ? "character--bare" : "character--suited") character--@name-@expression" @key="@($"{name}-{expression}")">
+        <svg class="character__art character__art--@name @(bare ? "character__art--bare" : "character__art--suited")"
+             viewBox="0 0 260 520"
+             preserveAspectRatio="xMidYMax meet"
+             aria-hidden="true"
+             style="--char-primary: @spec.Primary; --char-secondary: @spec.Secondary; --char-accent: @spec.Accent; --char-accent-2: @spec.Accent2; --char-dark: @spec.Dark; --char-skin: @spec.Skin; --char-hair: @spec.Hair;">
+            <defs>
+                <linearGradient id="@SvgId("shell")" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="@spec.Primary" />
+                    <stop offset="56%" stop-color="@spec.Mid" />
+                    <stop offset="100%" stop-color="@spec.Secondary" />
+                </linearGradient>
+                <linearGradient id="@SvgId("helmet")" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="@spec.Highlight" />
+                    <stop offset="100%" stop-color="@spec.Primary" />
+                </linearGradient>
+                <linearGradient id="@SvgId("limb")" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="@spec.Secondary" />
+                    <stop offset="52%" stop-color="@spec.Primary" />
+                    <stop offset="100%" stop-color="@spec.Secondary" />
+                </linearGradient>
+                <linearGradient id="@SvgId("fabric")" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="@spec.FabricLight" />
+                    <stop offset="100%" stop-color="@spec.Fabric" />
+                </linearGradient>
+                <linearGradient id="@SvgId("glass")" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#30313a" />
+                    <stop offset="58%" stop-color="#15161d" />
+                    <stop offset="100%" stop-color="#05060a" />
+                </linearGradient>
+                <radialGradient id="@SvgId("status")" cx="0.45" cy="0.35" r="0.7">
+                    <stop offset="0%" stop-color="@spec.Accent" stop-opacity="0.95" />
+                    <stop offset="100%" stop-color="@spec.Accent" stop-opacity="0" />
+                </radialGradient>
+                <filter id="@SvgId("soft-shadow")" x="-30%" y="-30%" width="160%" height="170%">
+                    <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000000" flood-opacity="0.22" />
+                </filter>
+            </defs>
+
+            <ellipse class="character__ground" cx="130" cy="494" rx="92" ry="15" fill="#000" opacity="0.16" />
+
+            @if (bare)
+            {
+                <g class="character__body character__body--bare" transform="@BareBodyTransform">
+                    <path class="character__leg character__leg--left" d="M 83 320 Q 79 370 82 498 L 112 498 Q 114 384 120 320 Z" fill="@spec.FabricDark" />
+                    <path class="character__leg character__leg--right" d="M 140 320 Q 145 384 148 498 L 178 498 Q 181 370 176 320 Z" fill="@spec.FabricDark" />
+                    <path class="character__shoe" d="M 77 490 Q 95 484 116 490 L 116 504 L 74 504 Q 70 497 77 490 Z" fill="@spec.Dark" opacity="0.92" />
+                    <path class="character__shoe" d="M 144 490 Q 163 484 184 490 Q 190 497 184 504 L 144 504 Z" fill="@spec.Dark" opacity="0.92" />
+
+                    <path class="character__torso character__torso--bare" d="M 72 145 Q 130 132 188 145 Q 199 245 190 332 Q 160 346 130 346 Q 100 346 70 332 Q 61 244 72 145 Z" fill="@fabric" />
+                    <path class="character__fabric-fold" d="M 88 168 Q 130 158 172 168" stroke="#FFFFFF" stroke-width="4" opacity="0.18" fill="none" stroke-linecap="round" />
+                    <path class="character__fabric-fold" d="M 130 148 Q 126 230 132 336" stroke="@spec.FabricDark" stroke-width="1.4" opacity="0.45" fill="none" />
+
+                    @if (name == "iris")
+                    {
+                        <path d="M 78 151 Q 130 142 182 151 L 177 184 Q 130 174 83 184 Z" fill="@spec.FabricLight" opacity="0.55" />
+                    }
+                    @if (name == "ozaki")
+                    {
+                        <rect x="92" y="146" width="76" height="42" fill="@spec.FabricLight" opacity="0.55" />
+                        <line x1="108" y1="145" x2="108" y2="333" stroke="@spec.FabricDark" stroke-width="1.2" opacity="0.45" />
+                        <line x1="152" y1="145" x2="152" y2="333" stroke="@spec.FabricDark" stroke-width="1.2" opacity="0.45" />
+                    }
+
+                    <g class="character__arms character__arms--bare">
+                        <g transform="@LeftArmTransform">
+                            <path d="M 72 158 Q 45 181 43 250 Q 42 310 52 362" stroke="@spec.Skin" stroke-width="25" stroke-linecap="round" fill="none" />
+                            <ellipse cx="52" cy="365" rx="12" ry="14" fill="@spec.Skin" />
+                        </g>
+                        <g transform="@RightArmTransform">
+                            <path d="M 188 158 Q 216 181 217 250 Q 218 310 208 362" stroke="@spec.Skin" stroke-width="25" stroke-linecap="round" fill="none" />
+                            <ellipse cx="208" cy="365" rx="12" ry="14" fill="@spec.Skin" />
+                        </g>
+                    </g>
+
+                    <rect x="119" y="116" width="22" height="34" fill="@spec.Skin" />
+                    <g class="character__head character__head--bare" transform="@BareHeadTransform">
+                        <ellipse cx="130" cy="79" rx="42" ry="51" fill="@spec.Skin" />
+                        <path d="@HairPath(name)" fill="@spec.Hair" />
+                        <circle cx="116" cy="@EyeY" r="2.5" fill="#27242a" />
+                        <circle cx="144" cy="@EyeY" r="2.5" fill="#27242a" />
+                        @if (IsCrying)
+                        {
+                            <line class="character__tear" x1="115" y1="90" x2="112" y2="112" stroke="#8AB8DC" stroke-width="2.5" stroke-linecap="round" />
+                        }
+                        @if (name == "iris")
+                        {
+                            <line x1="99" y1="105" x2="106" y2="110" stroke="#8F684D" stroke-width="1" opacity="0.65" />
+                            <line x1="103" y1="96" x2="111" y2="99" stroke="#8F684D" stroke-width="0.8" opacity="0.45" />
+                        }
+                        <path d="@MouthPath" stroke="#27242a" stroke-width="1.7" fill="none" stroke-linecap="round" />
+                    </g>
+
+                    @if (name == "janitor" && expression == "humming")
+                    {
+                        <g class="character__humming-notes" fill="@spec.Accent" opacity="0.7">
+                            <ellipse cx="76" cy="82" rx="4" ry="3" />
+                            <rect x="79" y="58" width="2" height="24" />
+                            <ellipse cx="190" cy="106" rx="3.5" ry="2.5" />
+                            <rect x="193" y="85" width="2" height="22" />
+                        </g>
+                    }
+                </g>
+            }
+            else
+            {
+                <g class="character__body character__body--suited" transform="@SuitBodyTransform" filter="@($"url(#{SvgId("soft-shadow")})")">
+                    <g class="character__back-glow">
+                        <ellipse cx="130" cy="238" rx="86" ry="164" fill="@($"url(#{SvgId("status")})")" opacity="@BackGlowOpacity" />
+                    </g>
+
+                    <g class="character__legs">
+                        <path d="M 78 315 Q 72 365 76 500 L 116 500 Q 119 386 124 315 Z" fill="@shell" />
+                        <path d="M 136 315 Q 141 386 144 500 L 184 500 Q 188 365 182 315 Z" fill="@shell" />
+                        <path d="M 84 332 Q 94 326 118 326" stroke="#FFFFFF" stroke-width="4" opacity="0.16" fill="none" stroke-linecap="round" />
+                        <path d="M 142 332 Q 154 326 176 326" stroke="#FFFFFF" stroke-width="4" opacity="0.16" fill="none" stroke-linecap="round" />
+                    </g>
+
+                    <path class="character__torso" d="M 68 142 Q 130 128 192 142 Q 203 226 197 289 Q 194 320 185 338 Q 158 352 130 352 Q 102 352 75 338 Q 66 320 63 289 Q 57 226 68 142 Z" fill="@shell" />
+                    <path class="character__torso-shine" d="M 76 147 Q 130 136 184 147 L 181 165 Q 130 153 79 165 Z" fill="#FFFFFF" opacity="0.2" />
+                    <line x1="130" y1="143" x2="130" y2="346" stroke="@spec.Secondary" stroke-width="1.8" opacity="0.62" />
+                    <path d="M 84 188 Q 130 174 176 188" stroke="@spec.Accent2" stroke-width="2.2" opacity="0.45" fill="none" stroke-linecap="round" />
+
+                    <g class="character__arms character__arms--suited">
+                        <g transform="@LeftArmTransform">
+                            <path d="M 64 156 Q 37 186 36 250 Q 35 315 45 370" stroke="@limb" stroke-width="31" stroke-linecap="round" fill="none" />
+                            <rect x="25" y="358" width="42" height="28" rx="14" fill="@spec.Secondary" />
+                            @if (name == "cael" && expression == "mocking")
                             {
-                                <path d="M 92 78 Q 100 76 108 78" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
-                                <line x1="88" y1="70" x2="86" y2="86" stroke="#9CC0E0" stroke-width="2"/>
+                                <circle class="character__sparkle" cx="20" cy="250" r="7" fill="@spec.Accent" opacity="0.9" />
+                            }
+                        </g>
+                        <g transform="@RightArmTransform">
+                            <path d="M 196 156 Q 224 186 224 250 Q 225 315 215 370" stroke="@limb" stroke-width="31" stroke-linecap="round" fill="none" />
+                            @if (name == "tae" && expression == "private")
+                            {
+                                <ellipse cx="215" cy="372" rx="13" ry="15" fill="@spec.Skin" />
                             }
                             else
                             {
-                                <path d="M 92 78 Q 100 80 108 78" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
+                                <rect x="193" y="358" width="42" height="28" rx="14" fill="@spec.Secondary" />
                             }
-                            <rect x="92" y="103" width="16" height="18" fill="#E5BC97"/>
-                            <rect x="54" y="121" width="92" height="200" rx="8" fill="#D4C4B0"/>
-                            <rect x="29" y="126" width="28" height="208" rx="14" fill="#D4C4B0"/>
-                            <rect x="143" y="126" width="28" height="208" rx="14" fill="#D4C4B0"/>
-                            <circle cx="43" cy="338" r="11" fill="#E5BC97"/>
-                            <circle cx="157" cy="338" r="11" fill="#E5BC97"/>
-                            <rect x="59" y="319" width="36" height="138" rx="5" fill="#5C5447"/>
-                            <rect x="105" y="319" width="36" height="138" rx="5" fill="#5C5447"/>
-                            <svg:text x="100" y="200" text-anchor="middle" font-family="serif" font-weight="500" font-size="11" fill="#A89580" letter-spacing="4">@SpacedName(ProtagonistName)</svg:text>
-                        </svg>
-                        break;
-                    default:
-                        <svg class="character__art" viewBox="0 0 200 460" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-                            <defs>
-                                <linearGradient id="wren-suit" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%"  stop-color="#FBC79C"/>
-                                    <stop offset="55%" stop-color="#F5B68C"/>
-                                    <stop offset="100%" stop-color="#DA9968"/>
-                                </linearGradient>
-                                <linearGradient id="wren-helmet" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%"  stop-color="#FBC79C"/>
-                                    <stop offset="100%" stop-color="#E9A47A"/>
-                                </linearGradient>
-                                <linearGradient id="wren-limb" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%"  stop-color="#E0A074"/>
-                                    <stop offset="50%" stop-color="#F5B68C"/>
-                                    <stop offset="100%" stop-color="#E0A074"/>
-                                </linearGradient>
-                            </defs>
-                            @{
-                                var tilt = Expression == "troubled" ? 4 : 0;
-                                var headY = 60 + (Expression == "troubled" ? 8 : 0);
-                            }
-                            <g transform="translate(@tilt 0)">
-                                <ellipse cx="100" cy="@headY" rx="55" ry="60" fill="url(#wren-helmet)"/>
-                                <ellipse cx="80" cy="@(headY - 30)" rx="22" ry="14" fill="#FFFFFF" opacity="0.16"/>
-                                <path d="M 50 @(headY - 10) Q 100 @(headY - 14) 150 @(headY - 10) L 150 @(headY + 12) Q 100 @(headY + 16) 50 @(headY + 12) Z" fill="#1F2026" opacity="0.92"/>
-                                <path d="M 50 @(headY - 10) Q 100 @(headY - 14) 150 @(headY - 10) L 150 @(headY - 4) Q 100 @(headY - 8) 50 @(headY - 4) Z" fill="#FFFFFF" opacity="0.10"/>
-                                <rect x="56" y="@(headY - 4)" width="8" height="6" rx="1" fill="#A8E6CF" opacity="0.8"/>
-                                <rect x="80" y="@(headY + 55)" width="40" height="20" rx="3" fill="#D89B70"/>
-                            </g>
-                            <path d="M 52 135 Q 100 130 148 135 Q 152 220 150 260 Q 148 296 145 315 L 55 315 Q 52 296 50 260 Q 48 220 52 135 Z" fill="url(#wren-suit)"/>
-                            <path d="M 56 138 Q 100 134 144 138 L 144 152 Q 100 148 56 152 Z" fill="#FFFFFF" opacity="0.18"/>
-                            <line x1="100" y1="135" x2="100" y2="315" stroke="#C68A5C" stroke-width="1.5" opacity="0.7"/>
-                            <circle cx="65" cy="155" r="11" fill="#F5B68C" stroke="#C68A5C" stroke-width="1.4"/>
-                            <circle cx="62" cy="151" r="3.5" fill="#FFFFFF" opacity="0.45"/>
-                            <path d="M 56 152 Q 65 147 74 152" stroke="#A8E6CF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                            <path d="M 18 152 Q 18 140 30 140 L 41 140 Q 53 140 53 152 L 53 338 Q 53 350 41 350 L 30 350 Q 18 350 18 338 Z" fill="url(#wren-limb)"/>
-                            <path d="M 147 152 Q 147 140 159 140 L 170 140 Q 182 140 182 152 L 182 338 Q 182 350 170 350 L 159 350 Q 147 350 147 338 Z" fill="url(#wren-limb)"/>
-                            <rect x="20" y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.18"/>
-                            <rect x="149" y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.18"/>
-                            <rect x="18" y="337" width="35" height="20" rx="10" fill="#D89B70"/>
-                            <rect x="147" y="337" width="35" height="20" rx="10" fill="#D89B70"/>
-                            <path d="M 58 315 Q 58 312 62 312 L 138 312 Q 142 312 142 315 L 142 345 L 58 345 Z" fill="#D89B70"/>
-                            <path d="M 60 348 Q 60 345 64 345 L 91 345 Q 95 345 95 348 L 95 458 Q 95 460 92 460 L 63 460 Q 60 460 60 458 Z" fill="url(#wren-suit)"/>
-                            <path d="M 105 348 Q 105 345 109 345 L 136 345 Q 140 345 140 348 L 140 458 Q 140 460 137 460 L 108 460 Q 105 460 105 458 Z" fill="url(#wren-suit)"/>
-                            <rect x="62" y="350" width="5" height="100" rx="2" fill="#FFFFFF" opacity="0.16"/>
-                            <rect x="107" y="350" width="5" height="100" rx="2" fill="#FFFFFF" opacity="0.16"/>
-                            <svg:text x="100" y="230" text-anchor="middle" font-family="serif" font-weight="600" font-size="13" fill="#9B5B30" letter-spacing="4">@SpacedName(ProtagonistName)</svg:text>
-                        </svg>
-                        break;
-                }
-                break;
-
-            case "tae":
-                <svg class="character__art" viewBox="0 0 200 460" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="tae-suit" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%"  stop-color="#FF8AB5"/>
-                            <stop offset="55%" stop-color="#FF6B9D"/>
-                            <stop offset="100%" stop-color="#E04A7A"/>
-                        </linearGradient>
-                        <linearGradient id="tae-helmet" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%"  stop-color="#FF8AB5"/>
-                            <stop offset="100%" stop-color="#E55B8C"/>
-                        </linearGradient>
-                        <linearGradient id="tae-limb" x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%"  stop-color="#E04A7A"/>
-                            <stop offset="50%" stop-color="#FF6B9D"/>
-                            <stop offset="100%" stop-color="#E04A7A"/>
-                        </linearGradient>
-                    </defs>
-                    <ellipse cx="100" cy="60" rx="55" ry="60" fill="url(#tae-helmet)"/>
-                    <ellipse cx="80" cy="30" rx="22" ry="14" fill="#FFFFFF" opacity="0.22"/>
-                    <path d="M 50 50 Q 100 46 150 50 L 150 72 Q 100 76 50 72 Z" fill="#1F2026" opacity="0.92"/>
-                    <path d="M 50 50 Q 100 46 150 50 L 150 56 Q 100 52 50 56 Z" fill="#FFFFFF" opacity="0.12"/>
-                    @if (Expression == "warm" || Expression == "private")
-                    {
-                        <path d="M 50 50 Q 100 46 150 50 L 150 56 Q 100 52 50 56 Z" fill="#FFA0C0"/>
-                    }
-                    <rect x="56" y="56" width="8" height="6" rx="1" fill="#A8E6CF" opacity="0.8"/>
-                    <rect x="80" y="115" width="40" height="20" rx="3" fill="#E04A7A"/>
-                    @if (Expression != "private")
-                    {
-                        <g>
-                            <circle cx="70" cy="128" r="3" fill="#FFD700"/>
-                            <circle cx="100" cy="130" r="3" fill="#FFD700"/>
-                            <circle cx="130" cy="128" r="3" fill="#FFD700"/>
                         </g>
-                    }
-                    <path d="M 52 135 Q 100 130 148 135 Q 152 220 150 260 Q 148 296 145 315 L 55 315 Q 52 296 50 260 Q 48 220 52 135 Z" fill="url(#tae-suit)"/>
-                    <path d="M 56 138 Q 100 134 144 138 L 144 154 Q 100 148 56 154 Z" fill="#FFFFFF" opacity="0.22"/>
-                    <line x1="100" y1="135" x2="100" y2="315" stroke="#C13868" stroke-width="1.5" opacity="0.7"/>
-                    <g transform="translate(60, 155)">
-                        <circle r="14" fill="#FFA0C0"/>
-                        <circle r="9" fill="#FF6B9D"/>
-                        <circle r="4" fill="#FFD700"/>
                     </g>
-                    @if (Expression == "warm" || Expression == "assembly")
-                    {
-                        <circle cx="140" cy="165" r="5" fill="#FFE0E8" stroke="#FF6B9D" stroke-width="1"/>
-                        <circle cx="125" cy="180" r="4" fill="#FFE0E8" stroke="#FF6B9D" stroke-width="1"/>
-                    }
-                    @if (Expression == "assembly")
-                    {
-                        <polygon points="100,260 105,268 113,268 107,274 109,282 100,278 91,282 93,274 87,268 95,268" fill="#FFD700"/>
-                    }
-                    <svg:text x="100" y="230" text-anchor="middle" font-family="serif" font-weight="700" font-size="13" fill="#FFFFFF" letter-spacing="5">T A E</svg:text>
-                    <path d="M 18 152 Q 18 140 30 140 L 41 140 Q 53 140 53 152 L 53 338 Q 53 350 41 350 L 30 350 Q 18 350 18 338 Z" fill="url(#tae-limb)"/>
-                    <path d="M 147 152 Q 147 140 159 140 L 170 140 Q 182 140 182 152 L 182 338 Q 182 350 170 350 L 159 350 Q 147 350 147 338 Z" fill="url(#tae-limb)"/>
-                    <rect x="20"  y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.2"/>
-                    <rect x="149" y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.2"/>
-                    <rect x="18" y="337" width="35" height="20" rx="10" fill="#E04A7A"/>
-                    @if (Expression == "private")
-                    {
-                        <ellipse cx="165" cy="347" rx="10" ry="11" fill="#E5BC97"/>
-                    }
-                    else
-                    {
-                        <rect x="147" y="337" width="35" height="20" rx="10" fill="#E04A7A"/>
-                    }
-                    <path d="M 58 315 Q 58 312 62 312 L 138 312 Q 142 312 142 315 L 142 345 L 58 345 Z" fill="#E04A7A"/>
-                    <path d="M 60 348 Q 60 345 64 345 L 91 345 Q 95 345 95 348 L 95 458 Q 95 460 92 460 L 63 460 Q 60 460 60 458 Z" fill="url(#tae-suit)"/>
-                    <path d="M 105 348 Q 105 345 109 345 L 136 345 Q 140 345 140 348 L 140 458 Q 140 460 137 460 L 108 460 Q 105 460 105 458 Z" fill="url(#tae-suit)"/>
-                </svg>
-                break;
 
-            case "iris":
-                @switch (Expression)
-                {
-                    case "bare":
-                    case "looking-window":
-                    case "looking-at-wren":
-                    case "sitting-bench":
-                    case "in-clearing":
-                        <svg class="character__art" viewBox="0 0 200 460" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-                            <ellipse cx="100" cy="58" rx="34" ry="42" fill="#D9B89C"/>
-                            <path d="M 66 50 Q 100 16 134 50 L 138 110 Q 132 95 130 80 Q 100 95 70 80 Q 68 95 62 110 Z" fill="#2A2018"/>
-                            <circle cx="88" cy="60" r="2" fill="#2A2A30"/>
-                            <circle cx="112" cy="60" r="2" fill="#2A2A30"/>
-                            @if (Expression == "looking-at-wren")
-                            {
-                                <path d="M 92 76 L 108 76" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
-                            }
-                            else
-                            {
-                                <path d="M 92 76 Q 100 77 108 76" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
-                            }
-                            <rect x="92" y="100" width="16" height="20" fill="#D9B89C"/>
-                            <rect x="42" y="120" width="116" height="220" rx="8" fill="#7A7A6A"/>
-                            <rect x="42" y="120" width="116" height="30" rx="8" fill="#8B8B7A"/>
-                            <rect x="22" y="125" width="30" height="210" rx="14" fill="#7A7A6A"/>
-                            <rect x="148" y="125" width="30" height="210" rx="14" fill="#7A7A6A"/>
-                            <circle cx="37" cy="338" r="10" fill="#D9B89C"/>
-                            <line x1="32" y1="334" x2="36" y2="338" stroke="#9B7050" stroke-width="1"/>
-                            <line x1="38" y1="332" x2="40" y2="336" stroke="#9B7050" stroke-width="1"/>
-                            <circle cx="163" cy="338" r="10" fill="#D9B89C"/>
-                            <rect x="60" y="328" width="35" height="130" rx="4" fill="#3F3F38"/>
-                            <rect x="105" y="328" width="35" height="130" rx="4" fill="#3F3F38"/>
-                            <svg:text x="100" y="230" text-anchor="middle" font-family="serif" font-weight="500" font-size="12" fill="#5C5C54" letter-spacing="5" opacity="0.7">I R I S</svg:text>
-                        </svg>
-                        break;
-                    default:
-                        <svg class="character__art" viewBox="0 0 200 460" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-                            <defs>
-                                <linearGradient id="iris-suit" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%"  stop-color="#CFC8C0"/>
-                                    <stop offset="55%" stop-color="#B8B0A8"/>
-                                    <stop offset="100%" stop-color="#928A82"/>
-                                </linearGradient>
-                                <linearGradient id="iris-helmet" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%"  stop-color="#CFC8C0"/>
-                                    <stop offset="100%" stop-color="#A09890"/>
-                                </linearGradient>
-                                <linearGradient id="iris-limb" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%"  stop-color="#9C948B"/>
-                                    <stop offset="50%" stop-color="#B8B0A8"/>
-                                    <stop offset="100%" stop-color="#9C948B"/>
-                                </linearGradient>
-                            </defs>
-                            <ellipse cx="100" cy="60" rx="55" ry="60" fill="url(#iris-helmet)"/>
-                            <ellipse cx="80" cy="30" rx="22" ry="14" fill="#FFFFFF" opacity="0.18"/>
-                            <path d="M 50 50 Q 100 46 150 50 L 150 72 Q 100 76 50 72 Z" fill="#1F2026" opacity="0.92"/>
-                            <path d="M 50 50 Q 100 46 150 50 L 150 56 Q 100 52 50 56 Z" fill="#FFFFFF" opacity="0.10"/>
-                            <rect x="80" y="115" width="40" height="20" rx="3" fill="#9C948B"/>
-                            <path d="M 52 135 Q 100 130 148 135 Q 152 220 150 260 Q 148 296 145 315 L 55 315 Q 52 296 50 260 Q 48 220 52 135 Z" fill="url(#iris-suit)"/>
-                            <path d="M 56 138 Q 100 134 144 138 L 144 154 Q 100 148 56 154 Z" fill="#FFFFFF" opacity="0.18"/>
-                            <line x1="100" y1="135" x2="100" y2="315" stroke="#7F7770" stroke-width="1.5" opacity="0.7"/>
-                            <svg:text x="100" y="230" text-anchor="middle" font-family="serif" font-weight="600" font-size="13" fill="#5C5C54" letter-spacing="5">I R I S</svg:text>
-                            <path d="M 18 152 Q 18 140 30 140 L 41 140 Q 53 140 53 152 L 53 338 Q 53 350 41 350 L 30 350 Q 18 350 18 338 Z" fill="url(#iris-limb)"/>
-                            <path d="M 147 152 Q 147 140 159 140 L 170 140 Q 182 140 182 152 L 182 338 Q 182 350 170 350 L 159 350 Q 147 350 147 338 Z" fill="url(#iris-limb)"/>
-                            <rect x="20"  y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.16"/>
-                            <rect x="149" y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.16"/>
-                            <path d="M 58 315 Q 58 312 62 312 L 138 312 Q 142 312 142 315 L 142 345 L 58 345 Z" fill="#9C948B"/>
-                            <path d="M 60 348 Q 60 345 64 345 L 91 345 Q 95 345 95 348 L 95 458 Q 95 460 92 460 L 63 460 Q 60 460 60 458 Z" fill="url(#iris-suit)"/>
-                            <path d="M 105 348 Q 105 345 109 345 L 136 345 Q 140 345 140 348 L 140 458 Q 140 460 137 460 L 108 460 Q 105 460 105 458 Z" fill="url(#iris-suit)"/>
-                        </svg>
-                        break;
-                }
-                break;
-
-            case "ozaki":
-                @switch (Expression)
-                {
-                    case "bare":
-                    case "dancing":
-                        <svg class="character__art" viewBox="0 0 200 460" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-                            <ellipse cx="100" cy="60" rx="34" ry="40" fill="#C9A685"/>
-                            <path d="M 66 52 Q 100 28 134 52 Q 136 42 100 38 Q 64 42 66 52" fill="#1F1A14"/>
-                            <circle cx="88" cy="60" r="2" fill="#2A2A30"/>
-                            <circle cx="112" cy="60" r="2" fill="#2A2A30"/>
-                            <path d="M 92 76 L 108 76" stroke="#2A2A30" stroke-width="1.5" fill="none"/>
-                            <rect x="92" y="100" width="16" height="22" fill="#C9A685"/>
-                            <rect x="40" y="122" width="120" height="50" fill="#E8E0D2"/>
-                            <line x1="80" y1="120" x2="120" y2="120" stroke="#8B7762" stroke-width="2"/>
-                            <line x1="80" y1="120" x2="80" y2="170" stroke="#8B7762" stroke-width="1" opacity="0.5"/>
-                            <line x1="120" y1="120" x2="120" y2="170" stroke="#8B7762" stroke-width="1" opacity="0.5"/>
-                            <rect x="40" y="170" width="120" height="160" fill="#E8E0D2"/>
-                            @if (Expression == "dancing")
-                            {
-                                <rect x="22" y="135" width="20" height="120" rx="8" fill="#C9A685" transform="rotate(-20 32 195)"/>
-                                <rect x="158" y="135" width="20" height="130" rx="8" fill="#C9A685" transform="rotate(15 168 200)"/>
-                                <circle cx="14" cy="120" r="10" fill="#C9A685" transform="rotate(-20 32 195)"/>
-                                <circle cx="186" cy="265" r="10" fill="#C9A685" transform="rotate(15 168 200)"/>
-                            }
-                            else
-                            {
-                                <rect x="22" y="130" width="20" height="200" rx="8" fill="#C9A685"/>
-                                <rect x="158" y="130" width="20" height="200" rx="8" fill="#C9A685"/>
-                                <circle cx="32" cy="338" r="10" fill="#C9A685"/>
-                                <circle cx="168" cy="338" r="10" fill="#C9A685"/>
-                            }
-                            <rect x="60" y="330" width="35" height="130" rx="4" fill="#3A2E20"/>
-                            <rect x="105" y="330" width="35" height="130" rx="4" fill="#3A2E20"/>
-                        </svg>
-                        break;
-                    default:
-                        <svg class="character__art" viewBox="0 0 200 460" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-                            <defs>
-                                <linearGradient id="oz-suit" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%"  stop-color="#827F68"/>
-                                    <stop offset="55%" stop-color="#6B6855"/>
-                                    <stop offset="100%" stop-color="#494636"/>
-                                </linearGradient>
-                                <linearGradient id="oz-helmet" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%"  stop-color="#827F68"/>
-                                    <stop offset="100%" stop-color="#56533F"/>
-                                </linearGradient>
-                                <linearGradient id="oz-limb" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%"  stop-color="#525040"/>
-                                    <stop offset="50%" stop-color="#6B6855"/>
-                                    <stop offset="100%" stop-color="#525040"/>
-                                </linearGradient>
-                            </defs>
-                            <ellipse cx="100" cy="60" rx="55" ry="60" fill="url(#oz-helmet)"/>
-                            <ellipse cx="80" cy="30" rx="22" ry="14" fill="#FFFFFF" opacity="0.12"/>
-                            <path d="M 50 50 Q 100 46 150 50 L 150 72 Q 100 76 50 72 Z" fill="#1F2026" opacity="0.92"/>
-                            <path d="M 50 50 Q 100 46 150 50 L 150 56 Q 100 52 50 56 Z" fill="#FFFFFF" opacity="0.08"/>
-                            <rect x="56" y="56" width="8" height="6" rx="1" fill="#A8E6CF" opacity="0.65"/>
-                            <rect x="80" y="115" width="40" height="20" rx="3" fill="#3F3D2E"/>
-                            <path d="M 52 135 Q 100 130 148 135 Q 152 220 150 260 Q 148 296 145 315 L 55 315 Q 52 296 50 260 Q 48 220 52 135 Z" fill="url(#oz-suit)"/>
-                            <path d="M 56 138 Q 100 134 144 138 L 144 154 Q 100 148 56 154 Z" fill="#FFFFFF" opacity="0.14"/>
-                            <line x1="100" y1="135" x2="100" y2="315" stroke="#3F3D2E" stroke-width="1.5" opacity="0.7"/>
-                            <svg:text x="100" y="230" text-anchor="middle" font-family="serif" font-weight="500" font-size="11" fill="#1F1D10" letter-spacing="4">O Z A K I</svg:text>
-                            <path d="M 18 152 Q 18 140 30 140 L 41 140 Q 53 140 53 152 L 53 338 Q 53 350 41 350 L 30 350 Q 18 350 18 338 Z" fill="url(#oz-limb)"/>
-                            <path d="M 147 152 Q 147 140 159 140 L 170 140 Q 182 140 182 152 L 182 338 Q 182 350 170 350 L 159 350 Q 147 350 147 338 Z" fill="url(#oz-limb)"/>
-                            <rect x="20"  y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.12"/>
-                            <rect x="149" y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.12"/>
-                            @if (Expression == "reading")
-                            {
-                                <g transform="rotate(-5 80 305)">
-                                    <rect x="40" y="280" width="80" height="50" rx="2" fill="#FAF7F1"/>
-                                    <rect x="40" y="280" width="80" height="6" fill="#FFFFFF" opacity="0.55"/>
-                                    <line x1="80" y1="280" x2="80" y2="330" stroke="#8B7762" stroke-width="1.2"/>
-                                    <line x1="48" y1="295" x2="73" y2="295" stroke="#7A6957" stroke-width="0.6" opacity="0.5"/>
-                                    <line x1="48" y1="304" x2="73" y2="304" stroke="#7A6957" stroke-width="0.6" opacity="0.5"/>
-                                    <line x1="48" y1="313" x2="73" y2="313" stroke="#7A6957" stroke-width="0.6" opacity="0.5"/>
-                                </g>
-                            }
-                            <rect x="18" y="337" width="35" height="20" rx="10" fill="#3F3D2E"/>
-                            <rect x="147" y="337" width="35" height="20" rx="10" fill="#3F3D2E"/>
-                            <path d="M 58 315 Q 58 312 62 312 L 138 312 Q 142 312 142 315 L 142 345 L 58 345 Z" fill="#3F3D2E"/>
-                            <path d="M 60 348 Q 60 345 64 345 L 91 345 Q 95 345 95 348 L 95 458 Q 95 460 92 460 L 63 460 Q 60 460 60 458 Z" fill="url(#oz-suit)"/>
-                            <path d="M 105 348 Q 105 345 109 345 L 136 345 Q 140 345 140 348 L 140 458 Q 140 460 137 460 L 108 460 Q 105 460 105 458 Z" fill="url(#oz-suit)"/>
-                        </svg>
-                        break;
-                }
-                break;
-
-            case "cael":
-                <svg class="character__art" viewBox="0 0 200 460" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="cl-suit" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%"  stop-color="#FFE082"/>
-                            <stop offset="55%" stop-color="#FFD24A"/>
-                            <stop offset="100%" stop-color="#D9A828"/>
-                        </linearGradient>
-                        <linearGradient id="cl-helmet" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%"  stop-color="#FFE082"/>
-                            <stop offset="100%" stop-color="#E5B432"/>
-                        </linearGradient>
-                        <linearGradient id="cl-limb" x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%"  stop-color="#C99820"/>
-                            <stop offset="50%" stop-color="#FFD24A"/>
-                            <stop offset="100%" stop-color="#C99820"/>
-                        </linearGradient>
-                    </defs>
-                    <ellipse cx="100" cy="60" rx="58" ry="62" fill="url(#cl-helmet)"/>
-                    <ellipse cx="80" cy="30" rx="22" ry="14" fill="#FFFFFF" opacity="0.28"/>
-                    <path d="M 48 48 Q 100 44 152 48 L 152 72 Q 100 76 48 72 Z" fill="#1F2026" opacity="0.92"/>
-                    <path d="M 48 48 Q 100 44 152 48 L 152 54 Q 100 50 48 54 Z" fill="#FFE89C"/>
-                    <rect x="56" y="56" width="8" height="6" rx="1" fill="#A8E6CF" opacity="0.8"/>
-                    <rect x="80" y="116" width="40" height="20" rx="3" fill="#B68712"/>
-                    <g>
-                        <circle cx="60"  cy="128" r="3" fill="#FF6B9D"/>
-                        <circle cx="80"  cy="124" r="3" fill="#FFA0C0"/>
-                        <circle cx="100" cy="126" r="3" fill="#FF6B9D"/>
-                        <circle cx="120" cy="124" r="3" fill="#FFA0C0"/>
-                        <circle cx="140" cy="128" r="3" fill="#FF6B9D"/>
+                    <rect x="104" y="120" width="52" height="28" rx="6" fill="@spec.Secondary" />
+                    <g class="character__head character__head--helmet" transform="@HelmetTransform">
+                        <ellipse cx="130" cy="74" rx="@HelmetRx" ry="@HelmetRy" fill="@helmet" />
+                        <ellipse cx="107" cy="40" rx="25" ry="14" fill="#FFFFFF" opacity="@HelmetShineOpacity" />
+                        <path d="M 72 62 Q 130 54 188 62 L 188 88 Q 130 96 72 88 Z" fill="@glass" opacity="0.96" />
+                        <path class="character__visor-sheen" d="M 76 63 Q 130 57 184 63 L 184 70 Q 130 64 76 70 Z" fill="#FFFFFF" opacity="0.13" />
+                        <rect class="character__status-light" x="80" y="73" width="10" height="7" rx="2" fill="@spec.Accent" opacity="0.9" />
+                        @if (name == "iris")
+                        {
+                            <line x1="94" y1="103" x2="166" y2="103" stroke="@spec.Accent2" stroke-width="3" opacity="0.5" />
+                        }
                     </g>
-                    <path d="M 50 135 Q 100 130 150 135 Q 154 220 152 260 Q 150 296 147 319 L 53 319 Q 50 296 48 260 Q 46 220 50 135 Z" fill="url(#cl-suit)"/>
-                    <path d="M 54 138 Q 100 134 146 138 L 146 154 Q 100 148 54 154 Z" fill="#FFFFFF" opacity="0.25"/>
-                    <line x1="100" y1="135" x2="100" y2="319" stroke="#B68712" stroke-width="1.5" opacity="0.7"/>
-                    <g transform="translate(65, 165)">
-                        <polygon points="0,-2 14,4 14,18 0,22 -14,18 -14,4" fill="#FF8C5C"/>
-                        <polygon points="0,2 10,7 10,16 0,18 -10,16 -10,7" fill="#FFD24A"/>
-                        <polygon points="0,2 7,6 5,11 -5,11 -7,6" fill="#FFFFFF" opacity="0.35"/>
-                    </g>
-                    <g transform="translate(135, 175)">
-                        <circle r="10" fill="#FF6B9D"/>
-                        <circle r="6" fill="#FFD24A"/>
-                        <circle r="2" fill="#FFFFFF"/>
-                        <circle r="3" cx="-3" cy="-3" fill="#FFFFFF" opacity="0.45"/>
-                    </g>
-                    <svg:text x="100" y="245" text-anchor="middle" font-family="serif" font-weight="700" font-size="14" fill="#9B5B0E" letter-spacing="6">C A E L</svg:text>
-                    <path d="M 16 152 Q 16 140 28 140 L 40 140 Q 52 140 52 152 L 52 340 Q 52 352 40 352 L 28 352 Q 16 352 16 340 Z" fill="url(#cl-limb)"/>
-                    <path d="M 148 152 Q 148 140 160 140 L 172 140 Q 184 140 184 152 L 184 340 Q 184 352 172 352 L 160 352 Q 148 352 148 340 Z" fill="url(#cl-limb)"/>
-                    <rect x="18" y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.28"/>
-                    <rect x="150" y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.28"/>
-                    <rect x="16" y="338" width="36" height="22" rx="10" fill="#B68712"/>
-                    <rect x="148" y="338" width="36" height="22" rx="10" fill="#B68712"/>
-                    <path d="M 58 319 Q 58 316 62 316 L 138 316 Q 142 316 142 319 L 142 351 L 58 351 Z" fill="#B68712"/>
-                    <path d="M 60 354 Q 60 351 64 351 L 92 351 Q 96 351 96 354 L 96 458 Q 96 460 93 460 L 63 460 Q 60 460 60 458 Z" fill="url(#cl-suit)"/>
-                    <path d="M 104 354 Q 104 351 108 351 L 136 351 Q 140 351 140 354 L 140 458 Q 140 460 137 460 L 107 460 Q 104 460 104 458 Z" fill="url(#cl-suit)"/>
-                    @if (Expression == "mocking")
-                    {
-                        <line x1="50" y1="190" x2="-10" y2="220" stroke="#FFD24A" stroke-width="6" stroke-linecap="round"/>
-                        <circle cx="-12" cy="220" r="8" fill="#C99820"/>
-                        <circle cx="-12" cy="220" r="3" fill="#FFE89C"/>
-                    }
-                </svg>
-                break;
 
-            case "janitor":
-                <svg class="character__art" viewBox="0 0 200 460" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="jn-suit" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%"  stop-color="#A6A6A0"/>
-                            <stop offset="55%" stop-color="#8E8E8A"/>
-                            <stop offset="100%" stop-color="#666660"/>
-                        </linearGradient>
-                        <linearGradient id="jn-helmet" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%"  stop-color="#A6A6A0"/>
-                            <stop offset="100%" stop-color="#727268"/>
-                        </linearGradient>
-                        <linearGradient id="jn-limb" x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%"  stop-color="#6E6E6A"/>
-                            <stop offset="50%" stop-color="#8E8E8A"/>
-                            <stop offset="100%" stop-color="#6E6E6A"/>
-                        </linearGradient>
-                    </defs>
-                    <ellipse cx="100" cy="60" rx="52" ry="58" fill="url(#jn-helmet)"/>
-                    <ellipse cx="80" cy="32" rx="20" ry="13" fill="#FFFFFF" opacity="0.16"/>
-                    <path d="M 52 50 Q 100 46 148 50 L 148 72 Q 100 76 52 72 Z" fill="#1F2026" opacity="0.92"/>
-                    <path d="M 52 50 Q 100 46 148 50 L 148 56 Q 100 52 52 56 Z" fill="#FFFFFF" opacity="0.10"/>
-                    <rect x="80" y="115" width="40" height="20" rx="3" fill="#525250"/>
-                    <path d="M 52 135 Q 100 130 148 135 Q 152 220 150 260 Q 148 296 145 315 L 55 315 Q 52 296 50 260 Q 48 220 52 135 Z" fill="url(#jn-suit)"/>
-                    <path d="M 56 138 Q 100 134 144 138 L 144 154 Q 100 148 56 154 Z" fill="#FFFFFF" opacity="0.18"/>
-                    <line x1="100" y1="135" x2="100" y2="315" stroke="#525250" stroke-width="1.5" opacity="0.7"/>
-                    <rect x="48" y="160" width="14" height="6" rx="1" fill="#FAF7F1" opacity="0.5"/>
-                    <path d="M 18 152 Q 18 140 30 140 L 41 140 Q 53 140 53 152 L 53 338 Q 53 350 41 350 L 30 350 Q 18 350 18 338 Z" fill="url(#jn-limb)"/>
-                    <path d="M 147 152 Q 147 140 159 140 L 170 140 Q 182 140 182 152 L 182 338 Q 182 350 170 350 L 159 350 Q 147 350 147 338 Z" fill="url(#jn-limb)"/>
-                    <rect x="20"  y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.16"/>
-                    <rect x="149" y="142" width="6" height="200" rx="3" fill="#FFFFFF" opacity="0.16"/>
-                    <rect x="18" y="337" width="35" height="20" rx="10" fill="#525250"/>
-                    <rect x="147" y="337" width="35" height="20" rx="10" fill="#525250"/>
-                    <path d="M 58 315 Q 58 312 62 312 L 138 312 Q 142 312 142 315 L 142 345 L 58 345 Z" fill="#525250"/>
-                    <path d="M 60 348 Q 60 345 64 345 L 91 345 Q 95 345 95 348 L 95 458 Q 95 460 92 460 L 63 460 Q 60 460 60 458 Z" fill="url(#jn-suit)"/>
-                    <path d="M 105 348 Q 105 345 109 345 L 136 345 Q 140 345 140 348 L 140 458 Q 140 460 137 460 L 108 460 Q 105 460 105 458 Z" fill="url(#jn-suit)"/>
-                    @if (Expression == "with-cart")
-                    {
-                        <rect x="155" y="320" width="40" height="60" rx="3" fill="#A89580"/>
-                        <rect x="155" y="320" width="40" height="6" fill="#FFFFFF" opacity="0.25"/>
-                        <circle cx="160" cy="385" r="5" fill="#1F1F22"/>
-                        <circle cx="160" cy="384" r="1.5" fill="#A8A8A0"/>
-                        <circle cx="190" cy="385" r="5" fill="#1F1F22"/>
-                        <circle cx="190" cy="384" r="1.5" fill="#A8A8A0"/>
-                        <line x1="155" y1="320" x2="135" y2="260" stroke="#A89580" stroke-width="4" stroke-linecap="round"/>
-                    }
-                    @if (Expression == "humming")
-                    {
-                        <g transform="translate(40, 40)">
-                            <ellipse cx="0" cy="0" rx="3.5" ry="2.5" fill="#8E8E8A" opacity="0.7"/>
-                            <rect x="2.5" y="-14" width="1.5" height="14" fill="#8E8E8A" opacity="0.7"/>
-                        </g>
-                        <g transform="translate(160, 60)">
-                            <ellipse cx="0" cy="0" rx="3" ry="2" fill="#8E8E8A" opacity="0.5"/>
-                            <rect x="2" y="-12" width="1.2" height="12" fill="#8E8E8A" opacity="0.5"/>
-                        </g>
-                    }
-                </svg>
-                break;
+                    <g class="character__decor character__decor--@name">
+                        @switch (name)
+                        {
+                            case "wren":
+                                <circle class="character__decal" cx="86" cy="180" r="15" fill="@spec.Primary" stroke="@spec.Secondary" stroke-width="2" />
+                                <path class="character__decal-line" d="M 74 177 Q 86 169 98 177" stroke="@spec.Accent" stroke-width="4" fill="none" stroke-linecap="round" />
+                                <circle cx="82" cy="174" r="3" fill="#FFFFFF" opacity="0.5" />
+                                break;
+                            case "tae":
+                                <circle class="character__decal" cx="86" cy="183" r="16" fill="@spec.Accent2" />
+                                <circle cx="86" cy="183" r="10" fill="@spec.Primary" />
+                                <circle cx="86" cy="183" r="4" fill="@spec.Gold" />
+                                <circle class="character__sparkle" cx="176" cy="176" r="5" fill="@spec.Accent2" />
+                                <circle class="character__sparkle" cx="164" cy="196" r="4" fill="@spec.Accent" />
+                                break;
+                            case "iris":
+                                <rect x="83" y="178" width="94" height="9" rx="4" fill="@spec.Accent2" opacity="0.26" />
+                                <circle cx="84" cy="183" r="4" fill="@spec.Dark" opacity="0.24" />
+                                break;
+                            case "ozaki":
+                                <rect x="80" y="177" width="42" height="32" rx="3" fill="@spec.Accent2" opacity="0.62" />
+                                <line x1="101" y1="177" x2="101" y2="209" stroke="@spec.Dark" stroke-width="1" opacity="0.45" />
+                                @if (expression == "reading")
+                                {
+                                    <g class="character__book" transform="rotate(-7 92 300)">
+                                        <rect x="55" y="276" width="86" height="54" rx="3" fill="#FAF7F1" />
+                                        <line x1="98" y1="276" x2="98" y2="330" stroke="@spec.FabricDark" stroke-width="1.2" />
+                                        <line x1="66" y1="294" x2="90" y2="294" stroke="@spec.FabricDark" stroke-width="0.8" opacity="0.5" />
+                                        <line x1="106" y1="294" x2="130" y2="294" stroke="@spec.FabricDark" stroke-width="0.8" opacity="0.5" />
+                                    </g>
+                                }
+                                break;
+                            case "cael":
+                                <polygon class="character__decal" points="86,166 97,190 122,192 102,207 109,232 86,219 63,232 70,207 50,192 75,190" fill="@spec.Accent" opacity="0.92" />
+                                <circle class="character__sparkle" cx="174" cy="184" r="8" fill="@spec.Accent2" />
+                                <circle cx="174" cy="184" r="3" fill="#FFFFFF" opacity="0.75" />
+                                break;
+                            case "janitor":
+                                <rect x="78" y="180" width="25" height="9" rx="2" fill="@spec.Accent2" opacity="0.48" />
+                                <rect x="78" y="194" width="46" height="5" rx="2" fill="@spec.Accent2" opacity="0.38" />
+                                @if (expression == "with-cart")
+                                {
+                                    <g class="character__cart" transform="translate(188 310)">
+                                        <rect x="0" y="0" width="48" height="62" rx="4" fill="@spec.Accent2" opacity="0.88" />
+                                        <rect x="4" y="6" width="40" height="10" rx="2" fill="#FFFFFF" opacity="0.22" />
+                                        <line x1="0" y1="0" x2="-28" y2="-70" stroke="@spec.Accent2" stroke-width="5" stroke-linecap="round" />
+                                        <circle cx="10" cy="68" r="6" fill="#17171b" />
+                                        <circle cx="40" cy="68" r="6" fill="#17171b" />
+                                    </g>
+                                }
+                                @if (expression == "humming")
+                                {
+                                    <g class="character__humming-notes" fill="@spec.Accent2" opacity="0.68">
+                                        <ellipse cx="74" cy="77" rx="4" ry="3" />
+                                        <rect x="77" y="53" width="2" height="24" />
+                                        <ellipse cx="188" cy="96" rx="3.5" ry="2.5" />
+                                        <rect x="191" y="74" width="2" height="23" />
+                                    </g>
+                                }
+                                break;
+                        }
+                    </g>
 
-            default:
-                <div class="character__silhouette" style="background-color: @Color;"></div>
-                break;
-        }
+                    <svg:text class="character__suit-name" x="130" y="256" text-anchor="middle" font-family="serif" font-weight="700" font-size="@SuitFontSize" fill="@spec.NameColor" letter-spacing="@SuitLetterSpacing">@SuitName</svg:text>
+                </g>
+            }
+        </svg>
     </div>
 }
 
@@ -458,32 +244,131 @@
     [Parameter] public string Id { get; set; } = "";
 
     private string Name => Id.Split(' ', 2)[0].ToLowerInvariant();
-    private string Expression => Id.Contains(' ') ? Id.Split(' ', 2)[1] : "neutral";
+    private string Expression => Id.Contains(' ') ? Id.Split(' ', 2)[1].ToLowerInvariant() : "neutral";
 
-    private string Color => Name switch
+    private string SvgId(string suffix) => $"char-{Name}-{suffix}";
+
+    private bool IsCrying => Expression.Contains("cry", StringComparison.OrdinalIgnoreCase);
+    private bool IsSoft => Expression is "warm" or "private" or "looking-window" or "looking-at-wren" or "sitting-bench" or "in-clearing" or "humming";
+    private bool IsTroubled => Expression is "troubled" or "bare-cry";
+
+    private string EyeY => IsTroubled ? "84" : "78";
+    private string MouthPath => IsCrying
+        ? "M 118 100 Q 130 96 142 100"
+        : IsSoft ? "M 117 99 Q 130 105 143 99" : "M 118 99 Q 130 101 142 99";
+
+    private string SuitBodyTransform => Expression switch
     {
-        "wren"    => "#F5B68C",
-        "tae"     => "#FF6B9D",
-        "iris"    => "#B8B0A8",
-        "ozaki"   => "#6B6855",
-        "cael"    => "#FFD24A",
-        "janitor" => "#888888",
-        _         => "#CCCCCC",
+        "troubled" => "translate(4 8) rotate(1.4 130 270)",
+        "mocking" => "translate(-10 0) rotate(-2 130 270)",
+        "assembly" => "translate(0 -3)",
+        _ => "translate(0 0)"
     };
 
-    private string ProtagonistName
+    private string BareBodyTransform => Expression switch
+    {
+        "dancing" => "translate(0 -4) rotate(-4 130 330)",
+        "bare-cry" => "translate(2 8)",
+        "looking-at-wren" => "translate(3 0)",
+        "in-clearing" => "translate(0 -6)",
+        _ => "translate(0 0)"
+    };
+
+    private string HelmetTransform => Expression switch
+    {
+        "troubled" => "translate(4 7) rotate(2 130 75)",
+        "mocking" => "rotate(-3 130 75)",
+        _ => "translate(0 0)"
+    };
+
+    private string BareHeadTransform => Expression switch
+    {
+        "bare-cry" => "translate(1 4)",
+        "looking-window" => "translate(-3 0)",
+        "looking-at-wren" => "translate(4 0)",
+        _ => "translate(0 0)"
+    };
+
+    private string LeftArmTransform => (Name, Expression) switch
+    {
+        ("cael", "mocking") => "rotate(-34 64 156) translate(-22 -18)",
+        ("ozaki", "dancing") => "rotate(-22 64 156) translate(-12 -18)",
+        _ => "translate(0 0)"
+    };
+
+    private string RightArmTransform => (Name, Expression) switch
+    {
+        ("ozaki", "dancing") => "rotate(18 196 156) translate(12 -8)",
+        ("tae", "private") => "rotate(7 196 156)",
+        _ => "translate(0 0)"
+    };
+
+    private string HelmetRx => Name == "cael" ? "68" : Name == "janitor" ? "58" : "62";
+    private string HelmetRy => Name == "cael" ? "66" : "64";
+    private string HelmetShineOpacity => Name == "cael" ? "0.30" : Name == "iris" ? "0.12" : "0.20";
+    private string BackGlowOpacity => Name == "iris" ? "0.10" : Name == "janitor" ? "0.12" : "0.22";
+    private string SuitFontSize => Name == "wren" ? "12" : "13";
+    private string SuitLetterSpacing => Name == "wren" ? "4" : "5";
+
+    private string SuitName
     {
         get
         {
-            var v = StoryService.GetVar("protagonist_name");
-            return string.IsNullOrEmpty(v) ? "WREN" : v.ToUpper();
+            if (Name != "wren") return CharacterSpec.For(Name).SuitLetters;
+            var n = StoryService.GetVar("protagonist_name");
+            return SpacedName(string.IsNullOrWhiteSpace(n) ? "WREN" : n, 8);
         }
     }
 
-    private string SpacedName(string n)
+    private static bool IsBareExpression(string name, string expression) => expression switch
     {
-        if (string.IsNullOrEmpty(n)) return "";
-        var chars = n.ToUpper().ToCharArray();
-        return string.Join(" ", chars);
+        "bare" or "bare-cry" or "dancing" or "looking-window" or "looking-at-wren" or "sitting-bench" or "in-clearing" => true,
+        _ => false
+    };
+
+    private static string HairPath(string name) => name switch
+    {
+        "wren" => "M 88 69 Q 130 23 172 69 Q 168 38 130 34 Q 92 38 88 69 Z",
+        "tae" => "M 86 68 Q 130 26 174 68 Q 170 118 160 138 Q 148 108 130 101 Q 112 108 100 138 Q 90 118 86 68 Z",
+        "iris" => "M 88 64 Q 130 22 172 64 L 176 132 Q 166 107 164 88 Q 130 104 96 88 Q 94 107 84 132 Z",
+        "ozaki" => "M 90 68 Q 130 42 170 68 Q 168 54 130 50 Q 92 54 90 68 Z",
+        "cael" => "M 88 68 Q 106 36 130 42 Q 154 34 174 68 Q 150 56 130 62 Q 112 56 88 68 Z",
+        "janitor" => "M 92 68 Q 130 45 168 68 Q 160 52 130 54 Q 100 52 92 68 Z",
+        _ => "M 88 68 Q 130 34 172 68 Q 168 44 130 40 Q 92 44 88 68 Z"
+    };
+
+    private static string SpacedName(string n, int maxChars)
+    {
+        var clean = new string(n.ToUpperInvariant().Where(char.IsLetterOrDigit).Take(maxChars).ToArray());
+        return string.Join(" ", clean.ToCharArray());
+    }
+
+    private sealed record CharacterSpec(
+        string Primary,
+        string Mid,
+        string Secondary,
+        string Highlight,
+        string Accent,
+        string Accent2,
+        string Gold,
+        string Dark,
+        string Skin,
+        string Hair,
+        string Fabric,
+        string FabricLight,
+        string FabricDark,
+        string NameColor,
+        string SuitLetters)
+    {
+        public static CharacterSpec For(string name) => name switch
+        {
+            "wren" => new("#F5B68C", "#EEA875", "#D98F5E", "#FFD0A8", "#A8E6CF", "#FFF1CD", "#FFD24A", "#6A4028", "#E5BC97", "#3A2818", "#D8C8B8", "#EFE2D2", "#5C5447", "#8A4C2A", "W R E N"),
+            "tae" => new("#FF6B9D", "#F05B8B", "#D84473", "#FFA0C0", "#FFD1DC", "#FFE0E8", "#FFD24A", "#79314E", "#D9A27F", "#322033", "#7B516E", "#A86591", "#3A2735", "#FFFFFF", "T A E"),
+            "iris" => new("#B8B0A8", "#AFA69D", "#8F877E", "#D3CCC4", "#E8E4DA", "#7A7A6A", "#C9B080", "#5C5C54", "#D9B89C", "#2A2018", "#777766", "#8A8A78", "#3F3F38", "#5C5C54", "I R I S"),
+            "ozaki" => new("#6B6855", "#5D5A48", "#444232", "#827F68", "#E8E0D2", "#A89580", "#C9B080", "#2F2D21", "#C9A685", "#1F1A14", "#E8E0D2", "#F2EBDC", "#3A2E20", "#1F1D10", "O Z A K I"),
+            "cael" => new("#FFD24A", "#F5C431", "#C99820", "#FFE89C", "#FF6B9D", "#FF8C5C", "#FFE082", "#8A5F08", "#C79A72", "#3A2818", "#6E5936", "#8C7144", "#3A2E20", "#8A5F08", "C A E L"),
+            "janitor" => new("#8E8E8A", "#7B7B76", "#62625E", "#A6A6A0", "#D4D4CA", "#A89580", "#C9B080", "#3D3D3A", "#BFA08A", "#3A342E", "#77776E", "#8D8D82", "#3F3F3A", "#3D3D3A", "SERVICE"),
+            _ => new("#CCCCCC", "#BBBBBB", "#999999", "#DDDDDD", "#FFFFFF", "#AAAAAA", "#CCCC99", "#555555", "#D9B89C", "#2A2018", "#888888", "#AAAAAA", "#444444", "#555555", "")
+        };
     }
 }

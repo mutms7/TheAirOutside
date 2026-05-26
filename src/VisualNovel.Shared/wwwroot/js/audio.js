@@ -202,7 +202,95 @@
         8: 'contemplative', 11: 'contemplative',
         9: 'awe',     12: 'awe',    13: 'awe',
         10: 'intimate',
-        14: 'tender', 15: 'tender'
+        14: 'tender', 15: 'tender', 16: 'tender'
+    };
+
+    // Ink # audio tags are not full tracks. They are score direction:
+    // shape the current mood, then add a short musical gesture.
+    const AUDIO_CUES = {
+        'corporate-ambient': {
+            mood: 'tension',
+            override: { density: 0.52, tempoScale: 0.86, brightnessBoost: -0.16, disableMelody: true, disableArp: true },
+            accent: 'boot'
+        },
+        'hummed-bar-subliminal': {
+            override: { density: 0.68, brightnessBoost: -0.04, disableArp: true },
+            accent: 'hum-subtle'
+        },
+        'ping-tae': {
+            mood: 'morning',
+            override: { density: 1.12, brightnessBoost: 0.08 },
+            accent: 'tae-ping'
+        },
+        'voice-mod-warm': {
+            mood: 'intimate',
+            override: { density: 0.72, brightnessBoost: 0.02, disableArp: true },
+            accent: 'warm-voice'
+        },
+        'cael-court': {
+            mood: 'tension',
+            override: { density: 1.22, tempoScale: 1.04, brightnessBoost: 0.04 },
+            accent: 'cael-glint'
+        },
+        'homeroom-bell': {
+            override: { density: 0.95 },
+            accent: 'school-bell'
+        },
+        'ambient-cafeteria-down': {
+            mood: 'tension',
+            override: { density: 0.7, tempoScale: 0.92, brightnessBoost: -0.12, disableArp: true },
+            accent: 'room-drop'
+        },
+        'ambient-hallway-direct': {
+            mood: 'awe',
+            override: { density: 0.48, tempoScale: 0.82, brightnessBoost: 0.06, disableArp: true },
+            accent: 'air-crack'
+        },
+        'ambient-hallway-muffled': {
+            mood: 'wistful',
+            override: { density: 0.42, tempoScale: 0.88, brightnessBoost: -0.18, disableMelody: true, disableArp: true },
+            accent: 'muffled-return'
+        },
+        'hummed-bar-janitor': {
+            mood: 'contemplative',
+            override: { density: 0.58, tempoScale: 0.94, disableArp: true },
+            accent: 'hum-janitor'
+        },
+        'bare-night-field': {
+            mood: 'awe',
+            override: { density: 0.9, tempoScale: 0.78, brightnessBoost: 0.12, disableArp: true },
+            accent: 'outside-bloom'
+        },
+        'bare-night-bedroom': {
+            mood: 'tender',
+            override: { density: 0.54, tempoScale: 0.86, brightnessBoost: -0.02, disableArp: true },
+            accent: 'bare-room'
+        },
+        'hummed-bar-final': {
+            mood: 'tender',
+            override: { density: 0.92, brightnessBoost: 0.04 },
+            accent: 'hum-final'
+        },
+        'hummed-bar-final-internal': {
+            mood: 'tender',
+            override: { density: 0.72, tempoScale: 0.94, disableArp: true },
+            accent: 'hum-internal'
+        }
+    };
+
+    const SFX_ACCENTS = {
+        'bedroom-floor': 'soft-step',
+        'suit-seal': 'seal-close',
+        'suit-boot': 'boot-click',
+        'door-soft': 'door-soft',
+        'ping': 'ping',
+        'ping-end': 'ping-end',
+        'bell-soft': 'school-bell',
+        'suit-unseal': 'seal-open',
+        'seal-alert': 'alert',
+        'seal-fail': 'seal-fail',
+        'seal-close': 'seal-close',
+        'helmet-lift': 'helmet-lift'
     };
 
     // ──────────────────────────────────────────────────────────────────
@@ -216,8 +304,10 @@
     let ctx = null;
     let masterGain = null;
     let musicGain = null;
+    let sfxGain = null;
     let masterVol = 0.8;
     let musicVol = 0.7;
+    let sfxVol = 0.8;
 
     let mood = null;
     let moodKey = null;
@@ -244,11 +334,16 @@
         const Ctor = window.AudioContext || window.webkitAudioContext;
         if (!Ctor) return;
         ctx = new Ctor();
-        musicGain = ctx.createGain();
-        musicGain.gain.value = musicVol;
         masterGain = ctx.createGain();
         masterGain.gain.value = masterVol;
+
+        musicGain = ctx.createGain();
+        musicGain.gain.value = musicVol;
+        sfxGain = ctx.createGain();
+        sfxGain.gain.value = sfxVol;
+
         musicGain.connect(masterGain);
+        sfxGain.connect(masterGain);
         masterGain.connect(ctx.destination);
     }
 
@@ -475,6 +570,207 @@
         return { oscs: [osc, overtone], env, endTime: stopAt };
     }
 
+    function makeAccentTone(midi, when, duration, opts = {}) {
+        if (!ctx) return null;
+        const freq = midiToHz(midi);
+        const dest = opts.dest ?? sfxGain ?? musicGain;
+        if (!dest) return null;
+
+        const osc = ctx.createOscillator();
+        osc.type = opts.type ?? 'sine';
+        osc.frequency.value = freq;
+        if (opts.detune) osc.detune.value = opts.detune;
+
+        const env = ctx.createGain();
+        const attack = opts.attack ?? 0.018;
+        const peak = opts.peak ?? 0.04;
+        const releaseAt = when + duration;
+        env.gain.setValueAtTime(0.0001, when);
+        env.gain.linearRampToValueAtTime(peak, when + attack);
+        env.gain.exponentialRampToValueAtTime(0.001, releaseAt);
+        env.gain.linearRampToValueAtTime(0.0001, releaseAt + 0.04);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = opts.filterType ?? 'lowpass';
+        filter.frequency.value = opts.filter ?? 3200;
+        filter.Q.value = opts.q ?? 0.5;
+
+        const panner = ctx.createStereoPanner();
+        panner.pan.value = opts.pan ?? rand(-0.25, 0.25);
+
+        osc.connect(env);
+        env.connect(filter);
+        filter.connect(panner);
+        panner.connect(dest);
+
+        const stopAt = releaseAt + 0.08;
+        osc.start(when);
+        osc.stop(stopAt);
+        return { oscs: [osc], env, endTime: stopAt };
+    }
+
+    function makeNoiseBurst(when, duration, opts = {}) {
+        if (!ctx) return null;
+        const dest = opts.dest ?? sfxGain ?? musicGain;
+        if (!dest) return null;
+
+        const frames = Math.max(1, Math.floor(ctx.sampleRate * duration));
+        const buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let last = 0;
+        for (let i = 0; i < frames; i++) {
+            const white = Math.random() * 2 - 1;
+            last = last * 0.86 + white * 0.14;
+            data[i] = opts.smooth ? last : white;
+        }
+
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = opts.filterType ?? 'bandpass';
+        filter.frequency.value = opts.filter ?? 1000;
+        filter.Q.value = opts.q ?? 0.8;
+
+        const env = ctx.createGain();
+        const attack = opts.attack ?? 0.01;
+        const peak = opts.peak ?? 0.04;
+        env.gain.setValueAtTime(0.0001, when);
+        env.gain.linearRampToValueAtTime(peak, when + attack);
+        env.gain.exponentialRampToValueAtTime(0.001, when + duration);
+        env.gain.linearRampToValueAtTime(0.0001, when + duration + 0.03);
+
+        const panner = ctx.createStereoPanner();
+        panner.pan.value = opts.pan ?? rand(-0.2, 0.2);
+
+        source.connect(filter);
+        filter.connect(env);
+        env.connect(panner);
+        panner.connect(dest);
+        source.start(when);
+        source.stop(when + duration + 0.05);
+        return { oscs: [source], env, endTime: when + duration + 0.06 };
+    }
+
+    function scheduleHummedBar(kind) {
+        const now = ctx.currentTime + 0.04;
+        const subtle = kind === 'hum-subtle' || kind === 'hum-internal';
+        const final = kind === 'hum-final';
+        const base = kind === 'hum-janitor' ? 57 : final ? 64 : 60;
+        const notes = final
+            ? [base, base + 2, base + 4, base + 7, base + 4, base + 2, base]
+            : [base, base + 2, base + 3, base + 7, base + 5, base + 3];
+        const offsets = final ? [0, 0.42, 0.88, 1.42, 2.08, 2.58, 3.08] : [0, 0.48, 0.98, 1.58, 2.18, 2.75];
+        const peak = subtle ? 0.010 : final ? 0.030 : 0.020;
+        notes.forEach((midi, i) => {
+            makeAccentTone(midi + 12, now + offsets[i], subtle ? 0.52 : 0.64, {
+                dest: musicGain,
+                type: 'sine',
+                peak: peak * (i === 0 || i === notes.length - 1 ? 0.72 : 1),
+                attack: 0.12,
+                filter: subtle ? 1300 : 2100,
+                pan: rand(-0.18, 0.18)
+            });
+        });
+    }
+
+    function triggerCueAccent(accent) {
+        if (!ctx || !accent) return;
+        const now = ctx.currentTime + 0.03;
+        switch (accent) {
+            case 'boot':
+                [60, 67, 72].forEach((m, i) => makeAccentTone(m, now + i * 0.11, 0.32, { dest: musicGain, type: 'triangle', peak: 0.018, filter: 1400 }));
+                makeNoiseBurst(now, 0.18, { dest: sfxGain, filter: 2600, q: 1.2, peak: 0.018 });
+                break;
+            case 'tae-ping':
+                makeAccentTone(88, now, 0.18, { peak: 0.055, filter: 4200, pan: 0.15 });
+                makeAccentTone(91, now + 0.13, 0.22, { peak: 0.046, filter: 4400, pan: 0.22 });
+                break;
+            case 'warm-voice':
+                [64, 69, 72].forEach((m, i) => makeAccentTone(m, now + i * 0.03, 1.5, { dest: musicGain, type: 'sine', peak: 0.015, attack: 0.24, filter: 1700 }));
+                break;
+            case 'cael-glint':
+                [84, 88, 91].forEach((m, i) => makeAccentTone(m, now + i * 0.08, 0.42, { dest: musicGain, type: 'triangle', peak: 0.024, filter: 3600, pan: 0.18 }));
+                makeAccentTone(49, now + 0.04, 0.8, { dest: musicGain, type: 'sawtooth', peak: 0.012, filter: 540, pan: -0.1 });
+                break;
+            case 'school-bell':
+                makeAccentTone(84, now, 1.4, { peak: 0.040, filter: 5200, attack: 0.01 });
+                makeAccentTone(91, now + 0.02, 1.2, { peak: 0.020, filter: 6200, attack: 0.01 });
+                break;
+            case 'room-drop':
+                makeNoiseBurst(now, 0.65, { dest: musicGain, smooth: true, filterType: 'lowpass', filter: 620, peak: 0.014, attack: 0.08 });
+                makeAccentTone(43, now + 0.04, 1.2, { dest: musicGain, type: 'sine', peak: 0.018, filter: 360 });
+                break;
+            case 'air-crack':
+                makeNoiseBurst(now, 0.34, { dest: sfxGain, smooth: true, filter: 1700, q: 1.4, peak: 0.045 });
+                [79, 86].forEach((m, i) => makeAccentTone(m, now + 0.12 + i * 0.22, 1.2, { dest: musicGain, type: 'sine', peak: 0.018, attack: 0.08, filter: 2600 }));
+                break;
+            case 'muffled-return':
+                makeNoiseBurst(now, 0.5, { dest: musicGain, smooth: true, filterType: 'lowpass', filter: 380, peak: 0.012, attack: 0.08 });
+                makeAccentTone(45, now + 0.1, 1.4, { dest: musicGain, type: 'triangle', peak: 0.014, filter: 420 });
+                break;
+            case 'outside-bloom':
+                [60, 67, 72, 79, 86].forEach((m, i) => makeAccentTone(m, now + i * 0.11, 2.8, { dest: musicGain, type: 'sine', peak: 0.018, attack: 0.42, filter: 2800 + i * 320, pan: -0.35 + i * 0.17 }));
+                makeNoiseBurst(now + 0.2, 1.6, { dest: musicGain, smooth: true, filterType: 'highpass', filter: 1200, peak: 0.010, attack: 0.35 });
+                break;
+            case 'bare-room':
+                [60, 64, 67, 74].forEach((m, i) => makeAccentTone(m, now + i * 0.06, 2.0, { dest: musicGain, type: 'sine', peak: 0.014, attack: 0.35, filter: 1800, pan: -0.2 + i * 0.13 }));
+                break;
+            case 'hum-subtle':
+            case 'hum-janitor':
+            case 'hum-final':
+            case 'hum-internal':
+                scheduleHummedBar(accent);
+                break;
+        }
+    }
+
+    function triggerSfxAccent(accent) {
+        if (!ctx || !accent) return;
+        const now = ctx.currentTime + 0.01;
+        switch (accent) {
+            case 'soft-step':
+                makeNoiseBurst(now, 0.14, { filterType: 'lowpass', filter: 260, peak: 0.018, smooth: true });
+                break;
+            case 'seal-close':
+                makeNoiseBurst(now, 0.22, { filter: 900, q: 1.1, peak: 0.032, smooth: true });
+                makeAccentTone(50, now + 0.04, 0.22, { type: 'triangle', peak: 0.030, filter: 720 });
+                break;
+            case 'seal-open':
+                makeAccentTone(55, now, 0.24, { type: 'triangle', peak: 0.024, filter: 900 });
+                makeNoiseBurst(now + 0.08, 0.34, { filter: 1500, q: 1.3, peak: 0.038, smooth: true });
+                break;
+            case 'boot-click':
+                [72, 76, 79].forEach((m, i) => makeAccentTone(m, now + i * 0.055, 0.12, { type: 'square', peak: 0.018, filter: 2500 }));
+                break;
+            case 'door-soft':
+                makeNoiseBurst(now, 0.36, { filterType: 'lowpass', filter: 420, peak: 0.025, smooth: true });
+                break;
+            case 'ping':
+                makeAccentTone(88, now, 0.16, { peak: 0.052, filter: 4200 });
+                break;
+            case 'ping-end':
+                makeAccentTone(91, now, 0.12, { peak: 0.036, filter: 4400 });
+                makeAccentTone(84, now + 0.09, 0.18, { peak: 0.028, filter: 3800 });
+                break;
+            case 'school-bell':
+                triggerCueAccent('school-bell');
+                break;
+            case 'alert':
+                makeAccentTone(77, now, 0.14, { type: 'square', peak: 0.038, filter: 2200 });
+                makeAccentTone(77, now + 0.22, 0.14, { type: 'square', peak: 0.032, filter: 2200 });
+                break;
+            case 'seal-fail':
+                makeNoiseBurst(now, 0.48, { filter: 1300, q: 1.6, peak: 0.052, smooth: true });
+                makeAccentTone(42, now + 0.04, 0.7, { type: 'sawtooth', peak: 0.028, filter: 420 });
+                break;
+            case 'helmet-lift':
+                makeNoiseBurst(now, 0.55, { filterType: 'highpass', filter: 720, q: 0.8, peak: 0.030, smooth: true });
+                makeAccentTone(67, now + 0.18, 0.46, { type: 'sine', peak: 0.018, filter: 1600 });
+                break;
+        }
+    }
+
     // ──────────────────────────────────────────────────────────────────
     // Pickers
     // ──────────────────────────────────────────────────────────────────
@@ -652,8 +948,11 @@
     // Public API
     // ──────────────────────────────────────────────────────────────────
 
-    function applyMoodAndOverride(newMoodKey, scene) {
-        const newOverride = (scene != null) ? (SCENE_OVERRIDES[scene] ?? null) : null;
+    function applyMoodAndOverride(newMoodKey, scene, profileOverride = null) {
+        const baseOverride = (scene != null) ? (SCENE_OVERRIDES[scene] ?? null) : null;
+        const newOverride = profileOverride
+            ? { ...(baseOverride ?? {}), ...profileOverride }
+            : baseOverride;
 
         // If only the override is different but mood is unchanged, swap override
         // in place (no fadeout) — keeps the music continuous within a mood.
@@ -691,6 +990,26 @@
         if (key && MOODS[key]) applyMoodAndOverride(key, scene);
     }
 
+    function playCue(cue, scene) {
+        if (!cue) return;
+        ensureCtx();
+        if (!ctx) return;
+        resumeCtx();
+        const profile = AUDIO_CUES[cue];
+        if (!profile) return;
+        const key = profile.mood ?? SCENE_MOODS[scene] ?? moodKey ?? 'contemplative';
+        if (key && MOODS[key]) applyMoodAndOverride(key, scene, profile.override ?? null);
+        triggerCueAccent(profile.accent);
+    }
+
+    function playSfx(sfx) {
+        if (!sfx) return;
+        ensureCtx();
+        if (!ctx) return;
+        resumeCtx();
+        triggerSfxAccent(SFX_ACCENTS[sfx] ?? sfx);
+    }
+
     function clampVol(v) {
         v = Number(v);
         if (!isFinite(v)) return 0;
@@ -715,6 +1034,15 @@
         musicGain.gain.linearRampToValueAtTime(musicVol, t + 0.15);
     }
 
+    function setSfxVolume(v) {
+        sfxVol = clampVol(v);
+        if (!sfxGain) return;
+        const t = ctx.currentTime;
+        sfxGain.gain.cancelScheduledValues(t);
+        sfxGain.gain.setValueAtTime(sfxGain.gain.value, t);
+        sfxGain.gain.linearRampToValueAtTime(sfxVol, t + 0.15);
+    }
+
     function start() {
         ensureCtx();
         resumeCtx();
@@ -735,7 +1063,10 @@
         stop,
         setMood,
         setSceneMood,
+        playCue,
+        playSfx,
         setMasterVolume,
-        setMusicVolume
+        setMusicVolume,
+        setSfxVolume
     };
 })();
