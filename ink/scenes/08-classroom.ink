@@ -152,7 +152,7 @@ Maybe it's about him learning to...
 # speaker: wren
 To look without needing anything back.
 
-I say it more quietly than they meant to.
+I say it more quietly than I meant to.
 
 Ozaki considers me for a longer moment than the others.
 
@@ -195,7 +195,7 @@ PRIVATE BUFFER: The woman at the basin.
 
 I do not write anything else.
 
-I save it. Closes the buffer. Watches the rest of the discussion.
+I save it. I close the buffer. I watch the rest of the discussion.
 
 -> end_of_class
 
@@ -274,7 +274,7 @@ The hallway is filling up. Students from a dozen other classrooms moving toward 
 # speaker: hud
 Pace: nominal.
 
-No one approaches I. No one greets me. Tae is in another wing.
+No one approaches me. No one greets me. Tae is in another wing.
 
 For a half-second, I register something: that no one has spoken to me since the cafeteria.
 

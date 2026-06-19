@@ -30,7 +30,7 @@ My bedroom in the evening. The desk lamp is on. The window is dark. The rain has
 
 The suit stands open in its cradle. The chest plate hinged back, the leg sleeves flexed open at the knees, the small charge indicator pulsing slow.
 
-I take the helmet off last. Sets it on the rest.
+I take the helmet off last. I set it on the rest.
 
 The bedroom is quiet in a way that is different from the suit being quiet.
 
@@ -102,7 +102,7 @@ For a half-second, I remember a kitchen. Their grandmother humming while she did
 { gate2 == "approach":
     The memory lingers.
 
-    I try to follow the bar. Tries to remember what came after it. Cannot.
+    I try to follow the bar. I try to remember what came after it. Cannot.
 
     The memory ends, but I do not push it away. The bar is somewhere in my head, still, when I stop trying.
 
@@ -169,7 +169,7 @@ I open the small drawer of the desk.
 
 Inside: a few stickers I have been keeping for no particular reason. Three of them, all small, none of them on-trend. One of them is older than the others. A plain pale green crescent, no brand markings. I cannot remember where it came from.
 
-I peel the peach sticker off the shoulder plate. Sets it on the desk.
+I peel the peach sticker off the shoulder plate. I set it on the desk.
 
 I put the pale green crescent on the shoulder. It sits a little crooked. I straighten it. It is still a little crooked.
 

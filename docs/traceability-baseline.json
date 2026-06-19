@@ -1,0 +1,32 @@
+{
+  "$comment": "Shrink-only bootstrap debt: requirements not yet covered per policy. Add a test + binding and remove the ID. Do not add new entries to mask a regression.",
+  "acceptedGaps": [
+    "FR-ART-001",
+    "FR-ART-002",
+    "FR-AUDIO-001",
+    "FR-AUDIO-002",
+    "FR-AUDIO-003",
+    "FR-BUILD-001",
+    "FR-BUILD-003",
+    "FR-CLIMAX-001",
+    "FR-CLIMAX-002",
+    "FR-CLIMAX-003",
+    "FR-CLIMAX-004",
+    "FR-CLIMAX-005",
+    "FR-NARR-003",
+    "FR-NARR-005",
+    "FR-SAVE-004",
+    "FR-SAVE-005",
+    "FR-STORY-005",
+    "FR-UI-001",
+    "FR-UI-002",
+    "FR-UI-003",
+    "FR-UI-004",
+    "FR-UI-005",
+    "FR-UI-006",
+    "FR-UI-007",
+    "FR-UI-008",
+    "FR-UI-009",
+    "NFR-BUILD-001"
+  ]
+}

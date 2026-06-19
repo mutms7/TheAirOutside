@@ -81,7 +81,7 @@ Tae comes back in with two glasses of water. Sparkling, for both of them, with a
 # art: tae-strawberry-water
 Strawberry water. You're welcome.
 
-Tae hands I the glass and flop onto her bed.
+Tae hands me the glass and flops onto her bed.
 
 She has taken her chest decoration off. The coral. Her shoulder is bare, the seal-glow at standby. Her hair is back. She is more herself in here than she is anywhere else in the day.
 
@@ -188,7 +188,7 @@ Yeah.
 # speaker: tae
 That's. That's a thing.
 
-She does not know what to say next. I did not know either. The two of them sit with it.
+She does not know what to say next. I did not know either. The two of us sit with it.
 
 After a minute Tae says ...
 # speaker: tae
@@ -218,7 +218,7 @@ You should go.
 
 She is not angry. She is somewhere else.
 
-She walks I to the door. The strawberry water sits half-finished on the desk.
+She walks me to the door. The strawberry water sits half-finished on the desk.
 
 # speaker: tae
 Tomorrow. Coral assembly. Mint accents. Don't forget.

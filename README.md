@@ -144,3 +144,23 @@ This is a story about masks, so it refuses to wear one. **AI-generated art is no
 ## License
 
 This is a personal art project. The source is public for transparency and curiosity, but the story, characters, artwork, and music are **not** licensed for reuse or redistribution. All rights reserved by the author. If you'd like to use any part of it, please ask first.
+
+
+<!-- cvs-repo: CVS hub (Alexander) repo metadata. Edit the values; keep the fence. -->
+```cvs-repo
+slug: visualnovel
+name: The Air Outside
+description: Personal art-project visual novel — Blazor WASM + Ink, 15 scenes, 9 endings
+aliases: []
+owners: [wchenyinmethod]
+areas:
+  STORY: Story engine — StoryService, Ink runtime, timeline, tags, state machine
+  SAVE: Persistence — SaveService, SettingsService, localStorage keys and schema
+  SETTINGS: User settings — defaults, ranges, reset, auto-advance, theme, audio volumes
+  UI: UI shell — Stage, TopBar, panels, scene picker, fullscreen, responsive breakpoints
+  CLIMAX: Climax pause mechanic — fade, dwell, auto-advance suppression, fourth-wall constraint
+  AUDIO: Audio system — MusicService, procedural synth, mood-per-scene, no-files constraint
+  NARR: Narrative content — scenes, gates, endings, first-person, em-dash, pacing tags
+  BUILD: Build pipeline — InkBuild, WASM publish, Vercel deploy, zero-JS-deps constraint
+  ART: Visual rendering — Background, Character, Motif, SpotArt SVG components
+```

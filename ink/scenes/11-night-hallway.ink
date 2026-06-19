@@ -82,7 +82,7 @@ The locker is past Iris. To get to the locker, I have to walk past her.
 
 + [Walk over, quietly, and sit on the other end of Iris's bench.]
     -> path_iris
-+ [Walk to the janitor — say something.]
++ [Walk to the janitor; say something.]
     -> path_janitor
 + [Take the long way around to the locker. Do not break this.]
     -> path_witness
@@ -96,7 +96,7 @@ The suit's gait coordination softens the step. Even quieter than usual.
 
 Iris does not turn her head. But her eyes shift the smallest amount, to the edge of her vision, where I am walking.
 
-I reach the bench. Sits at the far end of it, leaving the empty space between.
+I reach the bench. I sit at the far end of it, leaving the empty space between.
 
 The hum is louder from here. The janitor's circle of mop motion is steady.
 
@@ -104,9 +104,9 @@ Iris does not say anything.
 
 I do not say anything.
 
-They sit there for the length of the hum's next four bars. Iris's hand on the bench between them is bare. The cut on the back of one finger is right there.
+We sit there for the length of the hum's next four bars. Iris's hand on the bench between us is bare. The cut on the back of one finger is right there.
 
-When the hum lifts into the bar I almost remembers from this morning, Iris's eyes close briefly. They open again.
+When the hum lifts into the bar I almost remember from this morning, Iris's eyes close briefly. They open again.
 
 The hum continues.
 
@@ -125,7 +125,7 @@ I walk down the corridor. Past Iris on the bench. Past the empty stretch of tile
 
 To where the janitor is mopping.
 
-The janitor hears I coming. The hum pauses for a beat. A small held breath. Then resumes.
+The janitor hears me coming. The hum pauses for a beat. A small held breath. Then resumes.
 
 I stop at a polite distance.
 

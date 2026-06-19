@@ -32,7 +32,7 @@ I wake early. The light through the window is pale and thin. The window is still
 
 The suit is on the floor where I left it. Chest plate open in standby, leg sleeves in two careful piles, helmet on the desk beside the external HUD.
 
-I sit up. Looks at the suit on the floor.
+I sit up. I look at the suit on the floor.
 
 I have to decide.
 
@@ -170,7 +170,7 @@ Tae sees me.
         Walk with me?
         # speaker: wren
         Yeah.
-        They walk to homeroom together, in the same hallway, one of them in plain clothes, one of them in coral, neither of them faster than the other.
+        We walk to homeroom together, in the same hallway, one of us in plain clothes, one of us in coral, neither of us faster than the other.
     - gate4 == "suit_no_deco":
         Tae sees the empty shoulder. She does not say anything immediately.
         # speaker: tae
@@ -188,7 +188,7 @@ Tae sees me.
         Walk with me?
         # speaker: wren
         Yeah.
-        They walk to homeroom together. Tae does not bring out the case. The empty shoulder is the empty shoulder. Tae does not look away from it. Tae does not stare at it.
+        We walk to homeroom together. Tae does not bring out the case. The empty shoulder is the empty shoulder. Tae does not look away from it. Tae does not stare at it.
     - gate4 == "re_enter":
         Tae sees the peach. Tae sees the mint accent at the rim. Tae sees the eyes behind my visor.
         Tae knows something is different. She does not know what.
@@ -205,7 +205,7 @@ Tae sees me.
         # speaker: wren
         Tae. Yeah.
         Tae does not ask further. She has the half-feeling that a question would close the door.
-        They walk to homeroom together, in the same hallway, both in coral and peach, mint accents at the rim, neither of them faster than the other.
+        We walk to homeroom together, in the same hallway, both in coral and peach, mint accents at the rim, neither of us faster than the other.
 }
 
 -> ozaki_passes

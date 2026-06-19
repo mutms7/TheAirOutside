@@ -1,0 +1,35 @@
+{
+  "name": "cvs-kit",
+  "version": "0.1.0",
+  "description": "Computable Verifiable Requirements kit — requirements-as-data indexer, traceability CI gate, ratification + bootstrap tooling. Stack-agnostic, zero runtime dependencies.",
+  "type": "module",
+  "bin": {
+    "cvs-kit": "./cvs.mjs",
+    "cvs": "./cvs.mjs",
+    "reqindex": "./reqindex.mjs",
+    "ratify": "./ratify.mjs",
+    "cvs-init": "./cvs-init.mjs"
+  },
+  "files": [
+    "cvs.mjs",
+    "reqindex.mjs",
+    "ratify.mjs",
+    "cvs-init.mjs",
+    "migrate-requirements-to-records.mjs",
+    "apply-ledger.mjs",
+    "prompts.md",
+    "README.md",
+    "COMPUTABLE_REQUIREMENTS_PLAYBOOK.md",
+    "Computable_Requirements_Strategy.docx"
+  ],
+  "scripts": {
+    "build-docx": "node build-strategy-docx.cjs",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=18" },
+  "devDependencies": {
+    "docx": "^8.5.0"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

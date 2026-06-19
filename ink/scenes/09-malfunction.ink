@@ -122,7 +122,7 @@ The nurse runs a hand-tool along the seam, pulls a degraded gasket out, slots a 
 # speaker: hud
 NURSE-OFFICE INTERCOM: Humidity gets them this time of year. Especially the older models. Don't worry about it.
 
-I do not say what they need to say. I do not know what they need to say. I nod.
+I do not say what I need to say. I do not know what I need to say. I nod.
 
 The chest plate closes.
 
@@ -131,7 +131,7 @@ The seal-glow runs around its rim and settles.
 # speaker: hud
 NURSE-OFFICE INTERCOM: You can go.
 
-I stand up. Says "Thank you" in the suit-warmed voice that comes out a half-pitch too friendly.
+I stand up. I say "Thank you" in the suit-warmed voice that comes out a half-pitch too friendly.
 
 # speaker: wren
 Thank you.

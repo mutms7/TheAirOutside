@@ -101,7 +101,7 @@ After a minute I stand up. Not to leave. To go to the suit in the cradle.
 
 = path_tae
 
-I pick the HUD up off the desk. Turns it face-up.
+I pick the HUD up off the desk. I turn it face-up.
 
 I open the message thread with Tae. The cursor blinks for a long time. I write ...
 # speaker: hud
@@ -143,7 +143,7 @@ You said come, I came.
 # speaker: wren
 Yeah. Thanks.
 
-They sit on my bed, on opposite ends, the way they did when they were nine.
+We sit on my bed, on opposite ends, the way we did when we were nine.
 
 Tae does not push. She does not ask "what's wrong" the way a worse friend would. She is just sitting there.
 
@@ -166,14 +166,14 @@ Okay.
 
 Tae waits, in case more is coming.
 
-More is not coming. I can feel it almost coming, and I can feel themselves stop it. I cannot tell if I am stopping it for Tae's sake or for my own.
+More is not coming. I can feel it almost coming, and I can feel myself stop it. I cannot tell if I am stopping it for Tae's sake or for my own.
 
 # art: bare-hands-clasp
 After another minute Tae reaches across the bed with her bare right hand and finds my gauntleted left. She presses the bare hand against the armor where my knuckles are. Then she waits.
 
 I slip the left gauntlet off. Slowly. The seal at the wrist breaks with a small hiss. My bare hand comes out into the room air.
 
-Tae takes my bare hand in her bare hand. The two of them are still in my suits, mostly. Just hands.
+Tae takes my bare hand in her bare hand. The two of us are still in our suits, mostly. Just hands.
 
 # speaker: tae
 Whenever you can. Okay? Whenever you can.

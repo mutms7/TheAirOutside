@@ -48,14 +48,14 @@ She is sitting on the trunk of a fallen tree. The only seat. She has not lit any
 
 She makes a small motion of one bare hand toward the trunk beside her.
 
-I walk to her. Sits.
+I walk to her. I sit.
 
 The grass is wet. The air smells like wet grass and trees.
 
 # speaker: hud
 GPS. Outside school grounds. Suit standby. No active sensors.
 
-They are quiet for a long time.
+We are quiet for a long time.
 
 -> iris_removal
 
@@ -86,7 +86,7 @@ I lift it off.
 
 Iris turns. Iris looks at my face.
 
-Iris's face is uncovered too. The two of them are looking at each other for the first time.
+Iris's face is uncovered too. We are looking at each other for the first time.
 
 The clearing is very quiet.
 
@@ -118,7 +118,7 @@ My hands are open on my lap, palms up. The HUD is on the trunk beside the helmet
 
 I may have cried. The narration does not press.
 
-Iris is still there. Her bare hand is on the trunk between them, not reaching, not pulling away.
+Iris is still there. Her bare hand is on the trunk between us, not reaching, not pulling away.
 
 After a long time, Iris speaks. Once.
 
@@ -142,15 +142,15 @@ The clearing is still.
 
 I do not say anything.
 
-Iris does not need I to.
+Iris does not need me to.
 
-After another while, the two of them get up. Without speaking. And I begin to dress.
+After another while, the two of us get up. Without speaking. And I begin to dress.
 
 # sfx: suit-seal
 
 The chest plate closes. The seal warms. The hum of standby begins again under the skin of the suit.
 
-I leave the helmet off for the walk back. Iris walks part of the way with me, through the trees, in plain clothes, with bare hands and a bare face. At the chain-link fence she stops. I stop too. They look at each other once more.
+I leave the helmet off for the walk back. Iris walks part of the way with me, through the trees, in plain clothes, with bare hands and a bare face. At the chain-link fence she stops. I stop too. We look at each other once more.
 
 # speaker: iris
 Go home, {protagonist_name}.
@@ -203,7 +203,7 @@ The room is the same room.
 
 The window is the same window.
 
-I walk to the window. Opens it.
+I walk to the window. I open it.
 
 # audio: bare-night-bedroom
 # art: wren-window-open
@@ -225,9 +225,9 @@ Look up if you'd like. Take in one ordinary thing where you are. Come back when 
 # motif: song-hummed-aloud
 ~ song_state = 4
 
-I do not know they are humming until they are humming.
+I do not know I am humming until I am humming.
 
-The first bar of it. The bar from yesterday morning. The bar that surfaced under the boot tune for one breath before me noticed it.
+The first bar of it. The bar from yesterday morning. The bar that surfaced under the boot tune for one breath before I noticed it.
 
 My actual voice. Without the modulator. The voice is quieter than the modulator made it sound. A little flatter. A little rough. My actual voice.
 
@@ -259,7 +259,7 @@ The almost-said sentence is still in the air. I can almost see it, the way the s
 
 The gauntlet Tae held the hand of is still on the desk.
 
-I stand. Walks to the long mirror on the back of the closet door.
+I stand. I walk to the long mirror on the back of the closet door.
 
 I look at the suit in the mirror.
 
@@ -280,7 +280,7 @@ I remove the suit in pieces. The almost-said sentence is in the room with me whi
 
 I am standing in the bedroom in the plain undersuit they almost never see.
 
-I walk to the window. Opens it.
+I walk to the window. I open it.
 
 # audio: bare-night-bedroom
 
@@ -309,7 +309,7 @@ My actual voice. A little flatter than the modulator made it sound. A little rou
 
 The almost-said sentence does not need to be said now. It has done its work by being almost-said. Tae knows. Tae will know that Tae knows, tomorrow.
 
-I stay at the window for a longer while than they would have if Tae had not come over tonight.
+I stay at the window for a longer while than I would have if Tae had not come over tonight.
 
 The HUD on the desk does not log any of this. The suit on the floor does not log any of this.
 

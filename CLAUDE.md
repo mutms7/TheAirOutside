@@ -163,6 +163,16 @@ Four gate variables drive the branches:
 - **Phase 7** ✅ Slider stops, tooltips, ant hill grounded, full-screen story map, 9 distinct endings — `44bc770` + `639ed5f`
 - **Phase 8** (next): audio (Howler.js interop), additional ending art polish, optional MAUI desktop, playtesting
 
+## Traceability (CVS)
+
+Requirements live as individual records under `docs/requirements/<AREA>/<ID>.md`. `docs/TRACEABILITY.md` and `docs/requirements-index.json` are the generated index — regenerate with `node scripts/cvs/cvs.mjs index` after adding or changing records.
+
+**Tagging rule:** every new Playwright / integration test must cite its requirement ID in the test name (e.g. `FR-UI-003 Forward jump shows confirmation modal`). Unit tests are exempt from carrying the ID in the name; bind coverage by setting the `tests:` field in the record.
+
+**CI gate:** `.github/workflows/traceability.yml` runs `node scripts/cvs/reqindex.mjs --check` on every push/PR. Do not add requirements without either a test binding or a `docs/traceability-baseline.json` entry.
+
+**Source of truth:** records under `docs/requirements/` are the single source of truth for requirements. The design docs (story-bible.md, characters.md, etc.) are orientation documents — do not treat them as a parallel living spec.
+
 ## A note for whoever picks this up next
 
 This is the user's personal art project. They are not asking for help writing a generic visual novel. They have specific taste, a specific philosophy, and a specific story. The job is to help them build *that* story, not a more efficient or more marketable version of it. When in doubt, prefer the choice that respects an ordinary unnoticed person and resists scaling up.

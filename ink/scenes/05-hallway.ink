@@ -76,7 +76,7 @@ Nobody else at this school has hands like that visible.
 
 The girl turns her head. Slowly. Without looking surprised.
 
-She has seen I.
+She has seen me.
 
 She looks at my face. At where my face would be, behind the visor.
 
@@ -116,7 +116,7 @@ I stop a polite distance away, at the next window over. Not too close. Not prete
 
 I look at the rain too.
 
-For a second they are two people at two windows looking at the same rain.
+For a second we are two people at two windows looking at the same rain.
 
 # speaker: iris
 Hi.
@@ -203,9 +203,9 @@ I stop walking.
 # speaker: hud
 Pace: stopped.
 
-I turn around. Walks back the way they came, three steps, five steps.
+I turn around. I walk back the way I came, three steps, five steps.
 
-The hallway behind goes back to ordinary. No window with a bare girl. Just the wall they came from.
+The hallway behind goes back to ordinary. No window with a bare girl. Just the wall I came from.
 
 I take the long way around to Room 207. Through the connecting corridor by the gym, past the trophy case, the way that adds a minute to the walk.
 
@@ -214,7 +214,7 @@ HISTORY in 1 minute.
 
 I walk faster.
 
-The girl is somewhere behind, at a window, looking at rain. I do not look at her again. I do not know what they would have done if they had.
+The girl is somewhere behind, at a window, looking at rain. I do not look at her again. I do not know what I would have done if I had.
 
 -> after_iris
 

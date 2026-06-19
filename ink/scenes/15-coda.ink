@@ -37,7 +37,7 @@
 
 After school. The afternoon light is long and slanting through the trees along the side of the building.
 
-I am walking home. In plain clothes, bare-faced. Iris is walking beside me as far as the corner. Iris will turn off there. They have not spoken much this afternoon. They have not needed to.
+I am walking home. In plain clothes, bare-faced. Iris is walking beside me as far as the corner. Iris will turn off there. We have not spoken much this afternoon. We have not needed to.
 
 # char: iris bare
 
@@ -58,7 +58,7 @@ Another ant comes out the other way, with a different grain.
 
 # char: wren bare
 
-Iris is standing beside me, looking too. She does not narrate. She does not tell I what to see.
+Iris is standing beside me, looking too. She does not narrate. She does not tell me what to see.
 
 -> stay_out_tae
 

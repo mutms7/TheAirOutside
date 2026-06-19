@@ -200,7 +200,7 @@ At the open doorway of the classroom, someone passes with a cleaning cart.
 
 It is the janitor. She does not look in. She is humming something to herself, very quietly, the way a person hums while they work.
 
-For a half-second the shape of the hum reaches I under the room's noise.
+For a half-second the shape of the hum reaches me under the room's noise.
 
 A different shape than the boot tune. Different than the chimes of the suits sealing into my charge contacts. Different than the music coming through someone's helmet speaker two desks over.
 

@@ -1,0 +1,1399 @@
+{
+  "generatedBy": "reqindex",
+  "summary": {
+    "total": 62,
+    "covered": 29,
+    "manual": 6,
+    "debt": 27,
+    "gapsNew": 0,
+    "ratified": 2,
+    "unratified": 60,
+    "withWhy": 62,
+    "withSource": 58,
+    "infraDebt": 0,
+    "untaggedDebt": 0,
+    "untaggedNew": 0,
+    "orphans": 0
+  },
+  "repo": {
+    "slug": "visualnovel",
+    "name": "The Air Outside",
+    "description": "Personal art-project visual novel — Blazor WASM + Ink, 15 scenes, 9 endings",
+    "aliases": [],
+    "owners": [
+      "wchenyinmethod"
+    ],
+    "areas": {
+      "STORY": "Story engine — StoryService, Ink runtime, timeline, tags, state machine",
+      "SAVE": "Persistence — SaveService, SettingsService, localStorage keys and schema",
+      "SETTINGS": "User settings — defaults, ranges, reset, auto-advance, theme, audio volumes",
+      "UI": "UI shell — Stage, TopBar, panels, scene picker, fullscreen, responsive breakpoints",
+      "CLIMAX": "Climax pause mechanic — fade, dwell, auto-advance suppression, fourth-wall constraint",
+      "AUDIO": "Audio system — MusicService, procedural synth, mood-per-scene, no-files constraint",
+      "NARR": "Narrative content — scenes, gates, endings, first-person, em-dash, pacing tags",
+      "BUILD": "Build pipeline — InkBuild, WASM publish, Vercel deploy, zero-JS-deps constraint",
+      "ART": "Visual rendering — Background, Character, Motif, SpotArt SVG components"
+    }
+  },
+  "requirements": [
+    {
+      "id": "FR-ART-001",
+      "type": "FR",
+      "area": "ART",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Background.razor"
+      ],
+      "sourceFile": "docs/requirements/ART/FR-ART-001.md",
+      "statement": "Background.razor renders a non-empty SVG element when passed a recognized Background Id string; unrecognized ids fall back to a default (empty/sky) background without throwing.",
+      "why": "Background.razor must render a non-empty SVG element for any background tag the Ink script emits; a missing background leaves the stage blank.",
+      "contentHash": "sha256:45fc197034b0cd5c9bd97119018c3f752625141efe79bcd164b7accd7eb0ba8c"
+    },
+    {
+      "id": "FR-ART-002",
+      "type": "FR",
+      "area": "ART",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Character.razor"
+      ],
+      "sourceFile": "docs/requirements/ART/FR-ART-002.md",
+      "statement": "Character.razor renders the protagonist_name Ink variable value as visible text on the character chest SVG when the character \"wren\" (or equivalent protagonist character) is on stage.",
+      "why": "The player's chosen name must appear on the protagonist suit in the SVG so the character feels personalized.",
+      "contentHash": "sha256:b7ffb6e490daec085003d614f6dc37d59cda38a2d7756ea0339fdf65db180f2d"
+    },
+    {
+      "id": "FR-AUDIO-001",
+      "type": "FR",
+      "area": "AUDIO",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor",
+        "src/VisualNovel.Shared/Services/MusicService.cs"
+      ],
+      "sourceFile": "docs/requirements/AUDIO/FR-AUDIO-001.md",
+      "statement": "MusicService.StartAsync() is called on the first advance click after prologue completion; subsequent advances do not call StartAsync() again.",
+      "why": "The Web Audio API requires a user gesture before starting; deferring start() to the first stage click satisfies the browser autoplay policy.",
+      "contentHash": "sha256:68b91144aa760a43d93ade91d292adef80015b0cdad2a33efccc8544fc7b6885"
+    },
+    {
+      "id": "FR-AUDIO-002",
+      "type": "FR",
+      "area": "AUDIO",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor",
+        "src/VisualNovel.Shared/Services/MusicService.cs"
+      ],
+      "sourceFile": "docs/requirements/AUDIO/FR-AUDIO-002.md",
+      "statement": "MusicService.SetSceneMoodAsync(scene) is called whenever Story.Scene changes to a new value; it is not called again until the scene number changes.",
+      "why": "Mood transitions on every scene change keep the ambient music synchronized with the narrative without requiring per-line audio tags.",
+      "contentHash": "sha256:16a582870e4135120ce0ff52e2a490b65d6cff10b66f3ddbc2dc93cb0c9122be"
+    },
+    {
+      "id": "FR-AUDIO-003",
+      "type": "FR",
+      "area": "AUDIO",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Services/MusicService.cs"
+      ],
+      "sourceFile": "docs/requirements/AUDIO/FR-AUDIO-003.md",
+      "statement": "Every MusicService method wraps its JS interop call in a try/catch that swallows all exceptions; no exception propagates to the caller.",
+      "why": "All audio calls are non-load-bearing; an audio subsystem failure must never block the story or crash the app.",
+      "contentHash": "sha256:6a20409dac67be1b65701f3b9275c62c4a7f417535df7fd785209008e2b6438b"
+    },
+    {
+      "id": "FR-BUILD-001",
+      "type": "FR",
+      "area": "BUILD",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.InkBuild/Program.cs",
+        "ink/story.ink"
+      ],
+      "sourceFile": "docs/requirements/BUILD/FR-BUILD-001.md",
+      "statement": "Running `dotnet run --project src/VisualNovel.InkBuild` exits with code 0 and writes a valid JSON file to src/VisualNovel.Shared/wwwroot/story.json.",
+      "why": "The Ink compiler must run cleanly as a precondition for any gameplay; a compile failure is a blocking build error, not a runtime degradation.",
+      "contentHash": "sha256:79a0587893744f326ed7a5ccbdb838b5e96bb8a32d28b8ae395db1f41f72fbd0"
+    },
+    {
+      "id": "FR-BUILD-002",
+      "type": "FR",
+      "area": "BUILD",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/NarrTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/wwwroot/story.json"
+      ],
+      "sourceFile": "docs/requirements/BUILD/FR-BUILD-002.md",
+      "statement": "story.json parses as valid JSON and contains a top-level \"inkVersion\" integer field with a value greater than 0.",
+      "why": "The Ink runtime requires a valid inkVersion field to load the story; a corrupt or empty file would cause a silent blank-screen failure.",
+      "contentHash": "sha256:b37b37da47569e5576eb2c4ee4841c837f445d752ca293f1a45130ad588ba181"
+    },
+    {
+      "id": "FR-BUILD-003",
+      "type": "FR",
+      "area": "BUILD",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Web/**"
+      ],
+      "sourceFile": "docs/requirements/BUILD/FR-BUILD-003.md",
+      "statement": "`dotnet publish src/VisualNovel.Web -c Release -o publish` exits with code 0 and produces publish/wwwroot/index.html.",
+      "why": "The web publish target must be a fully self-contained static folder so it can be dropped on Vercel, Cloudflare Pages, or itch.io without a server.",
+      "contentHash": "sha256:afc26c4750b0db5c294be5daf5ceeb6b1dbe0c0ca39504fec2ad22131c3855d9"
+    },
+    {
+      "id": "FR-CLIMAX-001",
+      "type": "FR",
+      "area": "CLIMAX",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/CLIMAX/FR-CLIMAX-001.md",
+      "statement": "When IsClimaxPause is true, the background art, atmosphere, motion, motif, spot-art, and dialogue-wrap layers are not rendered; only the .climax div containing CurrentText is shown.",
+      "why": "When IsClimaxPause is true the normal art/character/dialogue layers must be invisible so the player sees only the single invitational line against silence.",
+      "contentHash": "sha256:4ea5449a7d6414a05659680b663c60f3d9c2658c7db5333813bf3bf3e0a3d6ca"
+    },
+    {
+      "id": "FR-CLIMAX-002",
+      "type": "FR",
+      "area": "CLIMAX",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/CLIMAX/FR-CLIMAX-002.md",
+      "statement": "ResetTimer() returns without starting a timer when IsClimaxPause is true, even if AutoAdvance is enabled.",
+      "why": "The auto-advance timer must not fire at the climax; rapid-skipping behavior is deliberately broken here so the player must make a conscious click to proceed.",
+      "contentHash": "sha256:5816b132213858c1ef78863be5c39ea698d0e3b68b9f02fcde43882c4003861e"
+    },
+    {
+      "id": "FR-CLIMAX-003",
+      "type": "FR",
+      "area": "CLIMAX",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/CLIMAX/FR-CLIMAX-003.md",
+      "statement": "A single click anywhere on the stage advances past the climax pause using the same AdvanceRequested() path as normal line advances; no dedicated climax-continue button exists.",
+      "why": "The whole screen must be the advance affordance — no specific button, no \"press SPACE\" overlay. The click is the only required act.",
+      "contentHash": "sha256:fff7d18e4cd0939d1a025dd8f811538ca7f91acedb0df76269a783566203d46b"
+    },
+    {
+      "id": "FR-CLIMAX-004",
+      "type": "FR",
+      "area": "CLIMAX",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "ratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/wwwroot/css/stage.css"
+      ],
+      "sourceFile": "docs/requirements/CLIMAX/FR-CLIMAX-004.md",
+      "statement": "The .climax__line element fades in via the CSS animation \"climax-fade-in 8s ease forwards\", reaching a final opacity of 0.55.",
+      "why": "The 8-second fade gives the text presence without demanding the player stop and stare; the half-opacity softens the instruction so it reads as an invitation.",
+      "contentHash": "sha256:3b176821160e588f14ddbbb6893ac058f634a000121dcba20d0628f0ca189b87"
+    },
+    {
+      "id": "FR-CLIMAX-005",
+      "type": "FR",
+      "area": "CLIMAX",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor",
+        "src/VisualNovel.Shared/wwwroot/js/audio.js"
+      ],
+      "sourceFile": "docs/requirements/CLIMAX/FR-CLIMAX-005.md",
+      "statement": "Before the climax pause renders, a ~3-second silence plays during which music stops and the UI transition is held; only after this silence does the .climax div appear and the ambient audio resume.",
+      "why": "mechanics.md §Implementation note 1 specifies a pre-pause silence to make the transition felt as silence before the image appears, not as an abrupt UI change.",
+      "contentHash": "sha256:9216dc38ebd80dd54a44f0d287be021c1c28b090d6f9efa1fb19e553acdbb6bf"
+    },
+    {
+      "id": "FR-NARR-001",
+      "type": "FR",
+      "area": "NARR",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/NarrTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SceneRegistry.cs"
+      ],
+      "sourceFile": "docs/requirements/NARR/FR-NARR-001.md",
+      "statement": "SceneRegistry.Scenes contains exactly 15 entries with IDs 1–15, each with a unique Knot string and Title string.",
+      "why": "SceneRegistry is the canonical scene list; any discrepancy between it and the Ink script would break the scene picker and StoryMap.",
+      "contentHash": "sha256:d47de35f676e7ad8e13dd8854e0338998c6593ea96684e5c5cd7eb647a875ce1"
+    },
+    {
+      "id": "FR-NARR-002",
+      "type": "FR",
+      "area": "NARR",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/NarrTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SceneRegistry.cs"
+      ],
+      "sourceFile": "docs/requirements/NARR/FR-NARR-002.md",
+      "statement": "GateOptions.ByGate contains exactly four gates (\"gate1\", \"gate2\", \"gate3\", \"gate4\") with 3, 2, 3, and 3 choices respectively, corresponding to SceneRegistry scenes 4, 5, 12, and 14.",
+      "why": "GateOptions must match the gates in the Ink script; a mismatch would cause the StoryMap to display wrong gate labels.",
+      "contentHash": "sha256:62bf990447085c0fbcb3f9bfc5c687e546847bed28626e46b299c211ebed3d13"
+    },
+    {
+      "id": "FR-NARR-003",
+      "type": "FR",
+      "area": "NARR",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "ink/scenes/16-epilogue.ink"
+      ],
+      "sourceFile": "docs/requirements/NARR/FR-NARR-003.md",
+      "statement": "The compiled story produces exactly 9 distinct EndingTitle values across the gate3 × gate4 matrix, as defined in ink/scenes/16-epilogue.ink.",
+      "why": "Nine distinct endings are a design commitment from CLAUDE.md; if two endings share a title the ending screen is misleading.",
+      "contentHash": "sha256:8fa18714569748d2bbc7a8af9aecba0cf339aeeaddcb4b86f48b371452d3f542"
+    },
+    {
+      "id": "FR-NARR-004",
+      "type": "FR",
+      "area": "NARR",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/NarrTests.cs"
+      ],
+      "source": [
+        "ink/**/*.ink"
+      ],
+      "sourceFile": "docs/requirements/NARR/FR-NARR-004.md",
+      "statement": "The tag `pause: climax-window` appears in exactly one scene file (ink/scenes/13-step-outside.ink), once per gate3 branch (iris/stay/tae = 3 non-comment occurrences), so every playthrough path encounters the climax pause exactly once.",
+      "why": "The `pause: climax-window` tag fires the climax mechanic; if it appears more than once, the mechanic breaks on every subsequent occurrence.",
+      "contentHash": "sha256:6e54c4fe9873c9b3b1420716759c89cdb75bbde8c02ec77fced77e9d8ad7d06e"
+    },
+    {
+      "id": "FR-NARR-005",
+      "type": "FR",
+      "area": "NARR",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "ink/**/*.ink"
+      ],
+      "sourceFile": "docs/requirements/NARR/FR-NARR-005.md",
+      "statement": "No Ink source file under ink/ contains the pattern \"Wren \" followed by a verb in third-person singular form (e.g. \"Wren notices\", \"Wren walks\", \"Wren says\").",
+      "why": "First-person narration is a Phase-6 design commitment; any third-person Wren reference would be a regression from the conversion pass.",
+      "contentHash": "sha256:e1ce46abd96091692251ea0f6231804fd5b9d9d3b4e0bf8779b8aba01f9a8ca3"
+    },
+    {
+      "id": "FR-SAVE-001",
+      "type": "FR",
+      "area": "SAVE",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SaveTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SaveService.cs"
+      ],
+      "sourceFile": "docs/requirements/SAVE/FR-SAVE-001.md",
+      "statement": "Progress is persisted to and loaded from localStorage under the exact key \"the-air-outside.progress\".",
+      "why": "The localStorage key is a stable contract; changing it would lose all existing player saves.",
+      "contentHash": "sha256:7e9a2dc9946077cc629cb0432f2bb73833f921951251d9d8a0ebef5c4b46bd6f"
+    },
+    {
+      "id": "FR-SAVE-002",
+      "type": "FR",
+      "area": "SAVE",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SaveTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SettingsService.cs"
+      ],
+      "sourceFile": "docs/requirements/SAVE/FR-SAVE-002.md",
+      "statement": "Settings are persisted to and loaded from localStorage under the exact key \"the-air-outside.settings\".",
+      "why": "The settings key is a stable contract; changing it would reset every player's preferences on next launch.",
+      "contentHash": "sha256:bd7f8d9e179509350fb0b594da75a0e0f340c0c7fc304f0c05aacfde3a889c2a"
+    },
+    {
+      "id": "FR-SAVE-003",
+      "type": "FR",
+      "area": "SAVE",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SaveTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SaveService.cs"
+      ],
+      "sourceFile": "docs/requirements/SAVE/FR-SAVE-003.md",
+      "statement": "SaveProgress serializes exactly five fields: VisitedScenes (int[]), LastScene (int), LastUpdated (DateTime), PrologueDone (bool), and ProtagonistName (string, default \"Wren\").",
+      "why": "The serialized shape is the on-disk contract; any field rename or type change is a breaking migration for existing saves.",
+      "contentHash": "sha256:096260f9372cc776bc97daf2f90a908975e92b25215b4d2b368f13b6cf4ab4e5"
+    },
+    {
+      "id": "FR-SAVE-004",
+      "type": "FR",
+      "area": "SAVE",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Services/SaveService.cs",
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/SAVE/FR-SAVE-004.md",
+      "statement": "SaveAsync is called on every StoryService.StateChanged event after IsPrologueDone is true, persisting the current VisitedScenes, Scene, PrologueDone flag, and protagonist_name variable.",
+      "why": "Progress must be auto-saved on every story state change so a browser close never loses more than one line of progress.",
+      "contentHash": "sha256:b8e54a00a93ccba0a248ae771af434485414d6fea0ee9fa5a3f703e8a38385b0"
+    },
+    {
+      "id": "FR-SAVE-005",
+      "type": "FR",
+      "area": "SAVE",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Services/SaveService.cs"
+      ],
+      "sourceFile": "docs/requirements/SAVE/FR-SAVE-005.md",
+      "statement": "ClearAsync() removes the progress key from localStorage and resets Current to a fresh SaveProgress with default values.",
+      "why": "\"Play Again\" must produce a fully clean state; leftover visited scenes from a prior run would corrupt the StoryMap path highlight.",
+      "contentHash": "sha256:4eb8cde6ab2289ea04e0746a85687c74cd6dcd6de9d8c8adc04c6864c904954b"
+    },
+    {
+      "id": "FR-SETTINGS-001",
+      "type": "FR",
+      "area": "SETTINGS",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SettingsTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SettingsService.cs"
+      ],
+      "sourceFile": "docs/requirements/SETTINGS/FR-SETTINGS-001.md",
+      "statement": "AutoAdvance defaults to false; when true, the story advances automatically after AutoAdvanceDelay seconds if CanAdvance is true and no panel or pause menu is open.",
+      "why": "Auto-advance must be off by default so first-time players read at their own pace without needing to disable it.",
+      "contentHash": "sha256:6911dac2428776045cc0d5fcf8b13c5c264a670a06d3d05d3435845de8170dcf"
+    },
+    {
+      "id": "FR-SETTINGS-002",
+      "type": "FR",
+      "area": "SETTINGS",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SettingsTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SettingsService.cs",
+        "src/VisualNovel.Shared/Components/Settings.razor"
+      ],
+      "sourceFile": "docs/requirements/SETTINGS/FR-SETTINGS-002.md",
+      "statement": "AutoAdvanceDelay defaults to 3.5 seconds; the Settings UI exposes it as a range slider with min=1.0, max=10.0, step=0.5.",
+      "why": "The slider range and step size must match the default so Reset restores to a valid position on the slider track.",
+      "contentHash": "sha256:db5853ac10c8649c9d0d17e547fd68efdd118c306d3a84a36977dff48ff08a90"
+    },
+    {
+      "id": "FR-SETTINGS-003",
+      "type": "FR",
+      "area": "SETTINGS",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SettingsTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SettingsService.cs",
+        "src/VisualNovel.Shared/Components/Settings.razor"
+      ],
+      "sourceFile": "docs/requirements/SETTINGS/FR-SETTINGS-003.md",
+      "statement": "TextFadeMs defaults to 150; the Settings UI exposes it as a range slider with min=0, max=500, step=25.",
+      "why": "Text fade creates the page-turn feel; 0ms disables it completely for players who prefer instant transitions.",
+      "contentHash": "sha256:09976dd1cd3517df35887a0e75b1060aeaaaaa2dea168a5ad18468728cfb382a"
+    },
+    {
+      "id": "FR-SETTINGS-004",
+      "type": "FR",
+      "area": "SETTINGS",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SettingsTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SettingsService.cs",
+        "src/VisualNovel.Shared/Components/Settings.razor"
+      ],
+      "sourceFile": "docs/requirements/SETTINGS/FR-SETTINGS-004.md",
+      "statement": "TextSize defaults to 1.0; accepts only the discrete values {0.75, 1.0, 1.25, 1.5, 1.75, 2.0}; the Settings UI renders a 6-stop range slider (indices 0–5) mapping index to these values in order.",
+      "why": "Six discrete stops prevent arbitrary fractional sizes that could break layout; the stop list is the canonical multiplier set.",
+      "contentHash": "sha256:03a673d3342d61881dbf220c603eb542958f8b5e39b543bfd326fb94022757cd"
+    },
+    {
+      "id": "FR-SETTINGS-005",
+      "type": "FR",
+      "area": "SETTINGS",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SettingsTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SettingsService.cs",
+        "src/VisualNovel.Shared/Components/Settings.razor"
+      ],
+      "sourceFile": "docs/requirements/SETTINGS/FR-SETTINGS-005.md",
+      "statement": "Theme defaults to \"light\"; accepts exactly \"light\" or \"dark\"; the Settings UI presents these as a segmented control with both options always visible.",
+      "why": "Theme drives both the stage's CSS class and the UI ink color inversion; must default to light so the app looks correct out of the box.",
+      "contentHash": "sha256:05e2d04402183bfd4ba02676da2a86e259c7920e11092b1f20f6a714895a0853"
+    },
+    {
+      "id": "FR-SETTINGS-006",
+      "type": "FR",
+      "area": "SETTINGS",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SettingsTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SettingsService.cs",
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/SETTINGS/FR-SETTINGS-006.md",
+      "statement": "ReduceMotion defaults to false; when true, TransitionAdvance() calls Story.Advance() directly without the TextFadeMs delay.",
+      "why": "Reduce motion accommodates vestibular sensitivity; when on, all CSS fade transitions are skipped and advance is instantaneous.",
+      "contentHash": "sha256:45c739059a20a9e5cd72f75fb756026139e7f4b44c55f5b2ac3eb7a1197004f6"
+    },
+    {
+      "id": "FR-SETTINGS-007",
+      "type": "FR",
+      "area": "SETTINGS",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SettingsTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SettingsService.cs"
+      ],
+      "sourceFile": "docs/requirements/SETTINGS/FR-SETTINGS-007.md",
+      "statement": "MasterVolume defaults to 0.8, MusicVolume defaults to 0.7, SfxVolume defaults to 0.8; all three are range-bound 0.0–1.0.",
+      "why": "Sensible volume defaults ensure the ambient music is audible without startling; UI-only until audio is wired.",
+      "contentHash": "sha256:b85a6d2db737dacec69bf40f3f82734d2961dde5c5e708fe0d98d2f7f6b41dcb"
+    },
+    {
+      "id": "FR-SETTINGS-008",
+      "type": "FR",
+      "area": "SETTINGS",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SettingsTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Components/Settings.razor"
+      ],
+      "sourceFile": "docs/requirements/SETTINGS/FR-SETTINGS-008.md",
+      "statement": "\"Reset to defaults\" sets AutoAdvance=false, AutoAdvanceDelay=3.5, TextFadeMs=150, TextSize=1.0, MasterVolume=0.8, MusicVolume=0.7, SfxVolume=0.8, Theme=\"light\", ReduceMotion=false; save progress and VisitedScenes are not affected.",
+      "why": "Reset must restore every setting to its initial value so players can recover from an accidental configuration without knowing the defaults.",
+      "contentHash": "sha256:d8ca5df689625cbc229c0a137cf73ccc2645d0237518d766eeccd2367527c3cc"
+    },
+    {
+      "id": "FR-SETTINGS-009",
+      "type": "FR",
+      "area": "SETTINGS",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/SettingsTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/SettingsService.cs"
+      ],
+      "sourceFile": "docs/requirements/SETTINGS/FR-SETTINGS-009.md",
+      "statement": "Every call to SettingsService.UpdateAsync() immediately serializes the current GameSettings to localStorage under the settings key.",
+      "why": "Settings must survive a page refresh; persisting on every change is the simplest way to guarantee this without a \"save settings\" button.",
+      "contentHash": "sha256:1dcae092c701d2cd05179d4a18dcbcbc261db713cb11605323fd053e578d30c4"
+    },
+    {
+      "id": "FR-STORY-001",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-001.md",
+      "statement": "When Advance() is called and the Ink story canContinue, CurrentText is set to story.Continue() with leading and trailing whitespace trimmed.",
+      "why": "The core narrative loop — each advance must fetch exactly one Ink line and strip whitespace so the UI never shows raw newlines.",
+      "contentHash": "sha256:91945713ba818d76456436f961b16fda0edf96d006042bbfe692c094eeef0732"
+    },
+    {
+      "id": "FR-STORY-002",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-002.md",
+      "statement": "After each Advance(), CurrentChoices is populated from story.currentChoices; calling Choose(index) calls story.ChooseChoiceIndex(index) then Advance().",
+      "why": "Choices must be surfaced immediately after Continue() so the stage can render choice buttons.",
+      "contentHash": "sha256:897bda2c6cf7d633f602c62856d405a8bd274e9024cc5e7fbe88a4bcbfd8b5ea"
+    },
+    {
+      "id": "FR-STORY-003",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-003.md",
+      "statement": "GoBack() decrements the timeline index by one, restores the snapshot at that index, and returns true; when already at index 0 it returns false without modifying state.",
+      "why": "Back navigation must restore the previous display state exactly — text, speaker, background, scene — so players can re-read without desync.",
+      "contentHash": "sha256:6278cf69a85255a04cb6dbb05d10ccba0c7ce5bfb1f8171050447c369fa6df3b"
+    },
+    {
+      "id": "FR-STORY-004",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-004.md",
+      "statement": "When Advance() is called while _timelineIndex < _timeline.Count - 1 (i.e. replaying cached history), the snapshot at index+1 is restored instead of calling story.Continue().",
+      "why": "Forward playback through the snapshot cache must replay stored state rather than re-running Ink, preserving deterministic history.",
+      "contentHash": "sha256:af125f7a8f3f7e5c0d4f33754b997702637a010d67e9c7d8c2e2c5e24cd9275e"
+    },
+    {
+      "id": "FR-STORY-005",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-005.md",
+      "statement": "JumpToKnot() clears Background, CharacterOnStage, Motif, Art, Audio, CurrentAudioCue, CurrentSfx, CurrentChoices, and the entire timeline before calling story.ChoosePathString(knot).",
+      "why": "A scene jump must not carry over the previous scene's visual state; stale background/character/motif on a new knot would be a presentation bug.",
+      "contentHash": "sha256:95d976da47208a8836bb5da335d41abdf4f85e0b994f1174c4c6ade00709a849"
+    },
+    {
+      "id": "FR-STORY-006",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-006.md",
+      "statement": "SetProtagonistName() coerces any null, empty, or whitespace-only input to \"Wren\" before writing the value to the protagonist_name Ink variable.",
+      "why": "An empty name field in the prologue must not produce a nameless protagonist; \"Wren\" is the canonical default.",
+      "contentHash": "sha256:2bf1bbf60fba8a3ede7e8e87de842a9fa7ec786b07ff659b341ebb91bce4c619"
+    },
+    {
+      "id": "FR-STORY-007",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-007.md",
+      "statement": "When a tag `scene: N` (N an integer) is encountered, Scene is set to N and N is added to VisitedScenes.",
+      "why": "VisitedScenes drives the scene picker's \"visited\" highlighting and the StoryMap's path trace.",
+      "contentHash": "sha256:a8bc0703f8bb60b89cf513b546eef676a880e18f061a21bd9c9dcab7cb0e0feb"
+    },
+    {
+      "id": "FR-STORY-008",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-008.md",
+      "statement": "When a tag `pause: climax-window` is encountered during tag processing, IsClimaxPause is set to true.",
+      "why": "IsClimaxPause gates the climax mechanic in Stage.razor — the tag is the handshake between Ink and the UI layer.",
+      "contentHash": "sha256:e1fe2464f8619dd3414e31a55a5c4b6897f6366afd40099c0074696f04d02ba5"
+    },
+    {
+      "id": "FR-STORY-009",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-009.md",
+      "statement": "When a tag `ending: <value>` is encountered, EndingTitle is set to the tag's value string.",
+      "why": "EndingTitle drives the ending screen's title display; it must be captured from the Ink tag, not hardcoded.",
+      "contentHash": "sha256:7fab2eaa73417fcdc48cb0ed0bea2579b353cc6cb2351854d3ed55a4533ad176"
+    },
+    {
+      "id": "FR-STORY-010",
+      "type": "FR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/FR-STORY-010.md",
+      "statement": "IsEnded is true when the story is loaded, CanAdvance is false, and IsAtChoice is false.",
+      "why": "IsEnded must be computed correctly so Stage.razor knows when to show the ending screen vs dialogue.",
+      "contentHash": "sha256:2a655012b3fbf5841c178077259b479e4e467ece6a145a3c1c262a67400ae993"
+    },
+    {
+      "id": "FR-UI-001",
+      "type": "FR",
+      "area": "UI",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/UI/FR-UI-001.md",
+      "statement": "NameInput is rendered (and the main stage is hidden) when IsPrologueDone is false and Scene equals 0; once the prologue completes, the main stage becomes visible.",
+      "why": "The prologue must gate the main stage so players set their name before the Ink protagonist_name variable is needed.",
+      "contentHash": "sha256:c73b9c405f5bf653381b06abcf2d08660deb4ee8646531c18ad804811ce7d38e"
+    },
+    {
+      "id": "FR-UI-002",
+      "type": "FR",
+      "area": "UI",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/UI/FR-UI-002.md",
+      "statement": "A click on the stage div calls AdvanceRequested(); AdvanceRequested() is a no-op if IsPrologueDone is false, a panel is open, the pause menu is open, a pending jump modal is showing, a prologue replay is open, CanAdvance is false, or a transition is in progress.",
+      "why": "Clicking the stage is the primary advance affordance; it must be blocked when any overlay is open to prevent accidental double-advances.",
+      "contentHash": "sha256:0749a45b92b9e15cfe921837a283a2f3a39a9c410386cc68996e615a52292063"
+    },
+    {
+      "id": "FR-UI-003",
+      "type": "FR",
+      "area": "UI",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/UI/FR-UI-003.md",
+      "statement": "When HandleJump() receives a scene with Id greater than Story.Scene, a confirmation modal is shown; the jump executes only after the player clicks \"Jump anyway\". Jumps to the current or an earlier scene execute immediately without a modal.",
+      "why": "Forward jumps bypass unread scenes and their gate choices; the modal warns players that context will be missing without blocking them.",
+      "contentHash": "sha256:ce995a050a59bc0c695b98bdc4c47094144af87c047a2475dbd0e380a5c9c742"
+    },
+    {
+      "id": "FR-UI-004",
+      "type": "FR",
+      "area": "UI",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/UI/FR-UI-004.md",
+      "statement": "The auto-advance timer is cancelled and not restarted while _openPanel is not Panel.None, _showPauseMenu is true, or IsClimaxPause is true.",
+      "why": "Auto-advance must not fire while the player is reading the scene map, settings, or backlog — advancing behind a panel would be disorienting.",
+      "contentHash": "sha256:82997927a680aa50292671477e7153e7542bc9c19014d9c985c2e494214738ed"
+    },
+    {
+      "id": "FR-UI-005",
+      "type": "FR",
+      "area": "UI",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/UI/FR-UI-005.md",
+      "statement": "When AutoAdvance is enabled and Story.Pacing equals \"slow\", the auto-advance delay is AutoAdvanceDelay × 1.7 seconds; all other pacing values use AutoAdvanceDelay directly.",
+      "why": "Slow-pacing lines are motif moments designed to breathe; 1.7× gives them extra time under auto-advance without hard-blocking manual advance.",
+      "contentHash": "sha256:10abbc0eebf595deb26effe61a8edd414a5aff285d0ca6c8efed0117688826b0"
+    },
+    {
+      "id": "FR-UI-006",
+      "type": "FR",
+      "area": "UI",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/UI/FR-UI-006.md",
+      "statement": "When ReduceMotion is true or TextFadeMs equals 0, Story.Advance() is called directly without any delay; otherwise the stage waits TextFadeMs milliseconds before calling Advance() and updates the CSS transitioning class around the wait.",
+      "why": "Text fade is a purely cosmetic transition; skipping it under ReduceMotion or when TextFadeMs=0 avoids any unnecessary delay for players who prefer immediacy.",
+      "contentHash": "sha256:dba8f1755f2b157f539ac60b967f066bdf13aea5a84e80b9b660a010ed31e3bf"
+    },
+    {
+      "id": "FR-UI-007",
+      "type": "FR",
+      "area": "UI",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/UI/FR-UI-007.md",
+      "statement": "The stage root div carries CSS classes composed from: voice-{Voice}, pacing-{Pacing}, scene-{Scene}, background-{Background}, audio-{Audio}, theme-{Theme}, \"reduce-motion\" (when ReduceMotion), \"climax-pause\" (when IsClimaxPause), \"bg-dark\"/\"bg-light\", and \"stage--menu-open\" (when pause menu is open).",
+      "why": "CSS class composition is the primary theming mechanism; all scene- and state-specific styling derives from these classes so no inline style overrides are needed.",
+      "contentHash": "sha256:f8e5a16150bf6c15c1b5ed80b5e3bbb48a5f98b097ec37cfd5cb71b9312a7e83"
+    },
+    {
+      "id": "FR-UI-008",
+      "type": "FR",
+      "area": "UI",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Components/Stage.razor"
+      ],
+      "sourceFile": "docs/requirements/UI/FR-UI-008.md",
+      "statement": "IsDarkBackground is true when Theme is \"dark\", or when Background is one of: \"bedroom-night\", \"hallway-night\", \"taes-room\", \"field-night\", \"field-clearing\", \"nurse-office-night\".",
+      "why": "Dark-bg detection drives UI ink-color inversion so the TopBar and dialogue text remain readable over dark scene backgrounds.",
+      "contentHash": "sha256:bde21a247ac3b13227df9334e82c51fcb111500e85e2cf5e9fc59cac0f6196cc"
+    },
+    {
+      "id": "FR-UI-009",
+      "type": "FR",
+      "area": "UI",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/wwwroot/js/interaction.js"
+      ],
+      "sourceFile": "docs/requirements/UI/FR-UI-009.md",
+      "statement": "Fullscreen mode is toggled by pressing F or F11, and by clicking the fullscreen icon in the TopBar; in the web app this calls the DOM Fullscreen API, in the desktop app it sends a web-message via window.visualNovelHost.",
+      "why": "Fullscreen must be togglable via keyboard so players can go borderless without touching the mouse.",
+      "contentHash": "sha256:769af671086d7de9e421d46de9522a86fea923ece4ab4002c6735a0d66613c8d"
+    },
+    {
+      "id": "NFR-AUDIO-001",
+      "type": "NFR",
+      "area": "AUDIO",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/NarrTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/wwwroot/**"
+      ],
+      "sourceFile": "docs/requirements/AUDIO/NFR-AUDIO-001.md",
+      "statement": "No audio files (mp3, ogg, wav, flac, m4a, aac, opus) exist anywhere under src/VisualNovel.Shared/wwwroot/ or src/VisualNovel.Web/wwwroot/.",
+      "why": "A story about masks removing them must not itself hide behind AI-generated or pre-recorded assets; procedural generation is the only form of audio that ships.",
+      "contentHash": "sha256:f6664f3ec14550b3a9dfaff35044d31d6fd91ff15cb81aa528e48d6d27e693bf"
+    },
+    {
+      "id": "NFR-AUDIO-002",
+      "type": "NFR",
+      "area": "AUDIO",
+      "coverage": "manual",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "manual",
+      "coveredBy": [],
+      "tests": [],
+      "source": [],
+      "sourceFile": "docs/requirements/AUDIO/NFR-AUDIO-002.md",
+      "statement": "During the climax pause, only ambient/diegetic audio plays; no musical score or tonal swell is triggered.",
+      "why": "mechanics.md specifies ambient/diegetic audio only at the climax — no score or string swell — to preserve the silence of the invitation.",
+      "contentHash": "sha256:3b362f4363526c9c1b441eb220a3169d318858310fdd976e58bbae6d615fec75"
+    },
+    {
+      "id": "NFR-BUILD-001",
+      "type": "NFR",
+      "area": "BUILD",
+      "coverage": "gap",
+      "debt": true,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/wwwroot/**"
+      ],
+      "sourceFile": "docs/requirements/BUILD/NFR-BUILD-001.md",
+      "statement": "No node_modules directory exists under src/; no package.json with a non-empty \"dependencies\" field exists under src/.",
+      "why": "Zero runtime JS dependencies is an architectural constraint; importing an npm package would break the no-bundle, static-file deploy model.",
+      "contentHash": "sha256:86101b790ad02a3304464fc15e05ebf5b06162f096871b4eacac8a5d85d38167"
+    },
+    {
+      "id": "NFR-BUILD-002",
+      "type": "NFR",
+      "area": "BUILD",
+      "coverage": "manual",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "manual",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "vercel.json",
+        "build.sh"
+      ],
+      "sourceFile": "docs/requirements/BUILD/NFR-BUILD-002.md",
+      "statement": "The Vercel deployment (bash build.sh) produces a working SPA with: a catch-all rewrite routing all paths to index.html, a 1-year cache header on /_framework/ assets, and no-cache on index.html.",
+      "why": "The Vercel deploy path is how players access the game publicly; a misconfigured SPA rewrite causes 404 on direct URL access.",
+      "contentHash": "sha256:15e6aa2bb896ecae5963f940b02fcd483289779df025f4da66de9185ba0f1479"
+    },
+    {
+      "id": "NFR-CLIMAX-001",
+      "type": "NFR",
+      "area": "CLIMAX",
+      "coverage": "manual",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "manual",
+      "coveredBy": [],
+      "tests": [],
+      "source": [],
+      "sourceFile": "docs/requirements/CLIMAX/NFR-CLIMAX-001.md",
+      "statement": "No minimum dwell time is enforced at the climax pause; the story advances to the next line immediately on any click regardless of how long the player waited.",
+      "why": "No minimum dwell time preserves player autonomy; the pause is an invitation, not a timer gate. A 0.2s click and a 5-minute pause must produce the same next scene.",
+      "contentHash": "sha256:dc33261d3268653235d670b0b29ad302ef36a57268d345562d7ff1ef67f054df"
+    },
+    {
+      "id": "NFR-NARR-001",
+      "type": "NFR",
+      "area": "NARR",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "ratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/NarrTests.cs"
+      ],
+      "source": [
+        "ink/**/*.ink"
+      ],
+      "sourceFile": "docs/requirements/NARR/NFR-NARR-001.md",
+      "statement": "No player-visible prose line in any Ink source file under ink/ contains an em-dash character (U+2014, —); Ink `//` comment lines are exempt.",
+      "why": "Em-dashes were stripped in Phase 6; the auto-pause-comma pattern uses ellipses instead. Any em-dash reintroduced would violate the global style rule.",
+      "contentHash": "sha256:556fc58da3823e437efd5af06116b34dc68a34ce52dbdd75eae7045bff7a77dd"
+    },
+    {
+      "id": "NFR-NARR-002",
+      "type": "NFR",
+      "area": "NARR",
+      "coverage": "manual",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "manual",
+      "coveredBy": [],
+      "tests": [],
+      "source": [],
+      "sourceFile": "docs/requirements/NARR/NFR-NARR-002.md",
+      "statement": "The phrase \"if you'd like\" (or any variant of direct second-person address to the player) appears in the Ink source exactly once, in the climax scene (ink/scenes/13-step-outside.ink).",
+      "why": "The climax line is the only direct address to the player; a second use would dilute its singularity and break the tonal restraint the story has maintained.",
+      "contentHash": "sha256:33f61f9504b934cc31255f4e1057049cfe995099ac38647582bb1b6ab6429e24"
+    },
+    {
+      "id": "NFR-NARR-003",
+      "type": "NFR",
+      "area": "NARR",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/NarrTests.cs"
+      ],
+      "source": [
+        "ink/**/*.ink"
+      ],
+      "sourceFile": "docs/requirements/NARR/NFR-NARR-003.md",
+      "statement": "The tag \"pacing: slow\" appears in exactly the following scene ink files: 01-cold-open, 03-dexterity-pe, 05-hallway, 07-crushed, 11-night-hallway, 13-step-outside, 15-coda.",
+      "why": "Slow-default pacing on exactly the 7 motif-bearing scenes is the everyday-pacing mechanic from mechanics.md; it earns the climax pause by giving the player a rhythm to practice.",
+      "contentHash": "sha256:f3d20295b241235b8d94c03a36166006c5f0b83bd73b8a44b666ea225d50b79a"
+    },
+    {
+      "id": "NFR-SAVE-001",
+      "type": "NFR",
+      "area": "SAVE",
+      "coverage": "manual",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "manual",
+      "coveredBy": [],
+      "tests": [],
+      "source": [
+        "src/VisualNovel.Shared/Services/SaveService.cs"
+      ],
+      "sourceFile": "docs/requirements/SAVE/NFR-SAVE-001.md",
+      "statement": "Save and load failures (localStorage quota exceeded, unavailable, or parse error) are silently swallowed; the game continues running without displaying an error.",
+      "why": "localStorage can be full or unavailable in private browsing; audio must not crash silently over a save failure.",
+      "contentHash": "sha256:65f3a30b775c02ea44010cfb33cb86abea6bc017ca9f169760b6ff1b6870b705"
+    },
+    {
+      "id": "NFR-STORY-001",
+      "type": "NFR",
+      "area": "STORY",
+      "coverage": "covered",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "code",
+      "verification": "automated",
+      "coveredBy": [
+        "unit"
+      ],
+      "tests": [
+        "tests/TheAirOutside.Tests/StoryServiceTests.cs"
+      ],
+      "source": [
+        "src/VisualNovel.Shared/Services/StoryService.cs"
+      ],
+      "sourceFile": "docs/requirements/STORY/NFR-STORY-001.md",
+      "statement": "Each StorySnapshot record contains exactly 13 fields: StateJson, CurrentText, Speaker, Motif, Art, Background, CharacterOnStage, Voice, Pacing, Audio, Scene, IsClimaxPause, and EndingTitle.",
+      "why": "The snapshot must capture all display state so back/forward navigation produces bit-identical UI reconstruction.",
+      "contentHash": "sha256:8fdf0bec5d28590f47f832d56f4f1f54d5d5c87138072d5d2dbf223ca6c19b06"
+    },
+    {
+      "id": "NFR-UI-001",
+      "type": "NFR",
+      "area": "UI",
+      "coverage": "manual",
+      "debt": false,
+      "infraDebt": false,
+      "ratification": "unratified",
+      "provenance": "doc",
+      "verification": "manual",
+      "coveredBy": [],
+      "tests": [],
+      "source": [],
+      "sourceFile": "docs/requirements/UI/NFR-UI-001.md",
+      "statement": "The stage layout adapts at two breakpoints: 900px (tablet) and 600px (mobile); at each breakpoint font sizes and layout proportions reflow to maintain readability.",
+      "why": "Responsive breakpoints ensure the game is playable on tablets and small laptops without horizontal scrolling.",
+      "contentHash": "sha256:2f5f6f6b0be215c8ccd44c196c8922cc0ce06d44c53f178235ff11dfd737f3fa"
+    }
+  ]
+}
