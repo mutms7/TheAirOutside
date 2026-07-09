@@ -1,30 +1,38 @@
 # The Air Outside
 
-> *We build shells to be loved, and forget that we are inside them. The world doesn't need our performance — it only needs us to notice it.*
+> *We build shells to be loved, and forget that we are inside them. The world doesn't need our performance. It only needs us to notice it.*
 
 **The Air Outside** is a roughly one-hour web visual novel about mindfulness, presence, and the quiet appreciation of ordinary life. *(The title is a working title.)*
 
-It's set in a middle/high school in a society where everyone moves through the world inside personalized exo-suits — decorated like phones, and the dominant form of social currency. The suits are an allegory for the masks we put up and hide behind (deliberately not pinned to any single thing). You play **Wren** (a customizable default name), an earnest conformist who slowly learns to step outside their suit. The hope here is intimate, not societal: one or two people might follow, at their own pace. The world does not transform — and that is enough.
+It's set in a middle/high school in a society where everyone moves through the world inside personalized exo-suits, decorated like phones, and treated as the main way people show status. The suits are a stand-in for the masks we put up and hide behind (I didn't want to tie it to any one thing). You play **Wren**, a default name you can change, someone who earnestly goes along with the crowd and slowly learns to step outside their suit. The hope here is small and personal, not some big change to society. One or two people might follow, at their own pace. The world does not transform, and that is the point.
 
-The story tells itself through four recurring motifs — **ants, a sticker, rain, and a hummed song** — whose meanings shift as you go, and through a per-character color language. The climax hands you a single, quiet choice and the only line in the whole game that speaks to you directly: *"Look up if you'd like."*
+The story tells itself through four recurring motifs (ants, a sticker, rain, and a hummed song) whose meanings shift as you go, and through a set of colors tied to each character. The climax hands you a single, quiet choice, and the only line in the whole game that speaks to you directly: *"Look up if you'd like."*
 
----
+I made this game when I was going through a particularly mindful phase of my life. I don't practice mindfulness meditation much anymore, but I can always return to this game as a reminder of that chapter of my journey.
+
+🌐 **Play it in your browser:** [the-air-outside.vercel.app](https://the-air-outside.vercel.app/)
+
+![The opening: a long time ago, people decided they could be safer if they wore something between themselves and the world](docs/screenshots/intro.png)
+
+![Wren, in their suit, at home in the early morning](docs/screenshots/wren.png)
+
+![A quiet everyday moment: the house is quiet, the kitchen is clean](docs/screenshots/morning.png)
 
 ## Status
 
-Playable end to end. All **15 scenes**, **4 branching gates**, and **9 distinct endings** are implemented, with 100+ hand-coded SVG illustrations and procedural ambient audio. Runs in the browser and as a native Windows desktop app.
+Playable end to end. All **15 scenes**, **4 branching gates**, and **9 distinct endings** are in, with 100+ hand-coded SVG illustrations and procedural ambient audio. It runs in the browser and as a native Windows desktop app.
 
 Still open: audio is parsed but not yet wired to playback, a couple of endings share artwork, and cross-platform desktop/mobile (MAUI) isn't scaffolded. See [CLAUDE.md](CLAUDE.md) for the full phase log and open decisions.
 
 ## Features
 
-- **15 scenes, 4 gates, 9 endings** — your choices at four points fan out into nine distinct closings, each with its own title, prose, and art.
-- **A pause mechanic at the climax** — the UI dissolves and the game asks you, once and only once, to look up.
-- **Hand-illustrated, code-first art** — every background, character, and motif is hand-coded SVG. No raster assets, no AI-generated art (see [Art & audio philosophy](#art--audio-philosophy)).
-- **Procedural ambient audio** — music is synthesized at runtime from oscillators tuned to seven moods that crossfade with the scene. No audio files shipped.
-- **Customizable protagonist name**, persisted across sessions.
-- **Reader-friendly UX** — manual or auto-advance, adjustable text size and fade, light/dark themes, reduce-motion, a scene picker, a full story map, and a backlog of every line read.
-- **Fullscreen mode** — toggle in the top bar, or press `F` / `F11`.
+- **15 scenes, 4 gates, 9 endings.** Your choices at four points fan out into nine different endings, each with its own title, writing, and art.
+- **A pause mechanic at the climax.** The UI dissolves and the game asks you, once and only once, to look up.
+- **Hand-illustrated, code-first art.** Every background, character, and motif is hand-coded SVG. No raster assets, no AI-generated art (see [Art & audio philosophy](#art--audio-philosophy) below).
+- **Procedural ambient audio.** Music is synthesized at runtime from oscillators tuned to seven moods that crossfade with the scene. No audio files shipped.
+- **Customizable protagonist name,** persisted across sessions.
+- **Reader-friendly UX.** Manual or auto-advance, adjustable text size and fade, light/dark themes, reduce-motion, a scene picker, a full story map, and a backlog of every line read.
+- **Fullscreen mode.** Toggle it in the top bar, or press `F` / `F11`.
 
 ## Controls
 
@@ -40,20 +48,20 @@ Still open: audio is parsed but not yet wired to playback, a couple of endings s
 
 | Layer | Choice |
 |---|---|
-| Narrative script | **[Ink](https://www.inklestudios.com/ink/)** — Inkle's branching-narrative DSL, authored as plain `.ink` files |
+| Narrative script | **[Ink](https://www.inklestudios.com/ink/)**, Inkle's branching-narrative DSL, authored as plain `.ink` files |
 | Ink runtime / compiler | **Qyl27.Ink.Engine** / **Qyl27.Ink.Compiler** (community .NET ports) |
 | App framework | **Blazor WebAssembly** on **.NET 10** (C# end to end) |
 | Desktop host | **WPF + `BlazorWebView`** (`Microsoft.AspNetCore.Components.WebView.Wpf`), Windows |
 | Audio | Procedural **Web Audio** synth (no files) |
 | Save / settings | Browser `localStorage` via JS interop |
 | Art | Hand-coded **SVG** components |
-| Hosting | Static publish → **Vercel** (or any static host) |
+| Hosting | Static publish to **Vercel** (or any static host) |
 
-The renderer is intentionally decoupled from the script: writers can work entirely in `ink/` without touching C#, and the Blazor renderer could be swapped out.
+The renderer is intentionally decoupled from the script. Writers can work entirely in `ink/` without touching C#, and the Blazor renderer could be swapped out.
 
 ## Getting started
 
-**Prerequisites:** the [.NET 10 SDK](https://dotnet.microsoft.com/download). For the desktop app, Windows with the Evergreen WebView2 Runtime (preinstalled on Windows 10/11).
+**Prerequisites:** the [.NET 10 SDK](https://dotnet.microsoft.com/download). For the desktop app, you'll want Windows with the Evergreen WebView2 Runtime (preinstalled on Windows 10/11).
 
 ### Run in the browser
 
@@ -68,7 +76,7 @@ dotnet run --project src/VisualNovel.Web
 dotnet run --project src/VisualNovel.Desktop
 ```
 
-Renders the same components natively in a window — no localhost server, no WebAssembly download.
+This renders the same components natively in a window. No localhost server, no WebAssembly download.
 
 ### Edit the story
 
@@ -78,7 +86,7 @@ Scene scripts live in `ink/`. After editing them, recompile to `story.json`:
 dotnet run --project src/VisualNovel.InkBuild
 ```
 
-> The desktop app reads a copy of `story.json` baked in at build time, so re-run `InkBuild` **before** building/running Desktop after editing scenes. The web app picks up the new `story.json` on its next build.
+> The desktop app reads a copy of `story.json` baked in at build time, so re-run `InkBuild` **before** building or running Desktop after editing scenes. The web app picks up the new `story.json` on its next build.
 
 ## Building & publishing
 
@@ -95,11 +103,11 @@ dotnet publish src/VisualNovel.Web -c Release -o publish
 dotnet publish src/VisualNovel.Desktop -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish-desktop
 ```
 
-Produces `publish-desktop/The Air Outside.exe` (bundles the .NET runtime; the player needs no install beyond the preinstalled WebView2 runtime). Distribute the **whole `publish-desktop` folder** — the exe needs its sibling files. The build is unsigned, so Windows SmartScreen shows a *"More info → Run anyway"* prompt on first launch.
+This produces `publish-desktop/The Air Outside.exe`, which bundles the .NET runtime so the player needs no install beyond the preinstalled WebView2 runtime. Distribute the **whole `publish-desktop` folder** (the exe needs its sibling files). The build is unsigned, so Windows SmartScreen shows a *"More info → Run anyway"* prompt on first launch.
 
 ## Deployment
 
-The repo includes [vercel.json](vercel.json) and [build.sh](build.sh). Connect the GitHub repo in Vercel; it runs `build.sh` (installs .NET 10, compiles Ink → `story.json`, publishes the Blazor WASM app) and serves `publish/wwwroot`. The live website tracks the repo — every push to `main` triggers a rebuild. (The desktop app does not auto-update; it's an offline snapshot from the moment it was published.)
+The repo includes [vercel.json](vercel.json) and [build.sh](build.sh). Connect the GitHub repo in Vercel and it runs `build.sh` (installs .NET 10, compiles Ink to `story.json`, publishes the Blazor WASM app) and serves `publish/wwwroot`. The live site tracks the repo, so every push to `main` triggers a rebuild. (The desktop app does not auto-update; it's an offline snapshot from the moment it was published.)
 
 ## Project structure
 
@@ -120,26 +128,26 @@ Four gate choices drive the branches; the last two (`gate3` × `gate4`) produce 
 
 | Gate | Scene | Options |
 |---|---|---|
-| `gate1` | 4 — The Lesser Suits | silent / speak / deflect |
-| `gate2` | 5 — The Window | approach / avoid |
-| `gate3` | 12 — The Door | iris / stay / tae |
-| `gate4` | 14 — Bare | stay_out / suit_no_deco / re_enter |
+| `gate1` | 4, The Lesser Suits | silent / speak / deflect |
+| `gate2` | 5, The Window | approach / avoid |
+| `gate3` | 12, The Door | iris / stay / tae |
+| `gate4` | 14, Bare | stay_out / suit_no_deco / re_enter |
 
 ## Design documents
 
-These are the creative source of truth — read them before contributing to the story:
+These are the creative source of truth. Read them before contributing to the story:
 
-1. [story-bible.md](story-bible.md) — thesis, themes, tone, the four motifs and their meaning arcs, per-character palettes, and the things the story refuses to do
-2. [characters.md](characters.md) — the six characters, surface vs. interior, and the suit-as-mask reading
-3. [outline.md](outline.md) — 15 scenes, 4 gates, the branch map, and the 9 ending combinations
-4. [mechanics.md](mechanics.md) — the climax pause mechanic and the everyday slow pacing that earns it
-5. [art-plan.md](art-plan.md) — the placeholder-first build order and the hand-illustrated flat-graphic style
+1. [story-bible.md](story-bible.md): thesis, themes, tone, the four motifs and their meaning arcs, per-character palettes, and the things the story refuses to do
+2. [characters.md](characters.md): the six characters, surface vs. interior, and the suit-as-mask reading
+3. [outline.md](outline.md): 15 scenes, 4 gates, the branch map, and the 9 ending combinations
+4. [mechanics.md](mechanics.md): the climax pause mechanic and the everyday slow pacing that earns it
+5. [art-plan.md](art-plan.md): the placeholder-first build order and the hand-illustrated flat-graphic style
 
 [CLAUDE.md](CLAUDE.md) documents the architecture, conventions, phase history, and build gotchas.
 
 ## Art & audio philosophy
 
-This is a story about masks, so it refuses to wear one. **AI-generated art is not an acceptable final asset** — it may be used for ideation or reference only, and disclosed if so. All current artwork is hand-coded SVG. Music is generated procedurally at runtime rather than shipped as files. The aim throughout is to grant dignity to ordinary, unnoticed things — and to build *this* story, with its specific taste and philosophy, rather than a more marketable version of it.
+This is a story about masks, so it refuses to wear one. **AI-generated art is not an acceptable final asset.** It may be used for ideation or reference only, and disclosed if so. All current artwork is hand-coded SVG. Music is generated procedurally at runtime rather than shipped as files. The aim throughout is to grant dignity to ordinary, unnoticed things, and to build *this* story, with its specific taste and philosophy, rather than a more marketable version of it.
 
 ## License
 
